@@ -1,0 +1,15 @@
+version: 2
+
+python:
+  version: "3.8"
+  install: 
+    - requirements: requirements.txt
+    - requirements: docs/requirements.txt
+    - method: pip
+      path: .
+  system_packages: true
+
+formats: all
+
+sphinx:
+  configuration: docs/conf.py
