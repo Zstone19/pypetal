@@ -1,28 +1,58 @@
 import os
 import subprocess
+import sys
 
 from setuptools import find_packages, setup
+from setuptools.command.install import install
 
-import distutils.cmd
-import distutils.log
 
-class InstallDependencies(distutils.cmd.Command):
+if '-u' in sys.argv:
+    index = sys.argv.index('-u')
+    sys.argv.pop(index)
+    
+    user = sys.argv.pop(index)
+elif '--user' in sys.argv:
+    user = True
+else:
+    user = True
+    
+    
+if '-p' in sys.argv:
+    index = sys.argv.index('-p')
+    sys.argv.pop(index)
+    
+    plike = sys.argv.pop(index)
+else:
+    plike = False
+
+    
+if '-f' in sys.argv:
+    index = sys.argv.index('-f')
+    sys.argv.pop(index)
+    
+    fcompile = sys.argv.pop(index)
+else:
+    fcompile = None
+    
+
+class InstallCommand(install):
     """Install dependencies for PETL""" 
     
-    description = 'Install dependencies for PETL'
+    description = 'Install dependencies for PETL (pyCCF, JAVELIN, PLIKE)'
     user_options = [
-        ('user=', 'u', 'if True, will install locally'),
-        ('fcompile=', 'f', 'Fortran compiler used for JAVELIN'),
-        ('plike=', 'p', 'if True, will install PLIKE'),
-    ]   
-
+        ('user_jav=', None, 'if True, will install locally'),
+        ('fcompile=', None, 'Fortran compiler used for JAVELIN'),
+        ('plike=', None, 'if True, will install PLIKE'),
+    ]
+    
     def initialize_options(self):
-        self.user = False
+        install.initialize_options(self)
+        self.user_jav = True
         self.fcompile = None
         self.plike = False
         
     def finalize_options(self):
-        self.cwd = os.getcwd()
+        install.finalize_options(self)
         
     def run(self):
         """Run command"""
@@ -35,7 +65,7 @@ class InstallDependencies(distutils.cmd.Command):
             command.append('-u false')
             
         if self.fcompile is not None:
-            command.append('-f %s' % self.fcompile )
+            command.append('-f %s' % fcompile )
             
         if self.plike:
             command.append('-p true')
@@ -43,6 +73,7 @@ class InstallDependencies(distutils.cmd.Command):
             command.append('-p false')
             
         subprocess.check_call(command)
+        install.run(self)
 
 
 
@@ -80,6 +111,5 @@ setup(
     packages=PACKAGES,
     package_dir={'':'src'},
     include_package_data=True,
-    cmdclass={'install_dep': InstallDependencies,}
-    
+    cmdclass={'install': InstallCommand,}
 )
