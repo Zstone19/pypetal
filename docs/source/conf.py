@@ -27,9 +27,10 @@ extensions = [
     'nbsphinx',
     'sphinx_copybutton'
 ]
+suppress_warnings = ["nbsphinx"]
 
 templates_path = ['_templates']
-exclude_patterns = []
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 
@@ -67,3 +68,4 @@ html_context = dict(
 
 #nbsphinx config
 nbsphinx_kernel_name = 'python3'
+nbsphinx_execute = "never"
