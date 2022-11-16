@@ -62,7 +62,7 @@ html_context = dict(
     github_user="Zstone19",
     github_repo="petl",
     github_version="doc",
-    conf_py_path="/docs/",
+    conf_py_path="/docs/source/",
 )
 
 #nbsphinx config
