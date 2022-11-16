@@ -8,4 +8,4 @@ dependencies:
   - pip:
       - nbsphinx
       - sphinx_rtd_theme
-      - sphinx_copybutton
+      - sphinx-copybutton
