@@ -1,9 +1,11 @@
 channels:
   - conda-forge
 dependencies:
-  - python>=3
+  - python==3.8
   - pandoc
   - ipykernel
   - pip
   - pip:
       - nbsphinx
+      - sphinx_rtd_theme
+      - sphinx_copybutton
