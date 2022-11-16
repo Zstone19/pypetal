@@ -27,7 +27,6 @@ extensions = [
     'nbsphinx',
     'sphinx_copybutton'
 ]
-master_doc = 'index'
 
 templates_path = ['_templates']
 exclude_patterns = []
