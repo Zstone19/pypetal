@@ -23,7 +23,6 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.intersphinx',
     'nbsphinx',
     'sphinx_copybutton'
 ]
