@@ -72,6 +72,8 @@ class InstallCommand(install):
         else:
             command.append('-p false')
             
+        command.append('> build_dep.log')
+            
         subprocess.check_call(command)
         install.run(self)
 
