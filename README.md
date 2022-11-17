@@ -18,7 +18,7 @@ Or, if you want to install the latest development version:
 ```
     git clone https://github.com/Zstone19/petl.git
     cd petl
-    pip install .
+    python setup.py install
 ```
 
 PETL will be installed using the default parameters:
