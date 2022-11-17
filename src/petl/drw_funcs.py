@@ -20,60 +20,67 @@ quantity_support()
 
 import warnings
 
-def str2float_col(array, dtype):
-    
-    if type(array) == type(str):
-        array = array[1:-1].split()  
-        array = np.array(array, dtype=dtype)
-        return array
-    else:
-        return array
-
-def hampel_filter(x, y, window_size, n_sigmas=3):
-    """
-    Perform outlier rejection using a Hampel filter
-    
-    x: time (list or np array)
-    y: value (list or np array)
-    window_size: window size to use for Hampel filter
-    n_sigmas: number of sigmas to reject outliers past
-    
-    returns: x, y, mask [lists of cleaned data and outlier mask]
-        
-    Adapted from Eryk Lewinson
-    https://towardsdatascience.com/outlier-detection-with-hampel-filter-85ddf523c73d
-    """
-    
-    # Ensure data are sorted
-    if np.all(np.diff(x) > 0):
-        ValueError('Data are not sorted!')
-        
-    x0 = x[0]
-    
-    n = len(x)
-    outlier_mask = np.zeros(n)
-    k = 1.4826 # MAD scale factor for Gaussian distribution
-    
-    # Loop over data points
-    for i in range(n):
-        # Window mask
-        mask = (x > x[i] - window_size) & (x < x[i] + window_size)
-        if len(mask) == 0:
-            idx.append(i)
-            continue
-        # Compute median and MAD in window
-        y0 = np.median(y[mask])
-        S0 = k*np.median(np.abs(y[mask] - y0))
-        # MAD rejection
-        if (np.abs(y[i] - y0) > n_sigmas*S0):
-            outlier_mask[i] = 1
-            
-    outlier_mask = outlier_mask.astype(np.bool)
-    
-    return np.array(x)[~outlier_mask], np.array(y)[~outlier_mask], outlier_mask
-
 
 def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', suppress_warnings=True, jitter=True):
+    
+    """Fit time-series data to a given Gaussian process kernel using celerite.
+
+    Parameters
+    ----------
+    
+    x : list of astropy.units.Quantity
+        Time values of the data.
+        
+    y : list of astropy.units.Quantity
+        Values of the data
+        
+    yerr : list of astropy.units.Quantity
+        Uncertainties on the data
+        
+    kernel : celerite.terms.Term
+        Kernel to fit to the data
+        
+    nwalkers : int
+        Number of walkers to use in the MCMC
+        
+    nburn : int
+        Number of burn-in steps to use in the MCMC
+        
+    nsamp : int
+        Number of samples to use in the MCMC
+        
+    solver : str, optional
+        Solver to use for the GP fit. Options are "minimize" for ``scipy.optimize.minimize`` and 
+        "diff_evo" for ``scipy.optimize.differential_evolution``. Default is "minimize".
+        
+    suppress_warnings : bool, optional
+        Suppress warnings from the GP fit. Default is True.
+        
+    jitter : bool, optional
+        If true, fit for a noise (jitter) term in the GP. Default is True.
+
+    Returns
+    -------
+     
+    samples : array_like
+        Samples of the kernel parameters from the MCMC fit
+    
+    gp : celerite.GP
+        GP object used for the fit
+        
+    statuses : list of bool
+        Status of the fit to the light curve. There are three statuses given:
+            * baseline_good
+                If True, tau > baseline/10
+                
+            * cadence_good
+                If true, tau > mean cadence of the light curve
+            
+            * stn_good
+                If true, the DRW sigma parameter is greater than the noise in the light curve
+    
+    """
+    
     
     if suppress_warnings:
         warnings.filterwarnings("ignore")
@@ -173,6 +180,67 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
 
 def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', suppress_warnings=True, jitter=True, clip=True):
 
+    """Fit time-series data to a DRW using celerite and emcee.
+    
+    Parameters
+    ----------
+    
+    x : list of astropy.units.Quantity
+        Time values of the data.
+        
+    y : list of astropy.units.Quantity
+        Values of the data
+        
+    yerr : list of astropy.units.Quantity
+        Uncertainties on the data
+    
+    nwalkers : int, optional
+        Number of walkers to use in the MCMC. Default is 32.
+        
+    nburn : int, optional
+        Number of burn-in steps to use in the MCMC. Default is 300.
+        
+    nsamp : int, optional
+        Number of samples to use in the MCMC. Default is 1000.
+        
+    solver : str, optional
+        Solver to use for the GP fit. Options are "minimize" for ``scipy.optimize.minimize`` and
+        "diff_evo" for ``scipy.optimize.differential_evolution``. Default is "minimize".
+        
+    suppress_warnings : bool, optional  
+        Suppress warnings from the GP fit. Default is True.
+        
+    jitter : bool, optional
+        If true, fit for a noise (jitter) term in the GP. Default is True.
+        
+    clip : bool, optional
+        If true, clip data points too close together in time (< 1e-8 days). Default is True.
+        
+        
+        
+    Returns
+    -------
+    
+    samples : array_like
+        Samples of the kernel parameters from the MCMC fit
+        
+    gp : celerite.GP
+        GP object used for the fit
+        
+    statuses : list of bool
+        Status of the fit to the light curve. There are three statuses given:
+            * baseline_good
+                If True, tau > baseline/10
+                
+            * cadence_good 
+                If true, tau > mean cadence of the light curve
+                
+            * stn_good
+                If true, the DRW sigma parameter is greater than the noise in the light curve
+    
+    """
+
+
     #Set up GP in celerite
     baseline = x[-1] - x[0]
 
@@ -217,43 +285,38 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', 
 
 
 
-
-
-
-
-def CARMA_fit(x, y, yerr, p=2, nburn=300, nsamp=1000, solver='minimize', suppress_warnings=True):
-
-    #p = J, q = p-1
-
-    #Assume bounds for kernel
-    amin = -10; amax = 10; aval = 0
-    bmin = -10; bmax = 10; bval = 0
-    cmin = -10; cmax = 10; cval = 0
-    dmin = -10; dmax = 10; dval = 0
-    
-    smin = -10; smax = 10; sval = 0
-
-    bounds = dict( log_a=(amin, amax), log_b=(bmin, bmax), log_c=(cmin, cmax), log_d=(dmin, dmax) )
-    kernel = terms.ComplexTerm(log_a=aval, log_b=bval, log_c=cval, log_d=dval, bounds=bounds)
-
-    for j in range(2, p+1):
-        kernel += terms.ComplexTerm(log_a=aval, log_b=bval, log_c=cval, log_d=dval, bounds=bounds)
-
-    # Add jitter term
-    bounds = dict( log_sigma=(smin, smax) )
-    kernel += terms.JitterTerm(log_sigma=sval, bounds=bounds)
-
-
-
-    samples, gp, statuses = celerite_fit(x, y, yerr, kernel, nburn, nsamp, solver, suppress_warnings)
-    
-    return samples, gp, statuses
-
-
-
-
-
 def psd_from_gp(fLS, powerLS, gp, samples, baseline):
+
+    """Calculate the PSD of a light curve using the DRW fit from celerite. This assumes that a Lomb-Scargle
+    periodogram has been made from the light curve, giving a list of frequencies and powers.
+    
+    fLS : list of astropy.units.Quantity
+        Frequencies from the Lomb-Scargle periodogram
+        
+    powerLS : list of astropy.units.Quantity
+        Powers from the Lomb-Scargle periodogram
+        
+    gp : celerite.GP
+        GP object used for the fit
+        
+    samples : array_like
+        Samples of the kernel parameters from the MCMC fit
+        
+    baseline : astropy.units.Quantity
+        Baseline of the light curve
+
+
+    Returns
+    -------
+    f_eval : list of astropy.units.Quantity
+        Frequencies at which the PSD is evaluated
+        
+    psd_credint : list of astropy.units.Quantity
+        An (n,3) array of the PSD, with the first columns being the 16th percentile, the second column being the median,
+        and the third column being the 84th percentile.
+    
+    """
+
 
     #Get freqs
     f_eval = np.logspace( np.log10(fLS[0].value), np.log10(fLS[-1].value), 200 )
@@ -289,6 +352,38 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
 
 
 def binLS(fLS, powerLS_samp, num_bins):
+    
+    """Bin the Lomb-Scargle periodogram by frequency.
+    
+    Parameters
+    ----------
+    fLS : list of astropy.units.Quantity
+        Frequencies from the Lomb-Scargle periodogram
+        
+    powerLS_samp : list of astropy.units.Quantity
+        Samples of the Lomb-Scargle periodogram
+        
+    num_bins : int
+        Number of bins to use for the binned periodogram
+
+
+    Returns
+    -------
+
+    binCenters : list of astropy.units.Quantity
+        Bin centers for the binned periodogram
+        
+    bin_vals : list of astropy.units.Quantity
+        The values of the binned periodogram
+        
+    bin_errs : list of astropy.units.Quantity
+        The upper error on the binned periodogram
+        
+    lower_err : list of astropy.units.Quantity
+        The lower error on the binned periodogram
+
+    """
+    
     
     #Get the credibility intervals for each point on the PSD
     bins_credint = np.empty((len(fLS), 3))
@@ -347,10 +442,72 @@ def binLS(fLS, powerLS_samp, num_bins):
 
 
 def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
+    
+    """A smoothly broken power law. $P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}$
+
+    Parameters
+    ----------
+    f : array_like
+        Frequencies at which to evaluate the power law.
+        
+    A : float
+        The amplitude of the power law.
+        
+    f_br : float
+        The break frequency of the power law.
+        
+    alpha : float
+        The slope of the power law below the break frequency.
+    
+    beta : float
+        The slope of the power law above the break frequency.
+        
+    
+    Returns
+    -------
+    power : array_like
+        The power law.
+    
+    """
+    
     return A/((f/f_br)**alpha + (f/f_br)**beta)
 
 
 def psd_sbpl(f, psd, err, p0, bounds):
+    
+    """Generate a smoothly broken power law fit to the PSD.
+
+    Parameters
+    ----------
+    f : array_like
+        Frequencies for the input PSD.
+        
+    psd : array_like
+        The input PSD.
+        
+    err : array_like
+        The error on the input PSD.
+        
+    p0 : array_like
+        The initial guess for the parameters of the smoothly broken power law.
+        
+    bounds : array_like
+        The bounds on the parameters of the smoothly broken power law.
+
+
+
+
+    Returns
+    -------
+        
+    fit_vals : array_like
+        The best fit parameters for the smoothly broken power law.
+    
+    fit_errs : array_like
+        The errors on the best fit parameters for the smoothly broken power law.
+            
+    """
+    
     
     try:
         soln = curve_fit(smoothly_broken_power_law, f, psd, sigma=err, p0=p0, bounds=bounds, maxfev=10000)
@@ -364,7 +521,64 @@ def psd_sbpl(f, psd, err, p0, bounds):
     return fit_vals, fit_err
 
 
-def psd_data(x, y, yerr, samples, gp, nsamp=20, psd_fit='sbpl'):
+def psd_data(x, y, yerr, samples, gp, nsamp=20):
+    
+    
+    """Generate all PSD data for the summary plot.
+    
+    x : array_like
+        The light curve times
+        
+    y : array_like
+        The light curve values
+        
+    yerr : array_like
+        The uncertainty in the light curve
+        
+    samples : array_like   
+        The samples from the MCMC fit
+        
+    gp : celerite.GP
+        The GP object used to fit the light curve
+        
+    nsamp : int
+        The number of samples of the Lomb-Scargle periodogram to use
+
+
+    Returns
+    -------
+    
+    fLS : list of astropy.unit.Quantity
+        The frequencies for the Lomb-Scargle periodogram.
+        
+    powerLS : list of astropy.unit.Quantity
+        The power for the Lomb-Scargle periodogram.
+        
+    f_eval : list of astropy.unit.Quantity
+        The frequencies for the PSD from the celerite fit
+        
+    psd_credint : list of astropy.unit.Quantity
+        The (16th, 50th, 84th) percentiles of the PSD from the celerite fit
+        
+    bin_vals : list of astropy.unit.Quantity
+        The values of the Lomb-Scargle periodogram
+        
+    bin_err : list of astropy.unit.Quantity
+        The upper error on the binned Lomb-Scargle periodogram
+        
+    lower_err : list of astropy.unit.Quantity
+        The lower error on the binned Lomb-Scargle periodogram
+        
+    binCenters : list of astropy.unit.Quantity
+        The centers of the bins for the binned Lomb-Scargle periodogram
+        
+    fit_vals : list of astropy.unit.Quantity
+        The best fit parameters for the smoothly broken power law fit to the Lomb-Scargle periodogram
+        
+    fit_errs : list of astropy.unit.Quantity
+        The errors on the best fit parameters for the smoothly broken power law fit to the Lomb-Scargle periodogram
+        
+    """
     
     baseline = x[-1] - x[0]
     powerLS_samps = []
@@ -405,90 +619,67 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20, psd_fit='sbpl'):
     fit_vals, fit_err = psd_sbpl(binCenters[1:-4], bin_vals[1:-4], None, p0, bounds)
     
     return fLS, powerLS, f_eval, psd_credint, bin_vals, bin_err, binCenters, lower_err, fit_vals, fit_err
-
-
-def SF_from_data(x, y, yerr, group=False):
-    dt = []
-    dm = []
-    dm_err = []
-    
-    if group == False:
-        for i in range(len(x)-1):
-            for j in range(len(x[i+1:])):
-                dt.append(  np.abs(x[j]-x[i]) )
-                dm.append( np.abs(y[j] - y[i]) )
-                dm_err.append(  np.sqrt( yerr[j]**2 + yerr[i]**2 ) ) 
-            
-        return dt, dm, dm_err
-    
-    baseline = x[-1] - x[0]
-    bin_num = 50
-    
-    bin_width = baseline/bin_num
-    
-    bin_vals = []
-    bin_err = []
-    for i in range(bin_num):
-        bin_vals.append([])
-        bin_err.append([])
-    
-    #Get bin edges and centers
-    bin_edges = [ x[0] + n*x[-1]/bin_num for n in range(50) ]
-    bin_centers = []
-    for n in range(len(bin_edges)-1):
-        bin_centers.append( (bin_edges[n+1] + bin_edges[n])/2)
-    
-    #For all dt bins, gather all dm**2 and dm**2_err within it 
-    for i in range(len(x)-1):
-        for j in range(len(x[i+1:])):
-            
-            for n in range(bin_num-1):
-                left = bin_edges[n]
-                right = bin_edges[n+1]
-                
-                if left < np.abs(x[i]-x[j]) <= right:
-                    bin_vals[n].append(  (y[j]-y[i])**2 )
-                    bin_err[n].append(  2*np.abs(y[j]-y[i])* np.sqrt(yerr[j]**2 + yerr[i]**2) )
-
-    print(bin_vals)
-    #Get rms_dm and rms_dm_err for each dt bin
-    for i in range(len(bin_vals)):
-        
-        rms_mag_err = 0
-        for j in range(len(bin_err[i])):
-            rms_mag_err += 2*bin_vals[i][j]*bin_err[i][j]
-        rms_mag_err = np.sqrt(rms_mag_err)
-        bin_err[i] = rms_mag_err
-        
-        rms_mag = np.sqrt( np.sum(bin_vals[i])/len(bin_vals[i]) )
-        bin_vals[i] = rms_mag
-        
-    return bin_centers, bin_vals, bin_err
-        
-    
-    
-    
-def plot_binned_SF(centers, vals, err, group=False):
-    
-    fig, ax = plt.subplots()
-    
-    ax.errorbar(centers, vals, yerr=err, 
-                marker=None, drawstyle='steps-mid', color='k', 
-                linewidth=1.0, capsize=3)
-    
-    ax.set_ylabel('RMS mag')
-    ax.set_xlabel('$\Delta t$')
-    
-    return fig, ax
     
     
     
 
 
 def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0, 
-                 carma_samples=None, carma_gp=None, 
-                 target=None, show_mean=True, psd_fit='sbpl', 
+                 target=None, show_mean=True,
                  filename=None, jitter=True, show=False):
+    
+    """Generate summary image for the DRW fit. Contains a plot of the input light curve along with the DRW fit, a corner plot of the DRW parameters, and a plot of the PSD (data-based and fit-based).
+    
+    Parameters
+    ----------
+    x : list of astropy.units.Quantity
+        The times of the light curve
+    
+    y : list of astropy.units.Quantity
+        The light curve
+    
+    yerr : list of astro.units.Quantity
+        The uncertainty in the light curve
+    
+    samples : array_like
+        The output MCMC samples from the DRW fit
+    
+    gp : celerite.GP
+        The GP object used to fit the DRW
+    
+    unit : str, astropy.units.Unit
+        The unit of the light curve
+    
+    nsig : int, optional
+        The number of standard deviations away from the mean DRW fit at which to 
+        consider a point an outlier. Default is 0 (i.e. no points are outliers).
+        
+    target : str, optional
+        The name of the target. Default is ``None``.
+
+    show_mean : bool, optional
+        If True, will plot the mean of the DRW fit. Default is True.
+        
+    filename : str, optional
+        The name of the file to save the image to. Default is ``None``.
+        
+    jitter : bool, optional
+        Whether or not the jitter term was included in the DRW fit. Default is True.
+        
+    show : bool, optional
+        Whether or not to show the image. Default is False.       
+    
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure containing the summary image
+        
+    axs : list of matplotlib.axes.Axes
+        The axes of the figure
+    
+    """
+    
     #Plot probability dists of output params
     
     #tau = 1/c
@@ -634,9 +825,6 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     #Plot LS PSD
     
     fLS, powerLS, f_eval, psd_credint, bin_vals, bin_err, binCenters, lower_err, fit_vals, fit_err = psd_data(x, y, yerr, samples, gp)
-    
-    if type(carma_samples) != type(None):
-        _, _, _, _, _, _, _, _, carma_vals, carma_err = psd_data(x, y, yerr, carma_samples, carma_gp)
         
     ax2 = fig.add_subplot(gs[:, -1])
     fig.set_size_inches([6,6])
@@ -668,10 +856,8 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     #--------------------------------------------------------------------------
     #Fit PSD to a smoothly broken power law    
     
-    if psd_fit == 'sbpl':
-        sbpl_dat = smoothly_broken_power_law(fLS.value, fit_vals[0], fit_vals[1], fit_vals[2], fit_vals[3])
-
-        ax2.plot(fLS.value, sbpl_dat, color='red', label='SBPL Fit')
+    sbpl_dat = smoothly_broken_power_law(fLS.value, fit_vals[0], fit_vals[1], fit_vals[2], fit_vals[3])
+    ax2.plot(fLS.value, sbpl_dat, color='red', label='SBPL Fit')
 
     
     #--------------------------------------------------------------------------
@@ -701,33 +887,6 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         arrow_base = (f_br, 10**(np.log10(f_br_val)+.6) )
         ax2.errorbar([f_br], [arrow_base[1]], yerr=[arrow_base[1] - arrow_head[1]], 
                      uplims=True, color='red', elinewidth=2, capthick=2)
-        
-        
-        
-    if type(carma_samples) != type(None):        
-        f_br = carma_vals[1]
-        f_br_err = carma_err[1]
-    
-        f_br_plus = f_br + f_br_err
-        f_br_minus = f_br - f_br_err
-    
-        if f_br_minus < 0.0 and np.isfinite(f_br_plus) == True:    
-            ls_diff = np.log10(f_br_plus) - np.log10(f_br)
-            f_br_minus = 10**( np.log10(f_br) - ls_diff )
-    
-    
-        f_br_val = 10**( np.log10(f_br_val)+.1 )   
-    
-        if np.isfinite(f_br_plus) == True:
-            #Dat for f_br line
-            t = np.logspace(np.log10(f_br_minus), np.log10(f_br_plus), 100)
-            dat = np.full(len(t), f_br_val)
-            ax2.plot(t, dat, color='orange', linewidth=2)
-    
-            arrow_head = (f_br, 10**(np.log10(f_br_val)+.2) )
-            arrow_base = (f_br, 10**(np.log10(f_br_val)+.6) )
-            ax2.errorbar([f_br], [arrow_base[1]], yerr=[arrow_base[1] - arrow_head[1]], 
-                         uplims=True, color='orange', elinewidth=2, capthick=2)
 
     #--------------------------------------------------------------------------
     #Red out bad freqs
@@ -761,514 +920,3 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         plt.show()
 
     return fig, axs
-
-
-
-
-
-
-
-
-
-#-----------------------------------------------------------------------------------------------------------------------------------------
-#Plotting functions
-
-
-def linmix_regression(x, y, xerr, yerr, nchains=10, parallelize=True, verbose=True):
-
-    import linmix.linmix as linmix
-
-    lm = linmix.LinMix(x,y,xerr,yerr, nchains=nchains, parallelize=parallelize)
-    lm.run_mcmc(silent = ~verbose)
-
-    output = lm.chain
-
-    alpha = []
-    beta = []
-    sigsqr = []
-    
-    for samp in output:
-        alpha.append( samp[0] )
-        beta.append( samp[1] )
-        sigsqr.append( samp[2] )
-        
-    sig = np.sqrt(sigsqr)
-    
-    av = np.median(alpha)
-    ae_u = np.percentile(alpha, 84) - av
-    ae_l = av - np.percentile(alpha, 16)
-    
-    bv = np.median(beta)
-    be_u = np.percentile(beta, 84) - bv
-    be_l = bv - np.percentile(beta, 16)
-
-    sv = np.median(sig)
-    se_u = np.percentile(sig, 84) - sv
-    se_l = sv - np.percentile(sig, 16)
-    
-    
-    print('a: {:.3f} +/- {:.3f}'.format( bv, (be_u+be_l)/2  ))
-    print('b: {:.3f} +/- {:.3f}'.format( av, (ae_u+ae_l)/2  ))
-    print('sig: {:.3f} +/- {:.3f}'.format( sv, (se_u+se_l)/2 ))
-    
-    return output
-
-def linmix_ranges(output, xvals):
-    sample_yvals = []
-    
-    for samp in output:
-        sample_yvals.append( samp[1]*xvals + samp[0] )
-
-    yvals_upper = np.percentile(sample_yvals, 84, axis=0)
-    yvals_med = np.median(sample_yvals, axis=0)
-    yvals_lower = np.percentile(sample_yvals, 16, axis=0)
-    
-    return yvals_upper, yvals_med, yvals_lower
-
-
-
-
-def mbh_l_tau_plot(df, band, out_dir):
-
-    fig, ax = plt.subplots(1,2, figsize=(15,6))
-
-    markers, caps, bars = ax[0].errorbar(df['log_M_BH'], df['log_tau_drw_rest'],\
-                                         xerr=df['log_M_BH_e'], \
-                                         yerr=[ df['log_tau_drw_rest_err_l'], df['log_tau_drw_rest_err_u'] ], \
-                                         fmt='.k')
-    [bar.set_alpha(.1) for bar in bars]
-    
-    ax[0].set_xlabel('$\log_{10} (M_{BH}) $')
-    ax[0].set_ylabel(r'$\log_{10} (\tau_{rest})$')
-
-    markers, caps, bars = ax[1].errorbar(df['log_L5100'], df['log_tau_drw_rest'], \
-                                         xerr=df['log_L5100_e'], \
-                                         yerr=[ df['log_tau_drw_rest_err_l'], df['log_tau_drw_rest_err_u'] ], \
-                                         fmt='.k')
-    [bar.set_alpha(.1) for bar in bars]
-    
-    ax[1].set_xlabel('$\log_{10} (L_{5100}) $', fontsize=15)
-    ax[1].set_ylabel(r'$\log_{10} (\tau_{rest})$', fontsize=15)
-    
-    ax[0].tick_params(axis='x', labelsize=12)
-    ax[0].tick_params(axis='y', labelsize=12)
-
-    ax[1].tick_params(axis='x', labelsize=12)
-    ax[1].tick_params(axis='y', labelsize=12)
-    
-    print(out_dir + 'Mbh_v_tau_' + band + '.pdf')
-    plt.savefig(out_dir + 'Mbh_v_tau_' + band + '.pdf')
-
-    return fig, ax
-
-
-def tau_z_plot(df, band, out_dir):
-    fig, ax = plt.subplots()
-
-    markers, caps, bars = ax.errorbar(df_r_copy['Z'], df_r_copy['log_tau_drw_obs'], \
-                                      yerr=[ df_r_copy['log_tau_drw_obs_err_l'], df_r_copy['log_tau_drw_obs_err_u'] ],
-                                      fmt='.k')
-    
-    [bar.set_alpha(.2) for bar in bars]
-    
-    baseline = df['MJD'][0][-1] - df['MJD'][0][0]
-    
-    ax.axhline(np.log10(baseline), color='r', ls='-', alpha=.5)
-    
-    y1, y2 = ax.get_ylim()
-    
-    ax.set_xlabel('z', fontsize=15)
-    ax.set_ylabel(r'$\log_{10} (\tau_{obs})$', fontsize=15)
-    
-    ax.tick_params(axis='x', labelsize=12)
-    ax.tick_params(axis='y', labelsize=12)    
-    
-    ax.text(2.5, y2+.05, 
-            r'$\log_{10} (\tau_{baseline}) = $ %.3f' % np.log10(baseline),
-           fontsize=12)
-
-    ax.tick_params('both', which='major', length=8)
-    ax.tick_params('both', which='minor', length=3)
-    
-    plt.savefig( out_dir + 'redshift_v_tau_' + band + '.pdf')
-   
-    return fig, ax
-
-
-
-
-
-def plot_tau_sf(tot_dict, out_dir, levels=5):
-    import seaborn as sns
-
-    for b in 'gri':
-
-        sf_inf1 = np.log10( np.sqrt(2)*(10**tot_dict['SDSS'][b]['log_sigma_drw']) )
-        tau_rest1 = tot_dict['SDSS'][b]['log_tau_drw_rest']
-
-        sf_inf2 = np.log10( np.sqrt(2)*(10**tot_dict['SDSS+PS1+DES'][b]['log_sigma_drw']) )
-        tau_rest2 = tot_dict['SDSS+PS1+DES'][b]['log_tau_drw_rest']
-
-        sf_inf3 = np.log10( np.sqrt(2)*(10**tot_dict['SDSS+PS1'][b]['log_sigma_drw']) )
-        tau_rest3 = tot_dict['SDSS+PS1'][b]['log_tau_drw_rest']
-
-
-        fig, ax = plt.subplots(figsize=(7,5))
-
-        sns.kdeplot(sf_inf1, tau_rest1, gridsize=1000,
-                ax=ax, levels=levels,
-                linewidths=1, label='SDSS',
-                linestyles='--',
-                color='red', fill=False)
-
-        sns.kdeplot(sf_inf3, tau_rest3, gridsize=1000,
-                ax=ax, levels=levels,
-                linewidths=1.5, label='SDSS+PS1',
-                linestyles='-.',
-                color='black', fill=False)
-
-        sns.kdeplot(sf_inf2, tau_rest2, gridsize=1000,
-                ax=ax, levels=levels,
-                linewidths=2, label='SDSS+PS1+DES',
-                color='blue', fill=False)
-
-
-#        if b == 'g':
-#            sf_inf_c = np.log10( np.sqrt(2)*tot_dict['Colin']['Tot']['sigma_drw']  )
-#            tau_rest_c = np.log10( tot_dict['Colin']['Tot']['tau_rest'] )
-#
-#            sns.kdeplot(sf_inf_c, tau_rest_c, gridsize=1000,
-#                    ax=ax, levels=5,
-#                    linewidths=2, label='Colin',
-#                    color='orange', fill=False)
-
-
-
-        ax.set_ylabel(r'$\log_{10}(\tau_{rest})$', fontsize=15)
-        ax.set_xlabel(r'$\log_{10}(SF_{\infty})$', fontsize=15)
-
-        ax.set_xlim(-1.75, 0.25)
-        ax.set_ylim(.75, 4)
-
-        ax.set_title(b + ' Band Taufit')
-        plt.legend(loc='upper left')
-        
-        plt.savefig(out_dir + 'SF_v_tau_' + b + '.pdf')
-        plt.show()
-        
-    return 
-
-
-
-
-
-
-def lambda_plot(tot_dict, survey, colors, ls, out_dir, levels=[.3, .7]):
-
-    import seaborn as sns
-    from scipy.optimize import curve_fit
-    
-    def linear(x, a, b):
-        return a*x + b
-
-    fig, ax = plt.subplots(2, 1, sharex=True, figsize=(7,6))
-    
-    
-    dfs = [ tot_dict[survey]['g'], tot_dict[survey]['r'], tot_dict[survey]['i'] ]
-    for i, df in enumerate(dfs):
-    
-        sf_vals = np.log10( np.sqrt(2) * 10**(df['log_sigma_drw']) )
-        tau_vals = df['log_tau_drw_rest']
-        l_vals =  np.log10(df['lambda_rest']/4000)
-        
-        sf_err = (df['log_sigma_drw_err_l'] + df['log_sigma_drw_err_u'])/2
-        tau_err = (df['log_tau_drw_obs_err_l'] + df['log_tau_drw_obs_err_u'])/2/(1+df['Z'])
-        
-        sns.kdeplot(l_vals, tau_vals, gridsize=1000,
-                    ax=ax[0], levels=levels,
-                    linestyles=ls[i], color=colors[i],
-                    linewidths=1.5)
-
-        sns.kdeplot(l_vals, sf_vals, gridsize=1000,
-                    ax=ax[1], levels=levels,
-                    linestyles=ls[i], color=colors[i],
-                    linewidths=1.5)
-        
-        if i == 0:
-            tau_tot = tau_vals
-            sf_tot = sf_vals
-            l_tot = l_vals
-            
-            sf_err_tot = sf_err
-            tau_err_tot = tau_err
-        else:
-            tau_tot = np.concatenate([tau_tot, tau_vals])
-            sf_tot = np.concatenate([sf_tot, sf_vals])
-            l_tot = np.concatenate([l_tot, l_vals])
-            
-            sf_err_tot = np.concatenate([sf_err_tot, sf_err])
-            tau_err_tot = np.concatenate([tau_err_tot, tau_err])
-    
-    x1=-.7
-    x2 = .2
-    
-    output = linmix_regression(l_tot , tau_tot, None, tau_err_tot)
-    l_plt = np.linspace(x1, x2, 100)
-    up, med, low = linmix_ranges(output, l_plt)
-
-    ax[0].fill_between(l_plt, low, up, color='k', alpha=.25)
-    ax[0].plot(l_plt, med, color='k', lw=1)
-                            
-        
-
-    output = linmix_regression(l_tot , sf_tot, None, sf_err_tot)
-    l_plt = np.linspace(x1, x2, 100)
-    up, med, low = linmix_ranges(output, l_plt)
-
-    ax[1].fill_between(l_plt, low, up, color='k', alpha=.25)
-    ax[1].plot(l_plt, med, color='k', lw=1)
-        
-        
-        
-    ax[0].set_ylabel(r'$\log_{10}$( $\tau_{rest}$ [d] )', fontsize=12)
-    ax[0].set_xlabel(r'$\log_{10}$( $\lambda_{rest} / 4000$ [$\AA$] )', fontsize=12)
-
-    ax[1].set_ylabel(r'$\log_{10}$( $SF_{\infty}$ [mag] )', fontsize=12)
-    ax[1].set_xlabel(r'$\log_{10}$( $\lambda_{rest} / 4000$ [$\AA$] )', fontsize=12)
-
-    ax[1].tick_params(axis='x', labelsize=10)
-
-    ax[0].tick_params(axis='y', labelsize=10)
-    ax[1].tick_params(axis='y', labelsize=10)
-    
-    
-
-    ax[0].set_ylim(1, 4)
-    ax[1].set_ylim(-1.4, -.3)
-    
-    ax[1].set_xlim(x1, x2)
-
-    fig.subplots_adjust(hspace=0)
-    fig.suptitle(survey)
-
-    plt.savefig(out_dir + 'lambda_plot.pdf')
-    
-    return fig, ax
-
-
-
-
-def SF_from_data(x, y, xtot, bin_num=50, log=True):
-    tot_baseline = xtot[-1] - xtot[0]
-    
-    good_ind = np.argsort(x)
-    x = x[good_ind]
-    y = y[good_ind]
- 
-    bin_vals = np.zeros(bin_num-1)
-    Npairs = np.zeros(bin_num-1)
-
-    if log == True:
-        bin_edges = 10**np.linspace(-3, np.log10(tot_baseline), bin_num)
-    else:
-        bin_edges = np.linspace(0, tot_baseline, bin_num)
-        
-    bin_centers = []
-    for n in range(len(bin_edges)-1):
-        bin_centers.append( (bin_edges[n+1] + bin_edges[n])/2)
-    
-    
-    #For all dt bins, gather all dm**2 
-    for i in range(len(x)-1):
-        for j in range( len(x[i+1:]) ):
-            
-            for n in range(bin_num-1):
-                left = bin_edges[n]
-                right = bin_edges[n+1]
-                
-                if left < np.abs(x[i]-x[j]) <= right:
-                    bin_vals[n] +=  (y[j]-y[i])**2 
-                    Npairs[n] += 1
-
-    
-    out_vals = np.zeros(len(bin_vals))
-    #Get rms_dm for each dt bin
-    for i in range(len(bin_vals)):
-        if Npairs[i] == 0:
-            out_vals[i] = np.nan
-            continue    
-        
-        out_vals[i] = np.sqrt( bin_vals[i]/Npairs[i] ) 
-    
-    return np.array(bin_centers), np.array(out_vals)
-
-
-def plot_binned_SF(centers, vals, out_dir):
-    
-    fig, ax = plt.subplots()
-    
-    ax.errorbar(centers, vals, 
-                marker=None, drawstyle='steps-mid', color='k', 
-                linewidth=1.0)
-    
-#    ax.errorbar(centers, vals, fmt='.k', linewidth=1.0)
-    
-    ax.set_ylabel('SF($\Delta t$)')
-    ax.set_xlabel('$\Delta t_{rest}$')
-    
-    ax.set_xscale('log')
-    ax.set_yscale('log')
-    
-    return fig, ax
-
-
-
-def randomize_lc(y,yerr):    
-    return np.random.normal(y, yerr)
-
-def get_lc_sample(x, y, yerr, bin_num):
-
-    for _ in range(1000):
-        i = np.random.randint(0, len(y))
-        j = np.random.randint(0, len(y))
-        if i != j and i < j:
-            break
-
-    y = randomize_lc(y, yerr)    
-
-    x_samp = x[i:j]
-    y_samp = y[i:j]
-
-    c, v = SF_from_data(x_samp, y_samp, x, bin_num=bin_num)
-            
-    return c, v
-    
-def bootstrap_SF(x, y, yerr, bin_num, n_samp=500, cores=40, percentages=[16, 84]):
-    
-    if n_samp < cores:
-        cores = n_samp
-    
-    pool = mp.Pool(cores)
-    
-    arg1 = []
-    arg2 = []
-    arg3 = []
-    arg4 = []
-    
-    for _ in range(n_samp):    
-        arg1.append(x)
-        arg2.append(y)
-        arg3.append(yerr)
-        arg4.append(bin_num)
-        
-    args = list(zip(arg1, arg2, arg3, arg4))
-    
-    output = pool.starmap(get_lc_sample, args)
-    pool.close()
-    
-    samples = []
-    for i in range(len(output)):
-        samples.append( output[i][1] )
-    
-    c = output[0][0]
-    
-    lower = np.nanpercentile(samples, percentages[0], axis=0)
-    upper = np.nanpercentile(samples, percentages[1], axis=0)
-    med = np.nanmedian(samples, axis=0)
-        
-    return c, samples, lower, med, upper
-
-
-
-
-
-def get_SF_data(tot_dict, survey, band, i, out_dir, bin_num=50, n_samp=500):
-
-    x = tot_dict[survey][band]['MJD'][i]
-    y = tot_dict[survey][band]['MAG'][i]
-    yerr = tot_dict[survey][band]['MAG ERR'][i]
-
-    z = tot_dict[survey][band]['Z'][i]
-    dbid = tot_dict[survey][band]['DBID'][i]
-
-    dt, samp, l, m, u = bootstrap_SF(x, y, yerr, bin_num, cores=48, n_samp=500)
-    nan_ind = np.isnan(m)
-
-    fig, ax = plt.subplots()
-
-    ax.set_xscale('log')
-    ax.set_yscale('log')
-    markers, caps, bars = ax.errorbar(dt/(1+z), m, yerr=[m-l,u-m], fmt='.k', 
-                                      capsize=2.5, elinewidth=.75, capthick=.75,
-                                      ms=5)
-#    ax.fill_between(dt[~nan_ind]/(1+z), l[~nan_ind], u[~nan_ind], color='r', alpha=.25)
-
-    import matplotlib.ticker as ticker
-    for axis in [ax.xaxis, ax.yaxis]:
-        formatter = ticker.FuncFormatter(lambda y, _: '{:.16g}'.format(y))
-        axis.set_major_formatter(formatter)
-
-    ax.set_ylabel('SF [mag]', fontsize=15)
-    ax.set_xlabel('$\Delta t_{rest}$ [days]', fontsize=13)
-
-    ax.tick_params('both', which='both', labelsize=12)
-    ax.tick_params('both', which='major', length=6)
-    ax.tick_params('both', which='minor', length=2)
-
-    ax.set_title('DBID: %s' % dbid)
-
-    plt.savefig( out_dir + str(dbid) + '/' + str(survey) + '_SF_' + str(band) + '.pdf')
-    plt.close(fig)
-    
-    return dt/(1+z), m, l, u 
-
-
-
-
-
-
-def merge_plots(out_dir,email=None):
-
-    """ Merge all the diagnostic pdf into one pdf """
-
-    import glob
-    
-    f1 = glob.glob(out_dir + 'light_curve_g*')[0]
-    f2 = glob.glob(out_dir + 'light_curve_r*')[0]
-    f3 = glob.glob(out_dir + 'light_curve_i*')[0]
-    
-    f4 = glob.glob(out_dir + 'Total_taufit_result_g*')[0]
-    f5 = glob.glob(out_dir + 'Total_taufit_result_r*')[0]
-    f6 = glob.glob(out_dir + 'Total_taufit_result_i*')[0]
-    
-    f7 = glob.glob(out_dir + 'SDSS+PS1+DES_SF_g*')[0]
-    f8 = glob.glob(out_dir + 'SDSS+PS1+DES_SF_r*')[0]
-    f9 = glob.glob(out_dir + 'SDSS+PS1+DES_SF_i*')[0]
-    
-    paths = [f1, f2, f3, f4, f5, f6, f7, f8, f9]
-    
-    from PyPDF2 import PdfFileReader, PdfFileWriter
-
-    pdf_writer = PdfFileWriter()
-
-    for path in paths:
-        file_path = path
-        if os.path.exists(file_path):
-            pdf_reader = PdfFileReader(file_path)
-            for page in range(pdf_reader.getNumPages()):
-                # Add each page to the writer object
-                pdf_writer.addPage(pdf_reader.getPage(page))
-
-    # Write out the merged PDF
-    out_file = os.path.join(out_dir,'diagnostic.pdf')
-    with open(out_file, 'wb') as out:
-        pdf_writer.write(out)
-
-    # send notification and file to the email if provided
-    if email is not None:
-        userhome = os.path.expanduser('~')
-        username = os.path.split(userhome)[-1]
-        text_body = 'To retrieve summary PDF: \n scp %s@mimas.astro.illinois.edu:%s .' % (username, out_file)
-        os.system('echo "%s" | mail -s "[TEQUILA SHOTS] Runs at %s completed" %s' % (text_body, out_dir, email)) 
-
-    return 0  
