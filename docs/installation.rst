@@ -3,9 +3,8 @@ Installation
 =============
 
 A number of different packages and softwares are required. Most can be installed through ``pip`` or ``python setup.py install``. Only a few are not available through ``pip`` and must be installed manually.
-
-* A Fortran compiler (>F90)
-* wget
+#. A Fortran compiler (>F90)
+#. wget
 
 
 PETL is available on PyPI and can be installed with pip:
@@ -24,8 +23,7 @@ PETL will be installed using the default parameters:
     python setup.py install -u True -p False -f None
 
 
-The different arguments are:
-
+The optional arguments for ``pip`` and ``setup.py`` are:
 * ``-u``: If JAVELIN is installed locally
 * ``-f``: Fortran compiler to use for JAVELIN
 * ``-p``: If PLIKE is installed
@@ -34,7 +32,7 @@ The different arguments are:
 .. note:: PLIKE assumes that the Fortran compiler used is ``gfortran``. If you have another Fortran compiler, PLIKE may need to be installed/compiled manually from the source. However, PLIKE is an optional part of PETL in general, and may not need to be installed generally.
 
 
-If an error occurs during installation, building JAVELIN, pyCCF, and PLIKE can be done manually with the ``build_dep.sh`` script. For example
+If an error occurs during installation, building JAVELIN, pyCCF, and PLIKE can be done manually with the ``build_dep.sh`` script. For example:
 ::
     sh build_dep.sh -u false -f gnu95 -p true
 
