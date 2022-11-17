@@ -40,6 +40,7 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
 
 References
 ----------
+
 PETL makes use of a multitude of packages:
 * **pyCCF**: `<https://arxiv.org/abs/astro-ph/9802103>`__, `<http://ascl.net/code/v/1868>`__
 * **pyZDCF**: `<https://doi.org/10.5281/zenodo.7253034>`__, 
