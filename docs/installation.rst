@@ -9,18 +9,18 @@ A number of different packages and softwares are required. Most can be installed
 
 PETL is available on PyPI and can be installed with pip:
 ::
-    pip install petl
+pip install petl
 
 
 Or, if you want to install the latest development version:
 ::
-    git clone https://github.com/Zstone19/petl.git
-    cd petl
-    pip install .
+git clone https://github.com/Zstone19/petl.git
+cd petl
+pip install .
 
 PETL will be installed using the default parameters:
 ::
-    python setup.py install -u True -p False -f None
+python setup.py install -u True -p False -f None
 
 
 The optional arguments for ``pip`` and ``setup.py`` are:
@@ -34,6 +34,6 @@ The optional arguments for ``pip`` and ``setup.py`` are:
 
 If an error occurs during installation, building JAVELIN, pyCCF, and PLIKE can be done manually with the ``build_dep.sh`` script. For example:
 ::
-    sh build_dep.sh -u false -f gnu95 -p true
+sh build_dep.sh -u false -f gnu95 -p true
 
 where ``-u``, ``-f``, and ``-p`` have the same meanings as before.
