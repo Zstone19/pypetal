@@ -1,10 +1,9 @@
 Installation
 =============
 
-A number of different packages and softwares are required. Most can be installed through `pip` or `python setup.py install`. Only a few are not available through `pip` and must be installed manually.
-::
-    A Fortran compiler (>F90)
-    wget
+A number of different packages and softwares are required. Most can be installed through ``pip`` or ``python setup.py install``. Only a few are not available through ``pip`` and must be installed manually.
+* A Fortran compiler (>F90)
+* wget
 
 PETL is available on PyPI and can be installed with pip:
 ::
