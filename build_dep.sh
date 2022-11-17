@@ -20,17 +20,6 @@ do
     esac
 done
 
-
-install_pyccf () {
-    rm -r pyCCF
-    mkdir pyCCF
-    cd pyCCF
-    wget https://bitbucket.org/cgrier/python_ccf_code/downloads/ccf_code_package_V2.zip
-    unzip ccf_code_package_V2.zip
-    rm ccf_code_package_V2.zip
-    cd .. 
-}
-
 install_plike () {
     mkdir plike_v4
     cd plike_v4
@@ -64,11 +53,8 @@ install_javelin () {
 }
 
 
-# First, install pyCCF:
-install_pyccf || echo "Error installing pyCCF"
-
 if [ $pval = true ]; then
-    #Next, install PLIKE
+    #Install PLIKE
     #NOTE: This assumes a gfortran compiler is installed
     install_plike || echo "Error installing PLIKE"
 fi 

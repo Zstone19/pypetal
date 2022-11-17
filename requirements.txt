@@ -9,4 +9,3 @@ pyzdcf >= 1.0.0
 matplotlib >= 3.6.2
 palettable >= 3.3.0
 autograd >= 1.3
-git+https://github.com/nye17/javelin

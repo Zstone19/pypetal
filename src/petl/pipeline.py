@@ -65,10 +65,7 @@ def run_pipeline(fnames, output_dir,
             and line(s) will be used as these fixed parameters in JAVELIN. Default is False.
              
     
-    Possible PyCCF parameters:
-        * pyccf_dir : str
-            Path to the pyCCF directory. Must be specified if ``run_pyccf" is True.
-            
+    Possible PyCCF parameters:    
         * lag_bounds : (2,) list
             Lower and upper bounds to search for the lag. If None, will be set to [-200, 200].
             Default is ``None". 

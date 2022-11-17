@@ -266,7 +266,6 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read kwargs
     
     default_kwargs = {
-        'pyccf_dir': None,
         'lag_bounds': np.full( len(line_fnames), None),
         'interp': None,
         'nsim': 1000,
@@ -278,7 +277,6 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
         
     params = { **default_kwargs, **kwargs }
     
-    pyccf_dir = params['pyccf_dir']
     lag_bounds = params['lag_bounds']
     interp = params['interp']
     nsim = params['nsim']
@@ -286,11 +284,7 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     sigmode = params['sigmode']
     thres = params['thres']
     nbin = params['nbin']
-        
-        
-    if pyccf_dir is None:
-        print('ERROR: pyccf_dir not specified')
-        return {}
+
     
     if lag_bounds is None:
         lag_bounds = np.full( len(line_fnames), None)
@@ -322,7 +316,6 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
         txt_str = """
 Running pyCCF
 -----------------
-pyccf_dir: {}
 lag_bounds: {}
 interp: {}
 nsim: {}
@@ -331,7 +324,7 @@ sigmode: {}
 thres: {}
 nbin: {}
 -----------------
-        """.format( pyccf_dir, lag_bounds_str, interp_str, nsim,
+        """.format( lag_bounds_str, interp_str, nsim,
                     mcmode, sigmode, thres, nbin)
         
         print(txt_str)
@@ -339,7 +332,7 @@ nbin: {}
     
     res_tot = []
     for i in range(len(line_fnames)):
-        res = utils.get_pyccf_lags(pyccf_dir, cont_fname, line_fnames[i], 
+        res = utils.get_pyccf_lags( cont_fname, line_fnames[i], 
                                    lag_bounds=lag_bounds[i], 
                                    interp=interp, nsim=nsim, mcmode=mcmode, 
                                    sigmode=sigmode, thres=thres)

@@ -351,7 +351,7 @@ def get_zdcf_ml_lag(fname1, fname2, temp_dir, plike_dir, lag_bounds, sep=','):
 ##############################################################
     
     
-def get_pyccf_lags(pyccf_dir, fname1, fname2, 
+def get_pyccf_lags(fname1, fname2, 
                    lag_bounds=None, interp=None,
                    nsim=1000, mcmode=0, sigmode=.2, thres=.8):
     
@@ -363,10 +363,7 @@ def get_pyccf_lags(pyccf_dir, fname1, fname2,
 
 
     Parameters
-    ----------
-    pyccf_dir : str
-            Path to pyCCF/PurePython/pyCCF.py
-    
+    ----------    
     fname1 : str
             Path to the first light curve file 
             
