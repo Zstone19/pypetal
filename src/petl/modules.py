@@ -1,5 +1,5 @@
-import utils
-import plotting
+import petl.utils as utils
+import petl.plotting as plotting
 
 import os
 

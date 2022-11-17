@@ -1,4 +1,4 @@
-import modules
+import petl.modules as modules
 
 import os
 
