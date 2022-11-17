@@ -3,6 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+===============================================
 PETL: A Pipeline for Estimating AGN Time Lags
 ===============================================
 **PETL** is a pipeline made in python to obtain time lags from multi-band AGN time-series data. Normally, AGN geometric and kinematic analyses (e.g. reverberation mapping) utilize a variety of different tools to obtain time lags between two (or more) light curves. This package combines three popular algorithms for estimating time lags (pyCCF, pyZDCF, and JAVELIN), and uses the popular Damped Random Walk algorithm to model input light curves for outlier rejection.  
