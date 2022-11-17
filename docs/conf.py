@@ -28,6 +28,7 @@ extensions = [
     'sphinx_copybutton'
 ]
 suppress_warnings = ["nbsphinx"]
+master_doc = 'index'
 
 templates_path = ['_templates']
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
@@ -62,7 +63,7 @@ html_context = dict(
     display_github=True,
     github_user="Zstone19",
     github_repo="petl",
-    conf_py_path="/docs/source/",
+    conf_py_path="/docs/",
 )
 
 #nbsphinx config
