@@ -12,10 +12,10 @@ from astropy.table import Table
     
 def run_pipeline(fnames, output_dir, 
                  line_names=None, 
-                 drw_rej=True, drw_rej_params={},
-                 run_pyccf=True, pyccf_params={},
-                 run_pyzdcf=True, pyzdcf_params={},
-                 run_javelin=True, javelin_params={},
+                 drw_rej=False, drw_rej_params={},
+                 run_pyccf=False, pyccf_params={},
+                 run_pyzdcf=False, pyzdcf_params={},
+                 run_javelin=False, javelin_params={},
                  **kwargs):
     
     """
