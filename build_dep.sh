@@ -21,7 +21,7 @@ do
 done
 
 
-function install_pyccf {
+install_pyccf () {
     rm -r pyCCF
     mkdir pyCCF
     cd pyCCF
@@ -31,7 +31,7 @@ function install_pyccf {
     cd .. 
 }
 
-function install_plike {
+install_plike () {
     mkdir plike_v4
     cd plike_v4
     wget http://www.weizmann.ac.il/home/tal/zdcf/plike_v4.0.f90 
@@ -40,7 +40,7 @@ function install_plike {
 }
 
 
-function install_javelin {
+install_javelin () {
     wget https://github.com/nye17/javelin/archive/refs/heads/master.zip
     unzip master.zip
     rm master.zip
@@ -50,11 +50,11 @@ function install_javelin {
     # Compile JAVELIN
     cd javelin
 
-    if [[ $user = true && $fval = false ]]; then
+    if [[ $1 = true && $2 = false ]]; then
         python setup.py install --user
-    elif [[ $user = true && $fval != false ]]; then
+    elif [[ $1 = true && $2 != false ]]; then
         python setup.py config_fc --fcompiler=$fval install --user
-    elif [ $fval != false ]; then
+    elif [ $2 != false ]; then
         python setup.py config_fc --fcompiler=$fval install
     else
         python setup.py install
@@ -70,10 +70,9 @@ install_pyccf || echo "Error installing pyCCF"
 if [ $pval = true ]; then
     #Next, install PLIKE
     #NOTE: This assumes a gfortran compiler is installed
-
     install_plike || echo "Error installing PLIKE"
 fi 
 
 # Next, download JAVELIN
 # NOTE: This requires a Fortran compiler >F90 and Git, all other packages are installed with PETL
-install_javelin || echo "Error installing JAVELIN"
+install_javelin $user $fval || echo "Error installing JAVELIN"
