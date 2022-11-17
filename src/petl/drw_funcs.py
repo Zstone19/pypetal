@@ -70,13 +70,13 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
         
     statuses : list of bool
         Status of the fit to the light curve. There are three statuses given:
-            * baseline_good
+            - baseline_good
                 If True, tau > baseline/10
                 
-            * cadence_good
+            - cadence_good
                 If true, tau > mean cadence of the light curve
             
-            * stn_good
+            - stn_good
                 If true, the DRW sigma parameter is greater than the noise in the light curve
     
     """
@@ -229,13 +229,14 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', 
         
     statuses : list of bool
         Status of the fit to the light curve. There are three statuses given:
-            * baseline_good
+        
+            - baseline_good
                 If True, tau > baseline/10
                 
-            * cadence_good 
+            - cadence_good 
                 If true, tau > mean cadence of the light curve
                 
-            * stn_good
+            - stn_good
                 If true, the DRW sigma parameter is greater than the noise in the light curve
     
     """
@@ -443,7 +444,8 @@ def binLS(fLS, powerLS_samp, num_bins):
 
 def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
     
-    """A smoothly broken power law. $P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}$
+    """A smoothly broken power law:
+    .. math:: P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}
 
     Parameters
     ----------
