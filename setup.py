@@ -5,7 +5,6 @@ import sys
 from setuptools import find_packages, setup
 from setuptools.command.install import install
 
-
 class InstallCommand(install):
     """Install dependencies for PETL""" 
     
@@ -58,7 +57,6 @@ URL = 'https://github.com/Zstone19/petl'
 
 AUTHOR = 'Zachary Stone'
 EMAIL = 'stone28@illinois.edu'
-PACKAGES = find_packages(where='src')
 
 #Get requirements.txt
 f = open('requirements.txt', 'r')
@@ -81,8 +79,8 @@ setup(
     license='MIT',
     install_requires=REQUIREMENTS,
     python_requires='>=3.8,<3.11',
-    packages=PACKAGES,
-    package_dir={'':'src'},
+    packages=['petl'],
+    package_dir={'petl':'./src/petl'},
     include_package_data=True,
     cmdclass={'install': InstallCommand,}
 )
