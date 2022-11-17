@@ -29,10 +29,19 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
 
 .. toctree::
    :maxdepth: 1
-   :caption: API:
+   :caption: API
 
    python/drw_fit
    python/utils
    python/modules
    python/pipeline
    python/plot
+
+
+References
+----------
+PETL makes use of a multitude of packages:
+* **pyCCF**: `<https://arxiv.org/abs/astro-ph/9802103>`__, `<http://ascl.net/code/v/1868>`__
+* **pyZDCF**: `<https://doi.org/10.5281/zenodo.7253034>`__, 
+* **PLIKE**: `<http://arxiv.org/abs/1302.1508>`__
+* **JAVELIN**: `<http://adsabs.harvard.edu/abs/2013ApJ...765..106Z>`__, `<http://adsabs.harvard.edu/abs/2011ApJ...735...80Z>`__, `<http://adsabs.harvard.edu/abs/2016ApJ...819..122Z>`__
