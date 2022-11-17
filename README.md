@@ -9,7 +9,7 @@ A number of different packages and softwares are required. Most can be installed
     wget
 ```
 
-PETL is available on PyPI and can be installed with pip:
+PETL is available on PyPI and can be installed with pip: **(NOT IMPLEMENTED YET)**
 ```
     pip install petl
 ```
