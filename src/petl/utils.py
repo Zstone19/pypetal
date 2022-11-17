@@ -130,7 +130,7 @@ def drw_flag(times, data, error,
 
 
     fig, ax = drw.plot_outcome(times, data, error, samples, gp, data_unit, 
-                                nsig=nsig, target=target, show_mean=True, psd_fit='sbpl', 
+                                nsig=nsig, target=target, show_mean=True, 
                                 filename=fname, jitter=jitter, show=plot)
 
     plt.cla()
