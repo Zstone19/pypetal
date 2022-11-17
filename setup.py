@@ -6,48 +6,19 @@ from setuptools import find_packages, setup
 from setuptools.command.install import install
 
 
-if '-u' in sys.argv:
-    index = sys.argv.index('-u')
-    sys.argv.pop(index)
-    
-    user = sys.argv.pop(index)
-elif '--user' in sys.argv:
-    user = True
-else:
-    user = True
-    
-    
-if '-p' in sys.argv:
-    index = sys.argv.index('-p')
-    sys.argv.pop(index)
-    
-    plike = sys.argv.pop(index)
-else:
-    plike = False
-
-    
-if '-f' in sys.argv:
-    index = sys.argv.index('-f')
-    sys.argv.pop(index)
-    
-    fcompile = sys.argv.pop(index)
-else:
-    fcompile = None
-    
-
 class InstallCommand(install):
     """Install dependencies for PETL""" 
     
     description = 'Install dependencies for PETL (pyCCF, JAVELIN, PLIKE)'
-    user_options = [
-        ('user_jav=', None, 'if True, will install locally'),
+    user_options = install.user_options + [
+        ('ujav=', None, 'if True, will install locally'),
         ('fcompile=', None, 'Fortran compiler used for JAVELIN'),
         ('plike=', None, 'if True, will install PLIKE'),
     ]
     
     def initialize_options(self):
         install.initialize_options(self)
-        self.user_jav = True
+        self.ujav = True
         self.fcompile = None
         self.plike = False
         
@@ -59,7 +30,7 @@ class InstallCommand(install):
         
         command = ['sh', 'build_dep.sh']
         
-        if self.user:
+        if self.ujav:
             command.append('-u true')
         else:
             command.append('-u false')
@@ -72,7 +43,7 @@ class InstallCommand(install):
         else:
             command.append('-p false')
             
-        command.append('> build_dep.log')
+        command.append('>> build_dep.log')
             
         subprocess.check_call(command)
         install.run(self)
