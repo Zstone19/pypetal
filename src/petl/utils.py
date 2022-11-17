@@ -67,7 +67,7 @@ def drw_flag(times, data, error,
         The name of the target. Default is None.
         
     fname : str, optional
-        The name of the file to output the resulting plot. If ``None", the plot will
+        The name of the file to output the resulting plot. If ``None``, the plot will
         not be saved. Default is None.
         
     plot : bool, optional
