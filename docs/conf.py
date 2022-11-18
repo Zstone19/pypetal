@@ -70,3 +70,17 @@ html_context = dict(
 #nbsphinx config
 nbsphinx_kernel_name = 'python3'
 nbsphinx_execute = "never"
+
+
+# -- Options for mock output ---------------------------------------------
+
+import sys
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'javelin']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
