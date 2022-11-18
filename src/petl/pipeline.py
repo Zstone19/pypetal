@@ -12,7 +12,7 @@ from astropy.table import Table
     
 def run_pipeline(fnames, output_dir, 
                  line_names=None, 
-                 drw_rej=False, drw_rej_params={},
+                 run_drw_rej=False, drw_rej_params={},
                  run_pyccf=False, pyccf_params={},
                  run_pyzdcf=False, pyzdcf_params={},
                  run_javelin=False, javelin_params={},
@@ -375,7 +375,7 @@ def run_pipeline(fnames, output_dir,
     for i in range(len(fnames)):
         os.makedirs( output_dir + line_names[i], exist_ok=True )
         
-        if drw_rej:
+        if run_drw_rej:
             os.makedirs( output_dir + line_names[i] + '/drw_rej', exist_ok=True )
         
     for i in range(len(line_fnames)):
@@ -449,7 +449,7 @@ def run_pipeline(fnames, output_dir,
     pyzdcf_res = {}
     javelin_res = {}
 
-    if drw_rej:
+    if run_drw_rej:
         drw_rej_res = modules.drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params ) 
         
         #If rejecting data, make the new files the ones without rejected data
@@ -463,16 +463,16 @@ def run_pipeline(fnames, output_dir,
             if drw_rej_params['use_for_javelin']:
                 
                 if javelin_together:                
-                    tau_med = np.median(drw_rej_res['taus'])
-                    sig_med = np.median(drw_rej_res['sigmas'])
+                    tau_cont = drw_rej_res['taus'][0]
+                    sig_cont = drw_rej_res['sigmas'][0]
                 
                 
                     if 'fixed' in javelin_params:
                         javelin_params['fixed'][0] = 0
                         javelin_params['fixed'][1] = 0
                         
-                        javelin_params['p_fix'][0] = np.log(sig_med)
-                        javelin_params['p_fix'][1] = np.log(tau_med)
+                        javelin_params['p_fix'][0] = np.log(sig_cont)
+                        javelin_params['p_fix'][1] = np.log(tau_cont)
                     else:                        
                         javelin_params['fixed'] = np.ones( 2 + 3*len(line_fnames) )
                         javelin_params['p_fix'] = np.zeros( 2 + 3*len(line_fnames) )
@@ -480,24 +480,24 @@ def run_pipeline(fnames, output_dir,
                         javelin_params['fixed'][0] = 0
                         javelin_params['fixed'][1] = 0
                         
-                        javelin_params['p_fix'][0] = np.log(sig_med)
-                        javelin_params['p_fix'][1] = np.log(tau_med)                                  
+                        javelin_params['p_fix'][0] = np.log(sig_cont)
+                        javelin_params['p_fix'][1] = np.log(tau_cont)                                  
                         
                 else:
                     taus = []
                     sigmas = []
+
+                    tau_cont = drw_rej_res['taus'][0]
+                    sig_cont = drw_rej_res['sigmas'][0]
                     
-                    for i in range( len(drw_rej_res['taus']) ):
-                        taus.append( np.median( [ drw_rej_res['taus'][0], drw_rej_res['taus'][i] ] ) )
-                        sigmas.append( np.median( [ drw_rej_res['sigmas'][0], drw_rej_res['sigmas'][i] ] ) )
                         
                     if 'fixed' in javelin_params:
                         for i in range(len(line_fnames)):
                             javelin_params['fixed'][i][0] = 0
                             javelin_params['fixed'][i][1] = 0
                             
-                            javelin_params['p_fix'][i][0] = np.log(sigmas[i])
-                            javelin_params['p_fix'][i][1] = np.log(taus[i])
+                            javelin_params['p_fix'][i][0] = np.log(tau_cont)
+                            javelin_params['p_fix'][i][1] = np.log(sig_cont)
                             
                     else:
                         javelin_params['fixed'] = np.ones( ( len(line_fnames), 5 ) )
@@ -507,8 +507,8 @@ def run_pipeline(fnames, output_dir,
                             javelin_params['fixed'][i][0] = 0
                             javelin_params['fixed'][i][1] = 0
                             
-                            javelin_params['p_fix'][i][0] = np.log(sigmas[i])
-                            javelin_params['p_fix'][i][1] = np.log(taus[i])
+                            javelin_params['p_fix'][i][0] = np.log(sigmas_cont)
+                            javelin_params['p_fix'][i][1] = np.log(taus_cont)
 
     if run_pyccf:
         pyccf_res = modules.pyccf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyccf_params)        
@@ -527,6 +527,9 @@ def run_pipeline(fnames, output_dir,
 
     #Compile all results into a single dict    
     tot_res = {}
+    
+    if run_drw_rej:
+        tot_res['drw_rej_res'] = drw_rej_res
     
     if run_javelin:
         tot_res['javelin_res'] = javelin_res
