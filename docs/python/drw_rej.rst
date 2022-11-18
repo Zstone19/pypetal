@@ -6,7 +6,7 @@ DRW-Based Outlier Rejection
     :members:
 
 .. automodule:: petl.utils
-    :members: drw_flag
+    :members: petl.utils.drw_flag
 
 .. automodule:: petl.modules
-    :members: drw_rej_tot
+    :members: petl.modules.drw_rej_tot

@@ -17,6 +17,7 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
 
    installation
 
+
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials
@@ -26,6 +27,7 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
    notebooks/pyzdcf
    notebooks/javelin
    notebooks/all_together
+
 
 .. toctree::
    :maxdepth: 1
