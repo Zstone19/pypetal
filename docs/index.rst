@@ -32,8 +32,9 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
    :caption: API
 
    python/drw_rej
-   python/utils
-   python/modules
+   python/pyccf
+   python/pyzdcf
+   python/javelin
    python/pipeline
    python/plot
 
