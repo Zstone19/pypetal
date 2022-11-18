@@ -31,6 +31,5 @@ setup(
     python_requires='>=3.8,<3.11',
     packages=['petl'],
     package_dir={'petl':'./src/petl'},
-    include_package_data=True,
-    cmdclass={'install': InstallCommand,}
+    include_package_data=True
 )
