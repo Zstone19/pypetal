@@ -1,6 +1,6 @@
-=====================
-DRW Fitting Functions
-=====================
+============================
+DRW-Based Outlier Rejection
+============================
 
 .. automodule:: petl.drw_funcs
     :members:

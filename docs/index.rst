@@ -31,7 +31,7 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
    :maxdepth: 1
    :caption: API
 
-   python/drw_fit
+   python/drw_rej
    python/utils
    python/modules
    python/pipeline
@@ -43,6 +43,7 @@ References
 ----------
 
 PETL makes use of a multitude of packages:
+
 * **pyCCF**: `<https://arxiv.org/abs/astro-ph/9802103>`__, `<http://ascl.net/code/v/1868>`__
 * **pyZDCF**: `<https://doi.org/10.5281/zenodo.7253034>`__, 
 * **PLIKE**: `<http://arxiv.org/abs/1302.1508>`__
