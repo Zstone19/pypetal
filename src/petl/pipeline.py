@@ -21,14 +21,14 @@ def run_pipeline(fnames, output_dir,
     -------------------    
     
     line_fnames : str, list of str
-        Path to the line light curve file(s).
+        Path to the line light curve file(s). The first light curve file will be considered the "continuum" light curve.
     
     output_dir : str
         Path to the directory containing the output.
         
     line_names : str, list of str, optional
-        Name(s) of the line(s). If ``None", the lines will be named in chronological order (i.e. Line 1, Line 2, etc).
-        Default is None.
+        Name(s) of the line(s). If ``None``, the lines will be named in chronological order (i.e. Line 1, Line 2, etc).
+        Default is ``None``.
     
     
     
@@ -40,7 +40,7 @@ def run_pipeline(fnames, output_dir,
             Default is 1.
     
         jitter : bool
-            If True, will include a noise term in the model to account for extra noise. Default is True.
+            If ``True``, will include a noise term in the model to account for extra noise. Default is ``True``.
     
         nwalker : int
             Number of walkers for the MCMC. Default is 32.
@@ -52,17 +52,17 @@ def run_pipeline(fnames, output_dir,
             Number of steps for the MCMC. Default is 1000.
     
         reject_data : bool
-            If True, will use light curves without the rejected data points for the rest of the pipeline. These
+            If ``True``, will use light curves without the rejected data points for the rest of the pipeline. These
             light curves will be saved in the given output directory as csv files labeled '{line name}_data.dat'. 
-            Default is True.
+            Default is ``True``.
             
         clip : bool, list of bool
-            If True, the light curves will be clipped so that the time between two observations is not less than 1e-8 days.
-            This can also be input as a list of bool for each light curve. Default is True.
+            If ``True``, the light curves will be clipped so that the time between two observations is not less than 1e-8 days.
+            This can also be input as a list of bool for each light curve. Default is ``True``.
             
         use_for_javelin : bool
-            If True, the output DRW parameters will be used as fixed DRW parameters for JAVELIN. The median of the DRW parameters for the continuum
-            and line(s) will be used as these fixed parameters in JAVELIN. Default is False.
+            If ``True``, the output DRW parameters will be used as fixed DRW parameters for JAVELIN. The DRW parameters for the continuum
+            will be used as these fixed parameters in JAVELIN. Default is ``False``.
              
     
     PyCCF parameters    
@@ -70,12 +70,12 @@ def run_pipeline(fnames, output_dir,
     
         lag_bounds : (2,) list
             Lower and upper bounds to search for the lag. If None, will be set to [-200, 200].
-            Default is ``None". 
+            Default is ``None``. 
         
         interp : float
             The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
             shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
-            If set to ``None", will be set to half of the average cadence of the light curves. The default is ``None". 
+            If set to ``None``, will be set to half of the average cadence of the light curves. The default is ``None``. 
             
         nsim : int
             The number of Monte Carlo simulations to run. The default is 1000.
@@ -106,17 +106,17 @@ def run_pipeline(fnames, output_dir,
             
         uniform_sampling : bool
             If True, the light curves will be assumed to be uniformly sampled.
-            Default is False.
+            Default is ``False``.
             
         omit_zero_lags : bool
             If True, will omit the points with zero lags when computing the ZDCF.
-            Default is True.
+            Default is ``True``.
             
         sparse : bool, str
             Determines whether to use a sparse matrix implementation for reduced RAM usage.
             This feature is suitable for longer light curves (> 3000 data points). If True, will
             use sparse matrix implementation. If set to 'auto', will use sparse matrix implementation
-            if there are more than 3000 data points per light curve. Default is 'auto'
+            if there are more than 3000 data points per light curve. Default is 'auto'.
             
         prefix : str
             Prefix to the output ZDCF file. Default is 'zdcf'.
@@ -125,14 +125,14 @@ def run_pipeline(fnames, output_dir,
             Whether to run the PLIKE algorithm on the ZDCF to get a maximum likelihood time lag.
             Default is False. Note: the directory containing the PLIKE executable must be input
             with the ``plike_dir`` argument, and the range of lags to search must be input with the
-            ``lag_bounds" argument.
+            ``lag_bounds`` argument.
             
         plike_dir : str
-            Path to the PLIKE executable. Default is None.
+            Path to the PLIKE executable. Default is ``None``.
 
         lag_bounds : (2,) list
-            The lower and upper bounds of lags to search for the PLIKE algorithm. If ``None", the lower and 
-            upper bounds will be the (negative, positive) baseline of the light curves. Default is None.
+            The lower and upper bounds of lags to search for the PLIKE algorithm. If ``None``, the lower and 
+            upper bounds will be the (negative, positive) baseline of the light curves. Default is ``None``.
             
         
     JAVELIN parameters
@@ -140,8 +140,7 @@ def run_pipeline(fnames, output_dir,
     
         rm_type : str
             The type of analysis to use when running JAVELIN. Can either be set to 'spec' for spectroscopic RM, or 
-            'phot' for photometric RM. Default is 'spec'. NOTE: JAVELIN cannot utilize multiple bands
-            for photometric RM, so ``together" must be set to ``False".
+            'phot' for photometric RM. Default is 'spec'.
     
         lagtobaseline : float
             A log  prior is used to logarithmically penalizes lag values larger than 
@@ -156,16 +155,16 @@ def run_pipeline(fnames, output_dir,
             with a length equal to the number of parameters in the model (i.e. 2 + 3*(number of light curves) ). The fitted 
             parameters will be the two DRW parameters ( log(sigma), log(tau) ) and three tophat parameters for each
             non-continuum light curve (lag, width, scale). Setting to 0 will fix the parameter and setting to 1 will allow it to vary.
-            If ``None", all parameters will be allowed to vary. The fixed parameters must match the fixed value in the 
-            array input to the ``p_fix" argument. default is ``None". 
+            If ``None``, all parameters will be allowed to vary. The fixed parameters must match the fixed value in the 
+            array input to the ``p_fix`` argument. default is ``None``. 
         
         p_fix : list
-            A list of the fixed parameters, corresponding to the elements of the ``fixed" array.
-            If ``None", all parameters will be allowed to vary. Default is ``None".
+            A list of the fixed parameters, corresponding to the elements of the ``fixed`` array.
+            If ``None``, all parameters will be allowed to vary. Default is ``None``.
         
         subtract_mean : bool
-            If True, will subtract the mean of all light curves before analysis
-            Default is True.
+            If ``True``, will subtract the mean of all light curves before analysis
+            Default is ``True``.
                
         nwalkers : int
             The number of walkers to use in the MCMC. Default is 100.
@@ -177,30 +176,32 @@ def run_pipeline(fnames, output_dir,
             The number of steps to take in the burn-in phase of the MCMC. Default is 100.
         
         output_chains : bool
-            If True, will output the MCMC chains to a file. Default is True.
+            If ``True``, will output the MCMC chains to a file. Default is ``True``.
             
         output_burn : bool
-            If True, will output the MCMC burn-in chains to a file. Default is True.
+            If ``True``, will output the MCMC burn-in chains to a file. Default is ``True``.
             
         output_logp : bool
-            If True, will output the MCMC log probability to a file. Default is True.            
+            If ``True``, will output the MCMC log probability to a file. Default is ``True``.            
     
+    .. warning:: JAVELIN cannot utilize multiple bands for photometric RM, so ``together" must be set to ``False" if ``rm_type='phot'``.
+
     
     Additional kwargs
     -----------------
     
         verbose : bool
-            Whether to print out progress
+            Whether to print out progress. Default is ``False``.
             
         use_weights: bool
-            Whether to use weights (from Grier et al. (2017)) in calculating the time lags 
+            Whether to use weights (from Grier et al. (2017)) in calculating the time lags. Default is ``False``. 
             
         file_fmt : str
             The format of the input files. All files must be 'csv' to be used. If the files are not 'csv',
-            the files will be converted to 'csv' and used for subsequent analysis.
+            the files will be converted to 'csv' and used for subsequent analysis. Default is 'csv'.
             
         time_unit : str
-            The unit of the time values. Default is 'd'
+            The unit of the time values. Default is 'd'.
             
         lc_unit : str
             the unit of the light curve values and uncertainties. Default is 'mag'.
@@ -212,112 +213,151 @@ def run_pipeline(fnames, output_dir,
     res : dict
         A dict of dicts for the output of each module.
             
-       Outputs for each module:
-       
-       DRW rejection: 'drw_rej_res'
-       
-            * masks : list of bool
-                A list of the masks for each light curve. True indicates that the light curve value was rejected.
-            * reject_data : bool 
-                True if the rejected points were not used for the rest of the pipeline
-            * taus : list of floats
-                List of DRW tau values from the MCMC chains
-            * sigmas : list of floats
-                List of DRW sigma values from the MCMC chains
-            * jitters : list of floats
-                List of jitter values from the MCMC chains. If jitter=False, this is ``None".
+    Outputs for each module:
     
+    DRW rejection: 'drw_rej_res'
     
-        pyCCF: 'pyccf_res'
-        
-            Each line will have a different dict with the following outputs
-            
-            * CCF : list of floats
-                The cross-correlation function
-            * CCF_lags : list of floats
-                The lags corresponding to the CCF
-            * centroid : float
-                The median of the CCCD
-            * centroid_err_lo : float
-                The lower error on the centroid
-            * centroid_err_hi : float
-                The upper error on the centroid
-            * peak : float
-                The median of the CCPD 
-            * peak_err_hi : float
-                The upper error on the peak
-            * peak_err_lo : float
-                The lower error on the peak
-            * CCCD_lags : list of floats
-                The lags corresponding to the CCCD
-            * CCPD_lags : list of floats
-                The lags corresponding to the CCPD
-            * name : str
-                The name of the light curve
-                
-                
-            If `use_weights=True`, the following outputs will be added:
-            
-            * weighted_CCCD : list of floats
-                The weighted CCCD
-            * weighted_CCPD : list of floats
-                The weighted CCPD
+        * masks : list of bool
+            A list of the masks for each light curve. ``True`` indicates that the light curve value was rejected.
+
+        * reject_data : bool 
+            ``True`` if the rejected points were not used for the rest of the pipeline.
+
+        * taus : list of floats
+            List of DRW tau values from the MCMC chains.
+
+        * sigmas : list of floats
+            List of DRW sigma values from the MCMC chains.
+
+        * jitters : list of floats
+            List of jitter values from the MCMC chains. If ``jitter=False``, this is ``None``.
+
+
+
+    pyCCF: 'pyccf_res'
     
+        Each line will have a different dict with the following outputs
+        
+        * CCF : list of floats
+            The cross-correlation function.
+            
+        * CCF_lags : list of floats
+            The lags corresponding to the CCF.
+        
+        * centroid : float
+            The median of the CCCD.
+        
+        * centroid_err_lo : float
+            The lower error on the centroid.
+        
+        * centroid_err_hi : float
+            The upper error on the centroid.
+        
+        * peak : float
+            The median of the CCPD.
+        
+        * peak_err_hi : float
+            The upper error on the peak.
+        
+        * peak_err_lo : float
+            The lower error on the peak.
+        
+        * CCCD_lags : list of floats
+            The lags corresponding to the CCCD.
+        
+        * CCPD_lags : list of floats
+            The lags corresponding to the CCPD.
+        
+        * name : str
+            The name of the light curve.
+            
+            
+        If ``use_weights=True``, the following outputs will be added:
+        
+        * weighted_CCCD : list of floats
+            The weighted CCCD.
+            
+        * weighted_CCPD : list of floats
+            The weighted CCPD.
+            
+    .. note:: The weighted distributions are ouptut as the samples that would be required to create the weighted histogram. In simpler terms, the original sample is downsampled in each bin to match that of the weighted distribution.
+
+
+
+    pyZDCF: 'pyzdcf_res'
     
-        pyZDCF: 'pyzdcf_res'
+        Each line will have a different pandas DataFrame with the following columns:
         
-            Each line will have a different pandas DataFrame with the following columns:
+        * tau : list of floats
+            The lags.
             
-            * tau : list of floats
-                The lags
-            * -sig(tau) : list of floats
-                The lower error on the lags
-            * +sig(tau) : list of floats
-                The upper error on the lags
-            * dcf : list of floats
-                The ZDCF
-            * -err(dcf) : list of floats
-                The lower error on the ZDCF
-            * +err(dcf) : list of floats
-                The upper error on the ZDCF
-                
-                
-        PLIKE: 'plike_res'
-        
-            If run_plike=True, each light curve will have a dict with the following outputs:
+        * -sig(tau) : list of floats
+            The lower error on the lags.
             
-            * output : astropy.table.Table 
-                The output of the PLIKE algorithm. This contains the lags, likelihoods, and ZDCF (and its errors).
-            * ML_lag : float
-                The maximum likelihood lag
-            * ML_lag_err_lo : float
-                The lower error on the maximum likelihood lag
-            * ML_lag_err_hi : float
-                The upper error on the maximum likelihood lag
-                
-        JAVELIN: 'javelin_res'
+        * +sig(tau) : list of floats
+            The upper error on the lags.
+            
+        * dcf : list of floats
+            The ZDCF.
+            
+        * -err(dcf) : list of floats
+            The lower error on the ZDCF.
+            
+        * +err(dcf) : list of floats
+            The upper error on the ZDCF.
+            
+            
+            
+    PLIKE: 'plike_res'
+    
+        If ``run_plike=True``, each light curve will have a dict with the following outputs:
         
-            * cont_hpd: list of floats
-                The HPD (highest posterior density) interval for the continuum DRW parameters. If both DRW parameters are fixed, this 
-                will be ``None".
-            * tau : list of floats
-                The DRW tau values from the MCMC chains
-            * sigma : list of floats
-                The DRW sigma values from the MCMC chains
-            * tophat_params : list of floats
-                The tophat parameters from the MCMC chains. The order is [lag, width, scale] for each light curve.    
-            * hpd : list of floats
-                The HPD (highest posterior density) interval for the combined model.
-            * cont_model : javelin.lcmodel.Cont_Model
-                The continuum model. If both DRW parameters are fixed, this will be ``None".
-            * rmap_model : javelin.lcmodel.Rmap_Model, javelin.lcmodel.Pmap_Model
-                The rmap model
-            * cont_dat : javelin.zylc.LightCurve
-                The continuum light curve
-            * tot_dat : javelin.zylc.LightCurve
-                The LightCurve object storing all light curves
-            * bestfit_model : javelin.lcmodel.Rmap_Model
-                The combined model after using the best-fit (median) DRW and tophat parameters to fit each light curve.
+        * output : astropy.table.Table 
+            The output of the PLIKE algorithm. This contains the lags, likelihoods, and ZDCF (and its errors).
+        
+        * ML_lag : float
+            The maximum likelihood lag.
+        
+        * ML_lag_err_lo : float
+            The lower error on the maximum likelihood lag.
+        
+        * ML_lag_err_hi : float
+            The upper error on the maximum likelihood lag.
+            
+            
+            
+    JAVELIN: 'javelin_res'
+    
+        * cont_hpd: list of floats
+            The HPD (highest posterior density) interval for the continuum DRW parameters. If both DRW parameters are fixed, this 
+            will be ``None``.
+            
+        * tau : list of floats
+            The DRW tau values from the MCMC chains.
+        
+        * sigma : list of floats
+            The DRW sigma values from the MCMC chains.
+        
+        * tophat_params : list of floats
+            The tophat parameters from the MCMC chains. The order is [lag, width, scale] for each light curve.    
+        
+        * hpd : list of floats
+            The HPD (highest posterior density) interval for the combined model.
+        
+        * cont_model : javelin.lcmodel.Cont_Model
+            The continuum model. If both DRW parameters are fixed, this will be ``None``.
+        
+        * rmap_model : javelin.lcmodel.Rmap_Model, javelin.lcmodel.Pmap_Model
+            The rmap model.
+        
+        * cont_dat : javelin.zylc.LightCurve
+            The continuum light curve.
+        
+        * tot_dat : javelin.zylc.LightCurve
+            The ``LightCurve`` object storing all light curves.
+        
+        * bestfit_model : javelin.lcmodel.Rmap_Model
+            The combined model after using the best-fit DRW and tophat parameters to fit each light curve.
                 
     """
 
