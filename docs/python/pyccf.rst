@@ -2,9 +2,6 @@
 pyCCF
 ======
 
-.. automodule:: petl.PYCCF
-    :members: 
-
 .. automodule:: petl.utils
     :members: get_pyccf_lags
 
