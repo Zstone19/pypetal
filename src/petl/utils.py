@@ -399,10 +399,8 @@ def get_pyccf_lags(fname1, fname2,
             the interval (0,1). The default is 0.8.
             
 
+    .. note:: Both light curve files must be in CSV format with the following columns in order: time, value, uncertainty
 
-    Notes
-    -----
-    Both light curve files must be in CSV format with the following columns in order: date, flux/mag, uncertainty
 
     Returns
     -------
@@ -428,6 +426,7 @@ def get_pyccf_lags(fname1, fname2,
                 The CCCD
             * 'CCPD_lags' : (nsim,) array_like
                 The CCPD
+                
     """
     
     #Import pyCCF
@@ -599,6 +598,7 @@ def prob_tau(x1, x2, laglim=None, lagvals=None, Nlag=1000):
 
 
 def make_mc_from_weights(x1, x2, vals, bins):
+    
     """Make a sample of Monte Carlo simulated values from a previously ran set of 
     MC simulations, using the probability weighting from Grier et al. (2017) on the original distribution. 
 
