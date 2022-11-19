@@ -82,5 +82,5 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
         return MagicMock()
 
-MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'javelin']
+MOCK_MODULES = ['javelin', 'javelin.zylc', 'javelin.lcio', 'javelin.lcmodel']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
