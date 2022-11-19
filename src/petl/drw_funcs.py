@@ -55,10 +55,10 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
         "diff_evo" for ``scipy.optimize.differential_evolution``. Default is "minimize".
         
     suppress_warnings : bool, optional
-        Suppress warnings from the GP fit. Default is True.
+        Suppress warnings from the GP fit. Default is ``True``.
         
     jitter : bool, optional
-        If true, fit for a noise (jitter) term in the GP. Default is True.
+        If true, fit for a noise (jitter) term in the GP. Default is ``True``.
 
 
 
@@ -75,13 +75,13 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
         Status of the fit to the light curve. There are three statuses given:
         
         - baseline_good
-            If True, tau > baseline/10
+            If ``True``, tau > baseline/10.
             
         - cadence_good
-            If true, tau > mean cadence of the light curve
+            If ``True``, tau > mean cadence of the light curve.
         
         - stn_good
-            If true, the DRW sigma parameter is greater than the noise in the light curve
+            If ``True``, the DRW sigma parameter is greater than the noise in the light curve.
     
     """
     
@@ -213,13 +213,13 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', 
         "diff_evo" for ``scipy.optimize.differential_evolution``. Default is "minimize".
         
     suppress_warnings : bool, optional  
-        Suppress warnings from the GP fit. Default is True.
+        Suppress warnings from the GP fit. Default is ``True``.
         
     jitter : bool, optional
-        If true, fit for a noise (jitter) term in the GP. Default is True.
+        If true, fit for a noise (jitter) term in the GP. Default is ``True``.
         
     clip : bool, optional
-        If true, clip data points too close together in time (< 1e-8 days). Default is True.
+        If ``True``, clip data points too close together in time (< 1e-8 days). Default is ``True``.
         
         
         
@@ -235,13 +235,13 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', 
     statuses : list of bool
         Status of the fit to the light curve. There are three statuses given:
         
-        * baseline_good
+        - baseline_good
             If True, tau > baseline/10
             
-        * cadence_good 
+        - cadence_good 
             If true, tau > mean cadence of the light curve
             
-        * stn_good
+        - stn_good
             If true, the DRW sigma parameter is greater than the noise in the light curve
     
     """
