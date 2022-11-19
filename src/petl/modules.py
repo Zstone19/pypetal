@@ -46,7 +46,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
         'nburn': 300,
         'nchain': 1000,
         'clip': np.full( len(line_fnames) + 1, True),
-        'reject_data': True,
+        'reject_data': np.full( len(line_fnames) + 1, True),
         'use_for_javelin': False
     }
     
@@ -63,6 +63,9 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
             
     if type(clip) is bool:
         clip = np.full( len(line_fnames) + 1, clip)
+        
+    if type(reject_data) is bool:
+        reject_data = np.full( len(line_fnames) + 1, True)
         
     #--------------------------------------------------
     #Get units
@@ -152,7 +155,7 @@ use_for_javelin: {}
     
     
     
-    if reject_data:
+    if reject_data[0]:
         x_new = x[~cont_mask]
         y_new = y[~cont_mask]
         yerr_new = yerr[~cont_mask]
@@ -170,7 +173,7 @@ use_for_javelin: {}
         
         res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
                                     nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
-                                    nsig=nsig, jitter=jitter, clip=clip[0],
+                                    nsig=nsig, jitter=jitter, clip=clip[i+1],
                                     target=line_names[i+1],
                                     fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', plot=verbose)
         
@@ -216,7 +219,7 @@ use_for_javelin: {}
             f.close()
         
         
-        if reject_data:
+        if reject_data[i+1]:
             x_new = x[~line_mask]
             y_new = y[~line_mask]
             yerr_new = yerr[~line_mask]

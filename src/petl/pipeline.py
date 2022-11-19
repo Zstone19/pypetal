@@ -19,8 +19,6 @@ def run_pipeline(fnames, output_dir,
     
     Default parameters
     -------------------    
-    cont_fname : str
-        Path to the continuum light curve file.
     
     line_fnames : str, list of str
         Path to the line light curve file(s).
@@ -356,6 +354,24 @@ def run_pipeline(fnames, output_dir,
     file_fmt = general_kwargs['file_fmt']
     
     
+    
+    #Read in DRW rejection kwargs
+    default_kwargs = {
+        'jitter' : True,
+        'nsig' : 1,
+        'nwalkers': 100,
+        'nburn': 300,
+        'nchain': 1000,
+        'clip': np.full( len(fnames), True),
+        'reject_data': np.full( len(fnames), True),
+        'use_for_javelin': False
+    }
+    drw_kwargs = { **default_kwargs, **drw_rej_params }
+    
+    
+    
+    
+    
     #Name lines if unnamed
     if line_names is None:
         line_names = np.zeros( len(line_fnames), dtype=str )
@@ -407,7 +423,8 @@ def run_pipeline(fnames, output_dir,
             else:
                 os.makedirs( output_dir + line_names[i+1] + '/javelin', exist_ok=True )
                 
-        
+    #Make subdirectories for light curves
+    os.makedirs( output_dir + 'light_curves/', exist_ok=True )
         
         
     if file_fmt != 'csv':
@@ -469,11 +486,34 @@ def run_pipeline(fnames, output_dir,
     if run_drw_rej:
         drw_rej_res = modules.drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params ) 
         
-        #If rejecting data, make the new files the ones without rejected data
-        if drw_rej_res['reject_data']:
-            cont_fname = output_dir + line_names[0] + '_data.dat'
-            line_fnames = [ output_dir + x + '_data.dat' for x in line_names[1:] ]
         
+        #If rejecting data, make the new files the ones without rejected data
+        if drw_rej_res['reject_data'][0]:
+            cont_fname = output_dir + line_names[0] + '_data.dat'
+        
+        for i in range(len(line_fnames)):
+            if drw_rej_res['reject_data'][i+1]:
+                line_fnames[i] = output_dir + line_names[i] + '_data.dat'
+                
+        #Output light curve files with masks
+        for i in range(len(fnames)):
+            
+            if i == 0:
+                x, y, yerr = np.loadtxt( cont_fname, unpack=True, usecols=[0,1,2] )
+            else:
+                x, y, yerr = np.loadtxt( line_fnames[i-1], unpack=True, usecols=[0,1,2] )
+            
+            mask = drw_rej_res['masks'][i]
+            
+            f = open( output_dir + 'light_curves/' + line_names[i] + '.dat', 'w' )
+            f.write('#x,y,yerr,mask\n')
+            for j in range(len(x)):
+                f.write( '{},{},{},{}\n'.format( x[i], y[i], yerr[i], mask[i] ) )
+                
+            f.close()
+                
+            
+
         
         if 'use_for_javelin' in drw_rej_params:
             
@@ -526,6 +566,24 @@ def run_pipeline(fnames, output_dir,
                             
                             javelin_params['p_fix'][i][0] = np.log(sigmas_cont)
                             javelin_params['p_fix'][i][1] = np.log(taus_cont)
+                            
+    else:
+        
+        #Output light curve files with masks
+        for i in range(len(fnames)):
+            
+            if i == 0:
+                x, y, yerr = np.loadtxt( cont_fname, unpack=True, usecols=[0,1,2] )
+            else:
+                x, y, yerr = np.loadtxt( line_fnames[i-1], unpack=True, usecols=[0,1,2] )
+            
+            f = open( output_dir + 'light_curves/' + line_names[i] + '.dat', 'w' )
+            f.write('#x,y,yerr,mask\n')
+            for j in range(len(x)):
+                f.write( '{},{},{},{}\n'.format( x[i], y[i], yerr[i], True ) )
+                
+            f.close()
+
 
     if run_pyccf:
         pyccf_res = modules.pyccf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyccf_params)        
