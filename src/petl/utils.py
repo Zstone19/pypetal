@@ -32,8 +32,10 @@ def drw_flag(times, data, error,
     or below the mean prediction by ``nsig`` standard deviations will be flagged as outliers in
     an output mask.
 
+
     Parameters
     ----------
+    
     times : array_like
         Times for the light curve.
         
@@ -57,25 +59,27 @@ def drw_flag(times, data, error,
         Default is 1.
         
     jitter : bool, optional
-        If True, will fit for a noise (jitter) term in the data. Default is True.
+        If True, will fit for a noise (jitter) term in the data. Default is ``True``.
         
     clip : bool, optional
         If true, will clip data points which are too close in time to another data point. Specifically, 
-        will remove data points that are closer than 1e-8 days apart. Default is True.
+        will remove data points that are closer than 1e-8 days apart. Default is ``True``.
         
     target : str, optional
-        The name of the target. Default is None.
+        The name of the target. Default is ``None``.
         
     fname : str, optional
         The name of the file to output the resulting plot. If ``None``, the plot will
-        not be saved. Default is None.
+        not be saved. Default is ``None``.
         
     plot : bool, optional
-        If true, the plot will be shown. Default is True.
+        If true, the plot will be shown. Default is ``True``.
         
 
+
     Returns
-    --------    
+    --------
+        
     res : dict 
         The output of the DRW fitting and rejection. The keys are:
         
@@ -100,9 +104,8 @@ def drw_flag(times, data, error,
         * jitter : array_like
             The jitter chain from the MCMC sampler. Only present if ``jitter`` is True. 
     
-    Note
-    ----
-    The input times, data, and error must be astropy.units.Quantity objects.
+
+    .. note:: The input times, data, and error must be astropy.units.Quantity objects.
     
     """
     
@@ -186,10 +189,12 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     """
     Runs the PLIKE algorithm to compute the maximum likelihood peak of the ZDCF.
     Must have PLIKE (https://ui.adsabs.harvard.edu/abs/2013arXiv1302.1508A/abstract).
-    Will output a file containing the PLIKE results ('plike.out') in ``plike_dir".
+    Will output a file containing the PLIKE results ('plike.out') in ``plike_dir``.
+    
     
     Parameters
     ----------
+    
     plike_dir : str
             Path to the directory with the PLIKE executable.
             
@@ -234,8 +239,10 @@ def get_zdcf(input_dir, fname1, fname2, out_dir, num_MC=500, minpts=0,
     The algorithm will take in two light curves and output a file containing the ZDCF ('zdcf.dcf')
     in the specified output directory. 
     
+    
     Parameters
     ----------
+    
     input_dir : str
             Path to the directory containing the light curves
    
@@ -257,16 +264,16 @@ def get_zdcf(input_dir, fname1, fname2, out_dir, num_MC=500, minpts=0,
             
     uniform_sampling: bool, optional
             If True, the light curves will be assumed to be uniformly sampled.
-            Default is False.
+            Default is ``False``.
             
     autocf : bool, optional
             If True, the auto-correlation function for the first light curve will be computed.
             If False, the ZDCF will be computed between the light curves.
-            Default is False
+            Default is ``False``.
    
     omit_zero_lags : bool, optional
             If True, will omit the points with zero lags when computing the ZDCF.
-            Default is True.
+            Default is ``True``.
             
     sparse : (bool, str), optional
             Determines whether to use a sparse matrix implementation for reduced RAM usage.
@@ -278,10 +285,13 @@ def get_zdcf(input_dir, fname1, fname2, out_dir, num_MC=500, minpts=0,
             The delimiter used in the light curve files. Default is ',' for CSV files.            
 
     verbose : bool, optional
-            If True, will output progress of pyZDCF. Default is False.
+            If ``True``, will output progress of pyZDCF. Default is ``False``.
+
+
 
     Returns
     -------
+
     dcf_df : pandas.DataFrame
         A pandas DataFrame object containing the ZDCF and its errors. The 
         columns within the DataFrame match the order of columns within the 
@@ -362,8 +372,10 @@ def get_pyccf_lags(fname1, fname2,
     used to create the cross-correlation centroid distribution (CCCD) and peak distribution (CCPD). 
 
 
+
     Parameters
     ----------    
+
     fname1 : str
         Path to the first light curve file 
             
@@ -375,12 +387,12 @@ def get_pyccf_lags(fname1, fname2,
             
     lag_bounds : (2,) array_like, optional
         The bounds of times to search for the lag. The first element is the minimum lag and the second is the maximum.
-        If set to ``None", the lag bounds will be set to (-200, 200). The default is ``None"
+        If set to ``None", the lag bounds will be set to (-200, 200). The default is ``None``.
     
     interp : float, optional
         The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
         shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
-        If set to ``None", will be set to half of the average cadence of the light curves. The default is ``None"
+        If set to ``None``, will be set to half of the average cadence of the light curves. The default is ``None``.
     
     nsim : int, optional
         The number of Monte Carlo simulations to run. The default is 1000.
@@ -402,8 +414,10 @@ def get_pyccf_lags(fname1, fname2,
     .. note:: Both light curve files must be in CSV format with the following columns in order: time, value, uncertainty
 
 
+
     Returns
     -------
+    
     result: dict 
         Dict of output results, containing:
         
@@ -532,22 +546,27 @@ def prob_tau(x1, x2, laglim=None, lagvals=None, Nlag=1000):
     """Creates the probability weighting function from Grier et al. (2017) for a given distribution and times for
     two light curves. Can use either of the three optional inputs for the lags to use.
 
+
     Parameters
     ----------
+
     laglim : (array_like, None), optional
-        If not ``None", the lags used will be linearly spaced between the bounds supplied, with Nlags number
-        of lags. If ``None", the lags used will be linearly spaced between [-baseline, baseline], where baseline
-        is the length of the baseline. Default is ``None". 
+        If not ``None``, the lags used will be linearly spaced between the bounds supplied, with Nlags number
+        of lags. If ``None``, the lags used will be linearly spaced between [-baseline, baseline], where baseline
+        is the length of the baseline. Default is ``None``. 
         
     lagvals : (array_like, None), optional
-        If not ``None" will use the lags supplied. If ``None", will use the ``laglim" argument.
-        Default is ``None".
+        If not ``None`` will use the lags supplied. If ``None``, will use the ``laglim`` argument.
+        Default is ``None``.
         
     Nlag : int, optional
-        The number of lags to use if ``laglim" is not ``None". Default is 1000. 
+        The number of lags to use if ``laglim`` is not ``None``. Default is 1000. 
+    
+    
     
     Returns
     --------
+    
     probs : array_like
         The weighting function
         
@@ -612,8 +631,11 @@ def make_mc_from_weights(x1, x2, vals, bins):
     """Make a sample of Monte Carlo simulated values from a previously ran set of 
     MC simulations, using the probability weighting from Grier et al. (2017) on the original distribution. 
 
+
+
     Parameters
     ----------
+
     x1 : list of floats
         List of times for the first light curve.
         
@@ -626,8 +648,11 @@ def make_mc_from_weights(x1, x2, vals, bins):
     bins : int
         The number of bins to use for the probability weighting function.
 
+
+
     Returns:
     --------
+
     mc_vals : list of floats
         The Monte Carlo simulated values that would produce the weighted distribution.
         
@@ -683,8 +708,11 @@ def run_javelin(cont_fname, line_fnames, line_names,
     
     """Run JAVELIN on a set of light curves.
     
+    
+    
     Parameters
     ----------
+    
     cont_fname : str
         The filename of the continuum light curve.
     
@@ -708,16 +736,16 @@ def run_javelin(cont_fname, line_fnames, line_names,
     fixed : None or list of floats, optional
         An array defining which parameters are fixed and which are allowed to vary. The length of 
         the array must match the number of parameters ( 2 + 3*len(line_fnames) ). In the array, 
-        1 corresponds to a variable parameter and 0 corresponds to a fixed parameter. If set to ``None", 
-        all parameters will be allowed to vary. Default is ``None".
+        1 corresponds to a variable parameter and 0 corresponds to a fixed parameter. If set to ``None``, 
+        all parameters will be allowed to vary. Default is ``None``.
         
     p_fix : None or list of floats, optional
         An array defining the values of the fixed parameters. The length of the array must match the
-        number of parameters and of the ``fixed" array. If set to ``None", all parameters will be allowed
-        to vary. Must be defined if ``fixed" is. Default is ``None".
+        number of parameters and of the ``fixed" array. If set to ``None``, all parameters will be allowed
+        to vary. Must be defined if ``fixed`` is. Default is ``None``.
         
     subtract_mean : bool, optional
-        If True, will subtract the mean of the light curves before analysis. Default is True.
+        If True, will subtract the mean of the light curves before analysis. Default is ``True``.
         
     nwalkers : int, optional
         The number of walkers to use in the MCMC. Default is 100.
@@ -732,17 +760,19 @@ def run_javelin(cont_fname, line_fnames, line_names,
         The number of parallel threads to use in the MCMC. Default is 1.    
         
     output_chains : bool, optional
-        If True, will output the MCMC chains to a file. Default is False.
+        If ``True``, will output the MCMC chains to a file. Default is ``False``.
         
     output_burn : bool, optional
-        If True, will output the MCMC burn-in chains to a file. Default is False.
+        If ``True``, will output the MCMC burn-in chains to a file. Default is ``False``.
         
     output_logp : bool, optional
-        If True, will output the MCMC log-probability values to a file. Default is False.
+        If ``True``, will output the MCMC log-probability values to a file. Default is ``False``.
+         
          
         
     Returns
     -------
+
     res : dict
         A dictionary containing the results of the JAVELIN analysis. Has the following keys:
         
@@ -772,6 +802,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
             
         * tot_dat : javelin.zylc.LightCurve
             The object containing all light curves (continuum + lines).
+            
     """
     
     
@@ -891,12 +922,14 @@ def run_javelin(cont_fname, line_fnames, line_names,
 from scipy.stats import binned_statistic   
 def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, prob_weight=False, metric='med'):
     
-    """_summary_
+    """Predict light curve(s) from a JAVELIN RM fit object.
+
 
     Parameters
     ----------
+
     rmod : javelin.lcmodel.Rmap_Model or javelin.lcmodel.Pmap_Model
-        The output RM model from ``run_javelin", after fitting the data.
+        The output RM model from ``run_javelin``, after fitting the data.
         
     t_cont : array_like
         The time array for the continuum light curve.
@@ -905,18 +938,20 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, prob_weight=False, metric=
         The time array for the line light curve(s).
 
     nbin : int, optional
-        The number of bins to use if weighting the parameter distributions. If ``None",
-        defaults to 50. Default is None.
+        The number of bins to use if weighting the parameter distributions. If ``None``,
+        defaults to 50. Default is ``None``.
 
     prob_weight : bool, optional
-        If true, will weight the parameter distributions. Default is False.
+        If ``True``, will weight the parameter distributions. Default is ``False``.
         
     metric : str, optional
         The metric to use to get the bestfit parameter from the parameter distributions.
         Can be either 'mean' or 'med'. Default is 'med'.
 
+
     Returns
     -------
+
     rmap_bestfit : javelin.lcmodel.Rmap_Model or javelin.lcmodel.Pmap_Model
         The RM model using the best fit parameters to predict the light curve(s).
     
