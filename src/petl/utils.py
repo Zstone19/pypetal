@@ -406,26 +406,36 @@ def get_pyccf_lags(fname1, fname2,
     -------
     result: dict 
         Dict of output results, containing:
-            * 'CCF' : (N,) array_like
-                The ICCF
-            * 'CCF_lags' : (N,) array_like
-                The lags corresponding to the ICCF
-            * 'centroid' : float
-                The median of the CCCD
-            * 'centroid_err_hi' : float
-                The upper error of the centroid
-            * 'centroid_err_lo' : float
-                The lower error of the centroid
-            * 'peak' : float
-                The median of the CCPD
-            * 'peak_err_hi' : float
-                The upper error of the peak
-            * 'peak_err_lo' : float
-                The lower error of the peak
-            * 'CCCD_lags' : (nsim,) array_like
-                The CCCD
-            * 'CCPD_lags' : (nsim,) array_like
-                The CCPD
+        
+        * 'CCF' : (N,) array_like
+            The ICCF
+            
+        * 'CCF_lags' : (N,) array_like
+            The lags corresponding to the ICCF
+
+        * 'centroid' : float
+            The median of the CCCD
+
+        * 'centroid_err_hi' : float
+            The upper error of the centroid
+
+        * 'centroid_err_lo' : float
+            The lower error of the centroid
+
+        * 'peak' : float
+            The median of the CCPD
+
+        * 'peak_err_hi' : float
+            The upper error of the peak
+
+        * 'peak_err_lo' : float
+            The lower error of the peak
+
+        * 'CCCD_lags' : (nsim,) array_like
+            The CCCD
+
+        * 'CCPD_lags' : (nsim,) array_like
+            The CCPD
                 
     """
     
