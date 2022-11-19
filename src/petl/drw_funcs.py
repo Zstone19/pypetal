@@ -25,6 +25,7 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
     
     """Fit time-series data to a given Gaussian process kernel using celerite.
 
+
     Parameters
     ----------
     
@@ -59,6 +60,8 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
     jitter : bool, optional
         If true, fit for a noise (jitter) term in the GP. Default is True.
 
+
+
     Returns
     -------
      
@@ -70,14 +73,15 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, solver='minimize', 
         
     statuses : list of bool
         Status of the fit to the light curve. There are three statuses given:
-            - baseline_good
-                If True, tau > baseline/10
-                
-            - cadence_good
-                If true, tau > mean cadence of the light curve
+        
+        - baseline_good
+            If True, tau > baseline/10
             
-            - stn_good
-                If true, the DRW sigma parameter is greater than the noise in the light curve
+        - cadence_good
+            If true, tau > mean cadence of the light curve
+        
+        - stn_good
+            If true, the DRW sigma parameter is greater than the noise in the light curve
     
     """
     
@@ -182,6 +186,7 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', 
 
     """Fit time-series data to a DRW using celerite and emcee.
     
+    
     Parameters
     ----------
     
@@ -230,14 +235,14 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, solver='minimize', 
     statuses : list of bool
         Status of the fit to the light curve. There are three statuses given:
         
-            - baseline_good
-                If True, tau > baseline/10
-                
-            - cadence_good 
-                If true, tau > mean cadence of the light curve
-                
-            - stn_good
-                If true, the DRW sigma parameter is greater than the noise in the light curve
+        * baseline_good
+            If True, tau > baseline/10
+            
+        * cadence_good 
+            If true, tau > mean cadence of the light curve
+            
+        * stn_good
+            If true, the DRW sigma parameter is greater than the noise in the light curve
     
     """
 
@@ -291,6 +296,9 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
     """Calculate the PSD of a light curve using the DRW fit from celerite. This assumes that a Lomb-Scargle
     periodogram has been made from the light curve, giving a list of frequencies and powers.
     
+    Parameters
+    ----------
+    
     fLS : list of astropy.units.Quantity
         Frequencies from the Lomb-Scargle periodogram
         
@@ -307,8 +315,10 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
         Baseline of the light curve
 
 
+
     Returns
     -------
+    
     f_eval : list of astropy.units.Quantity
         Frequencies at which the PSD is evaluated
         
@@ -366,6 +376,7 @@ def binLS(fLS, powerLS_samp, num_bins):
         
     num_bins : int
         Number of bins to use for the binned periodogram
+
 
 
     Returns
@@ -445,7 +456,9 @@ def binLS(fLS, powerLS_samp, num_bins):
 def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
     
     """A smoothly broken power law:
-    .. math:: P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}
+    
+    .. math:: 
+        P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}
 
     Parameters
     ----------
@@ -481,6 +494,7 @@ def psd_sbpl(f, psd, err, p0, bounds):
 
     Parameters
     ----------
+    
     f : array_like
         Frequencies for the input PSD.
         
@@ -528,6 +542,9 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
     
     """Generate all PSD data for the summary plot.
     
+    Parameters
+    ----------
+    
     x : array_like
         The light curve times
         
@@ -545,6 +562,7 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
         
     nsamp : int
         The number of samples of the Lomb-Scargle periodogram to use
+
 
 
     Returns
@@ -671,6 +689,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     show : bool, optional
         Whether or not to show the image. Default is False.       
     
+
 
     Returns
     -------
