@@ -36,6 +36,66 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
                        cccd_lags, ccpd_lags,
                        nbin=50, time_unit='d', lc_unit='mJy', lc_names=['', ''],
                        plot_weights=False, fname=None, show=False):
+    
+    """Plot the results of using pyCCF on two light curves.
+    
+    Parameters
+    ----------
+    
+    x1 : array-like
+        Time array for first light curve.
+        
+    y1 : array-like
+        Values for the first light curve.
+        
+    yerr1 : array-like
+        Uncertainty in the first light curve.
+        
+    x2 : array-like
+        Time array for second light curve.
+        
+    y2 : array-like
+        Values for the second light curve.
+        
+    yerr2 : array-like
+        Uncertainty in the second light curve.
+        
+    ccf_lags : array-like
+        Lags for the CCF.
+        
+    ccf : array-like
+        CCF values.
+        
+    cccd_lags : array-like
+        The output simulated lags from the CCCD.
+        
+    ccpd_lags : array-like
+        The output simulated lags from the CCPD.
+        
+    nbin : int, optional
+        Number of bins to use for the histograms. Default is 50.
+        
+    time_unit : str, optional
+        The unit of time for the light curves for the plot. Default is 'd'.
+        
+    lc_unit : str, optional
+        The unit of the light curves for the plot. Default is 'mJy'.
+        
+    lc_names : list, optional
+        The names of the light curves to use for the plot. Default is ['', ''].
+    
+    plot_weights : bool, optional
+        If ``True``, will use the weights described in Grier et al. (2017) to weight the 
+        CCPD/CCCD histograms and plot them alongside the original histograms. Default is ``False``.
+        
+    fname : str, optional
+        If not ``None``, will save the plot to the given filename. Default is ``None``.
+        
+    show : bool, optional
+        If ``True``, will show the plot. Default is ``False``.
+    
+    """
+    
 
     cent_med = np.median( cccd_lags )
     cent_hi = np.percentile( cccd_lags, 84 )
@@ -253,6 +313,54 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
                         time_unit='d', lc_unit='mJy', lc_names=['', ''],
                         fname=None, show=False):
 
+    """Plot the results of pyZDCF.
+    
+    
+    Parameters
+    ----------
+    
+    x1 : array-like
+        Time array for the first light curve.
+        
+    y1 : array-like
+        Values for the first light curve.
+    
+    yerr1 : array-like
+        Uncertainty in the first light curve.
+        
+    x2 : array-like
+        Time array for the second light curve.
+        
+    y2 : array-like
+        Values for the second light curve.
+        
+    yerr2 : array-like
+        Uncertainty in the second light curve.
+        
+    dcf_df : pandas.DataFrame
+        The output ``DataFrame`` object from pyZDCF.
+        
+    plike_dict : dict, optional
+        The output dict from PLIKE, if it is run. Default is ``None``.
+        
+    time_unit : str, optional
+        The unit of time for the light curves. Default is 'd'. 
+        
+    lc_unit : str, optional
+        The unit of the light curves. Default is 'mJy'.
+        
+    lc_names : list, optional
+        The names of the light curves. Default is ['', ''].
+        
+    fname : str, optional
+        If not ``None``, will save the plot to the given filename. Default is ``None``.
+
+    show : bool, optional
+        If ``True``, will show the plot. Default is ``False``.
+    
+    """
+
+
     if plike_dict is None:
         include_plike = False
     else:
@@ -368,6 +476,50 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
                       plot_weights=False, remove_fixed=True, fname=None):
 
 
+    """Plot the histograms of the posteriors for the JAVELIN fit parameters.
+    
+    Parameters
+    ----------
+    
+    res : dict
+        The output of ``petl.modules.run_javelin``.
+        
+    fixed : dict, optional
+        The ``fixed`` argument passed to JAVELIN. If ``None``, all parameters will be assumed to vary. Default is ``None``.
+        
+    nbin : int, optional
+        The number of bins to use for the histograms. Default is 50.
+        
+    time_unit : str, optional
+        The unit of time for the light curves. Default is 'd'.
+        
+    lc_unit : str, optional
+        The unit of the light curves. Default is 'mag'.
+        
+    plot_weights : bool, optional
+        If ``True``, will use the weights described in Grier et al. (2017) to weight the 
+        time lag histograms and plot them alongside the original histograms. Default is ``False``.
+
+    remove_fixed : bool, optional
+        If ``True``, will remove the fixed parameters from the plot. Default is ``True``.
+        
+    fname : str, optional
+        If not ``None``, will save the plot to the given filename. Default is ``None``.
+        
+        
+        
+        
+    Returns
+    -------
+    
+    fig : matplotlib.figure.Figure
+        The figure object.
+        
+    ax : list of matplotlib.axes.Axes
+        The axes for the plot.    
+    
+    """
+
     if lc_unit == 'Arbitrary Units':
         lc_unit_txt = ''
     else:
@@ -475,6 +627,42 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
 
 
 def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
+    
+    """Create a corner plot for the JAVELIN parameter results.
+    
+    
+    
+    Parameters
+    ----------
+    
+    res : dict
+        The output of ``petl.modules.run_javelin``.
+        
+    nbins : int, optional
+        The number of bins to use for the histograms. Default is 20.
+        
+    plot_weights : bool, optional
+        If ``True``, will use the weights described in Grier et al. (2017) to weight the 
+        time lag histograms and plot them alongside the original histograms. Default is ``False``.    
+    
+    fname : str, optional
+        If not ``None``, will save the plot to the given filename. Default is ``None``.
+
+    
+
+
+    Returns
+    -------
+    
+    fig : matplotlib.figure.Figure
+        The figure object for the plot.
+        
+    ax : list of matplotlib.axes.Axes
+        The axes objects for the plot.
+    
+    """
+    
+    
     labels = []
     labels.append( r'$\log_{10} (\sigma_{\rm DRW})$' )
     labels.append( r'$\log_{10} (\tau_{\rm DRW})$' )
@@ -524,6 +712,40 @@ def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
 
 def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname=None):
     
+    
+    """Plot the fit to the data using the best-fit JAVELIN parameters.
+    
+    Parameters
+    ----------
+    
+    res : dict
+        The output of ``petl.modules.run_javelin``.
+        
+    bestfit_model : dict
+        The bestfit model after using ``petl.utils.javelin_pred_lc``.
+
+    time_unit : str, optional
+        The time unit for the light curves. Default is 'd'.
+        
+    lc_unit : str, optional
+        The light curve unit. Default is 'mag'.
+        
+    fname : str, optional
+        If not ``None``, will save the plot to the given filename. Default is ``None``.
+        
+
+
+
+    Returns
+    -------
+
+    fig : matplotlib.figure.Figure
+        The figure object for the plot.
+        
+    ax : list of matplotlib.axes.Axes
+        The axes objects for the plot.    
+        
+    """
     
     cmap = ListedColormap( palettable.cartocolors.qualitative.Vivid_10.mpl_colors )    
     colors = cmap.colors
@@ -594,168 +816,3 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
     
     return fig, ax
 
-
-
-###################################################################
-#########################  DEPRECATED #############################
-###################################################################
-
-def plot_pyzdcf_results_peakcent(x1, y1, yerr1, x2, y2, yerr2, 
-                       dcf_lags, dcf,
-                       dcf_lag_err, dcf_err,
-                       cccd_lags, ccpd_lags,
-                       time_unit='d', flux_unit='mJy', lc_names=['', ''],
-                       fname=None, show=False):
-
-    cent_med = np.median( cccd_lags )
-    cent_hi = np.percentile( cccd_lags, 84 )
-    cent_lo = np.percentile( cccd_lags, 16 )
-
-    peak_med = np.median( ccpd_lags )
-    peak_hi = np.percentile( ccpd_lags, 84 )
-    peak_lo = np.percentile( ccpd_lags, 16 )
-    
-    min_lag = np.min(dcf_lags)
-    max_lag = np.max(dcf_lags)
-    
-    
-    
-    if (cent_med < .5) & (peak_med < .5) & (time_unit == 'd'):
-        cent_med *= 24
-        cent_hi *= 24
-        cent_lo *= 24
-        
-        peak_med *= 24
-        peak_hi *= 24
-        peak_lo *= 24
-        
-        lag_unit = 'hr'
-    else:
-        lag_unit = time_unit
-    
-
-    
-    #Setup plot axes    
-    fig = plt.figure( figsize=(12, 7) )
-    gs = gridspec.GridSpec(ncols=3, nrows=6)
-
-    ax1 = fig.add_subplot(gs[:3, :2])
-    ax2 = fig.add_subplot(gs[3:6, :2], sharex=ax1)
-
-    ax3 = fig.add_subplot(gs[:2, 2])
-    ax4 = fig.add_subplot(gs[2:4, 2], sharex=ax3)
-    ax5 = fig.add_subplot(gs[4:6, 2], sharex=ax3, sharey=ax4)
-
-
-
-    #Plot light curve data
-    _, caps, bars = ax1.errorbar(x1, y1, yerr1, fmt='.k')
-    [bar.set_alpha(.25) for bar in bars]
-    
-    _, _, bars = ax2.errorbar(x2, y2, yerr2, fmt='.k')
-    [bar.set_alpha(.25) for bar in bars]
-    
-    #Increase y-bounds to fit text 
-    ymin, ymax = ax1.get_ylim()
-    ymax = ymin + (ymax - ymin)*1.15
-    ax1.set_ylim(ymin, ymax)
-
-    ymin, ymax = ax2.get_ylim()
-    ymax = ymin + (ymax - ymin)*1.15
-    ax2.set_ylim(ymin, ymax)
-
-    ax1.text( .05, .95, lc_names[0], transform=ax1.transAxes, ha='left', va='top', fontsize=17 )
-    ax2.text( .05, .95, lc_names[1], transform=ax2.transAxes, ha='left', va='top', fontsize=17 )
-
-    ax2.set_xlabel('Time [' + str(time_unit) + ']', fontsize=19)
-
-    #----------------------------
-    #Plot DCF
-    _, _, bars = ax3.errorbar( dcf_lags, dcf, yerr=dcf_err, xerr=dcf_lag_err, fmt='.k' )
-    [bar.set_alpha(.2) for bar in bars]
-    
-    ax3.set_ylim(-1, 1)
-
-    #----------------------------
-    #Plot CCCD
-    _, bins, _ = ax4.hist( cccd_lags, 50, range=(min_lag, max_lag), density=True )
-
-    #Increase y-bounds to fit text
-    ymin, ymax = ax4.get_ylim()
-    ymax = ymin + (ymax - ymin)*1.1
-    ax4.set_ylim(ymin, ymax)
-
-    ax4.text(.05, .8, 
-            '${:.2f} ^'.format(cent_med) + '{+' + '{:.2f}'.format(cent_hi-cent_med)  + '}_{-' + '{:.2f}'.format(cent_med-cent_lo) + '}$ ' + lag_unit,
-            transform=ax4.transAxes,
-            fontsize=14)
-
-    #----------------------------
-    #Plot CCPD
-    ax5.hist( ccpd_lags, bins=bins, range=(min_lag, max_lag), density=True )
-
-    #Increase y-bounds to fit text
-    ymin, ymax = ax5.get_ylim()
-    ymax = ymin + (ymax - ymin)*1.1
-    ax5.set_ylim(ymin, ymax)
-
-    ax5.text(.05, .8, 
-            '${:.2f} ^'.format(peak_med) + '{+' + '{:.2f}'.format(peak_hi-peak_med)  + '}_{-' + '{:.2f}'.format(peak_med-peak_lo) + '}$ ' + lag_unit,
-            transform=ax5.transAxes,
-            fontsize=14)
-    ax5.set_xlabel('Lag [' + str(lag_unit) + ']', fontsize=19)
-
-
-
-
-    plt.figtext( .05, .5, 'Flux [' + str(flux_unit) + ']', fontsize=19, rotation=90, va='center' )
-
-    plt.figtext( .94, .72, 'DCF', rotation=270, fontsize=19 )
-    plt.figtext( .94, .45, 'CCCD', rotation=270, fontsize=19 )
-    plt.figtext( .94, .2, 'CCPD', rotation=270, fontsize=19 )
-
-
-    for i, ax in enumerate([ax3, ax4, ax5]):
-        ax.yaxis.tick_right()
-        ax.yaxis.set_ticks_position('both')
-
-        if i == 2:     
-            ax.tick_params('both', labelsize=12)
-        else:
-            ax.tick_params('x', labelsize=0)
-            ax.tick_params('y', labelsize=12)
-
-        ax.tick_params('both', which='major', length=6)
-        ax.tick_params('both', which='minor', length=3)
-        
-        ax.locator_params('x', nbins=5)
-        ax.locator_params('y', nbins=3)
-        
-        
-    for i, ax in enumerate([ax1, ax2]):
-        
-        if i == 1:    
-            ax.tick_params('both', labelsize=12)
-        else:
-            ax.tick_params('x', labelsize=0)
-            ax.tick_params('y', labelsize=12)
-
-        ax.tick_params('both', which='major', length=7)
-        ax.tick_params('both', which='minor', length=3)
-        
-        ax.locator_params('y', nbins=6)
-        
-
-    plt.subplots_adjust(hspace=.07, wspace=.1)
-    
-    if fname is not None:
-        plt.savefig(fname, dpi=300, bbox_inches='tight')
-    
-    if show:
-        plt.show()
-        
-    plt.cla()
-    plt.clf()
-    plt.close()
-    
-    del fig, ax1, ax2, ax3, ax4, ax5, gs
