@@ -365,38 +365,38 @@ def get_pyccf_lags(fname1, fname2,
     Parameters
     ----------    
     fname1 : str
-            Path to the first light curve file 
+        Path to the first light curve file 
             
     fname2 : str
-            Path to the second light curve file 
+        Path to the second light curve file 
             
     file_fmt : str, optional
-            Format of the file. Default is 'csv'.
+        Format of the file. Default is 'csv'.
             
     lag_bounds : (2,) array_like, optional
-            The bounds of times to search for the lag. The first element is the minimum lag and the second is the maximum.
-            If set to ``None", the lag bounds will be set to (-200, 200). The default is ``None"
+        The bounds of times to search for the lag. The first element is the minimum lag and the second is the maximum.
+        If set to ``None", the lag bounds will be set to (-200, 200). The default is ``None"
     
     interp : float, optional
-            The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
-            shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
-            If set to ``None", will be set to half of the average cadence of the light curves. The default is ``None"
+        The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
+        shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
+        If set to ``None", will be set to half of the average cadence of the light curves. The default is ``None"
     
     nsim : int, optional
-            The number of Monte Carlo simulations to run. The default is 1000.
+        The number of Monte Carlo simulations to run. The default is 1000.
     
     mcmode : int, optional
-            The type of resampling to do for the Monte Carlo Simulations. 0 performs both FR and RSS, 1 performs FR, and 2 performs RSS.
-            The default is 0.
+        The type of resampling to do for the Monte Carlo Simulations. 0 performs both FR and RSS, 1 performs FR, and 2 performs RSS.
+        The default is 0.
     
     sigmode : float, optional
-            The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the 
-            interval (0,1). All peaks and centroids with correlation coefficient r_max <= sigmode will be considered as "failed". 
-            If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation). The default is 0.2. 
+        The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the 
+        interval (0,1). All peaks and centroids with correlation coefficient r_max <= sigmode will be considered as "failed". 
+        If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation). The default is 0.2. 
     
     thres : float, optional
-            The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within 
-            the interval (0,1). The default is 0.8.
+        The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within 
+        the interval (0,1). The default is 0.8.
             
 
     .. note:: Both light curve files must be in CSV format with the following columns in order: time, value, uncertainty
