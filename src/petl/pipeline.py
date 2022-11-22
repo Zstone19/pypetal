@@ -525,15 +525,6 @@ def run_pipeline(fnames, output_dir,
 
     if run_drw_rej:
         drw_rej_res = modules.drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params ) 
-        
-        
-        #If rejecting data, make the new files the ones without rejected data
-        if drw_rej_res['reject_data'][0]:
-            cont_fname = output_dir + line_names[0] + '_data.dat'
-        
-        for i in range(len(line_fnames)):
-            if drw_rej_res['reject_data'][i+1]:
-                line_fnames[i] = output_dir + line_names[i] + '_data.dat'
                 
         #Output light curve files with masks
         for i in range(len(fnames)):
@@ -552,6 +543,14 @@ def run_pipeline(fnames, output_dir,
                 
             f.close()
                 
+                
+        #If rejecting data, make the new files the ones without rejected data
+        if drw_rej_res['reject_data'][0]:
+            cont_fname = output_dir + line_names[0] + '_data.dat'
+        
+        for i in range(len(line_fnames)):
+            if drw_rej_res['reject_data'][i+1]:
+                line_fnames[i] = output_dir + line_names[i] + '_data.dat'
             
 
         
