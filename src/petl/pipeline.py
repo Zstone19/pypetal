@@ -530,9 +530,9 @@ def run_pipeline(fnames, output_dir,
         for i in range(len(fnames)):
             
             if i == 0:
-                x, y, yerr = np.loadtxt( cont_fname, unpack=True, usecols=[0,1,2] )
+                x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
             else:
-                x, y, yerr = np.loadtxt( line_fnames[i-1], unpack=True, usecols=[0,1,2] )
+                x, y, yerr = np.loadtxt( line_fnames[i-1], delimiter=',', unpack=True, usecols=[0,1,2] )
             
             mask = drw_rej_res['masks'][i]
             
