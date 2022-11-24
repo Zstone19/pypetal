@@ -434,7 +434,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
     nfail_centroid = 0
     nfail_rvals = 0
     max_rvals = []
-    for i in xrange(nsim):
+    for i in range(nsim):
         if mcmode!=2:
             # RSS resample light curve 1
             mycheck = True #make sure len(t1_rss)>1
