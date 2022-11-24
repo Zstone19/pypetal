@@ -453,13 +453,6 @@ def get_pyccf_lags(fname1, fname2,
                 
     """
     
-    #Import pyCCF
-    cwd = os.getcwd()
-
-    os.chdir(pyccf_dir)
-    import PYCCF as pyccf
-    os.chdir(cwd)
-    
     #Files need to be csv
     x1, y1, yerr1 = np.loadtxt( fname1, delimiter=',', unpack=True, usecols=[0,1,2] )
     x2, y2, yerr2 = np.loadtxt( fname2, delimiter=',', unpack=True, usecols=[0,1,2] )
