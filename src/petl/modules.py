@@ -101,7 +101,9 @@ use_for_javelin: {}
     
     sigmas = []
     taus = []
-    jitters = []
+    
+    if jitter:
+        jitters = []
     
     
     #Do continuum
@@ -117,7 +119,9 @@ use_for_javelin: {}
     
     sigmas.append( np.median(res['sigma']) )
     taus.append( np.median(res['tau']) )
-    jitters.append( np.median(res['jitter']) )
+    
+    if jitter:
+        jitters.append( np.median(res['jitter']) )
         
     #Write mask
     f = open( output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_mask.dat', 'w' )
@@ -179,7 +183,9 @@ use_for_javelin: {}
         
         sigmas.append( np.median(res['sigma']) )
         taus.append( np.median(res['tau']) )
-        jitters.append( np.median(res['jitter']) )
+        
+        if jitter:
+            jitters.append( np.median(res['jitter']) )
         
         line_mask = res['mask']
         line_masks.append(line_mask)
@@ -240,10 +246,11 @@ use_for_javelin: {}
         'masks': tot_masks,
         'reject_data': reject_data,
         'taus': taus,
-        'sigmas': sigmas,
-        'jitters': jitters
+        'sigmas': sigmas
     }
     
+    if jitter:
+        output['jitters'] = jitters
     return output
 
 
