@@ -16,6 +16,7 @@ Currently, PETL has combined the functionality of pyCCF, pyZDCF, and JAVELIN to 
    :caption: Getting Started
 
    installation
+   notebooks/getting_started
 
 
 .. toctree::
