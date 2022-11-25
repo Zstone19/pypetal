@@ -805,7 +805,7 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
     ax[-1].set_xlabel('Time [' + str(time_unit) + ']', fontsize=20)
 
 
-    plt.figtext(.05, .5, 'Flux', va='center', rotation=90, fontsize=22)
+    plt.figtext(.05, .5, ytxt, va='center', rotation=90, fontsize=22)
 
     plt.subplots_adjust(hspace=0)
     
