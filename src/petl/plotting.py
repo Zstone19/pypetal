@@ -109,19 +109,7 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     max_lag = np.max(ccf_lags)
     
     
-    
-    if (cent_med < .5) & (peak_med < .5) & (time_unit == 'd'):
-        cent_med *= 24
-        cent_hi *= 24
-        cent_lo *= 24
-        
-        peak_med *= 24
-        peak_hi *= 24
-        peak_lo *= 24
-        
-        lag_unit = 'hr'
-    else:
-        lag_unit = time_unit
+    lag_unit = time_unit
     
 
     

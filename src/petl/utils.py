@@ -388,7 +388,7 @@ def get_pyccf_lags(fname1, fname2,
             
     lag_bounds : (2,) array_like, optional
         The bounds of times to search for the lag. The first element is the minimum lag and the second is the maximum.
-        If set to ``None", the lag bounds will be set to (-200, 200). The default is ``None``.
+        If set to ``None", the lag bounds will be set to (-baseline, baseline). The default is ``None``.
     
     interp : float, optional
         The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
