@@ -3,7 +3,7 @@ version: 2
 python:
   version: "3.8"
   install: 
-    - requirements: requirements_sphinx.txt
+    - requirements: requirements_rtd.txt
     - method: pip
       path: .
   system_packages: true
