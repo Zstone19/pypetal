@@ -11,3 +11,4 @@ dependencies:
       - nbsphinx
       - sphinx_rtd_theme
       - sphinx-copybutton
+      - sphinxcontrib-bibtex

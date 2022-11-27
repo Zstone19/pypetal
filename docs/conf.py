@@ -26,7 +26,8 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'nbsphinx',
-    'sphinx_copybutton'
+    'sphinx_copybutton',
+    'sphinxcontrib.bibtex'
 ]
 suppress_warnings = ["nbsphinx"]
 master_doc = 'index'
@@ -34,7 +35,7 @@ master_doc = 'index'
 templates_path = ['_templates']
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-
+bibtex_files = ['refs.bib']
 
 
 
