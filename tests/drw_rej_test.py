@@ -1,5 +1,8 @@
 import petl.pipeline as pl
 import glob
+import shutil
+
+
 
 main_dir = '../examples/dat/javelin_'
 filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
@@ -86,3 +89,7 @@ if '.tmp/continuum_data.dat' not in glob.glob('.tmp/*'):
 
 if '.tmp/yelm_data.dat' not in glob.glob('.tmp/*'):
     raise Exception('yelm_data.dat not found')
+
+
+
+shutil.rmtree('.tmp')
