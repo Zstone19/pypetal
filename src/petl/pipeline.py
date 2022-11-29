@@ -383,8 +383,7 @@ def run_pipeline(fnames, output_dir,
         'verbose': False,
         'time_unit': 'd',
         'lc_unit': 'Arbitrary Units',
-        'file_fmt': 'csv',
-        'use_weights': False
+        'file_fmt': 'csv'
     }
     general_kwargs = { **default_kwargs, **general_kwargs }
     

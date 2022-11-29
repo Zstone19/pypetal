@@ -373,40 +373,13 @@ nbin: {}
     
         x1, y1, yerr1 = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
         x2, y2, yerr2 = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
-    
-        if use_weights:
-
-            #CCCD
-            weighted_sample = utils.make_mc_from_weights(x1, x2, res['CCCD_lags'], nbin)
-            res['weighted_CCCD_lags'] = weighted_sample 
-            
-            #CCPD
-            weighted_sample = utils.make_mc_from_weights(x1, x2, res['CCPD_lags'], nbin)
-            res['weighted_CCPD_lags'] = weighted_sample
-        
-        
-            #Write weighted CCCD, CCPD to file
-            f = open(output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_weighted_cccd.dat', 'w+')
-            for j in range( len( res['weighted_CCCD_lags'] ) ):
-                f.write( '{}'.format( res['weighted_CCCD_lags'][j] ) + '\n' )
-
-            f.close()
-
-
-            f = open(output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_weighted_ccpd.dat', 'w+')
-            for j in range( len( res['weighted_CCPD_lags'] ) ):
-                f.write( '{}'.format( res['weighted_CCPD_lags'][j] ) + '\n' )
-
-            f.close()
-            
-        
         
         plotting.plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
                                     res['CCF_lags'], res['CCF'],
                                     res['CCCD_lags'], res['CCPD_lags'],
                                     nbin=nbin, time_unit=time_unit, lc_unit=lc_unit,
                                     lc_names=[line_names[0], line_names[i+1]],
-                                    plot_weights=use_weights,
+                                    plot_weights=False,
                                     fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.pdf', show=verbose)
 
     
@@ -589,7 +562,6 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     #Read general kwargs
     
     verbose = general_kwargs['verbose']
-    use_weights = general_kwargs['use_weights']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']    
                 
@@ -612,7 +584,8 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
         'nbin': 50,
         'metric': 'med',
         'together': True,
-        'rm_type': 'spec'
+        'rm_type': 'spec',
+        'use_weights': False
     }
     
     
@@ -634,6 +607,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     metric = params['metric']
     together = params['together']
     rm_type = params['rm_type']
+    use_weights = params['use_weights']
     
     #--------------------------------------------------
     #Account for parameters if javelin['together'] = False
@@ -686,10 +660,11 @@ output_logp: {}
 nbin: {}
 metric: {}
 together: {}
+use_weights: {}
 --------------------
         """.format( rm_type, lagtobaseline, laglimit, not (fixed is None), not (fixed is None),
                     subtract_mean, nwalkers, nburn, nchain, threads, output_chains,
-                    output_burn, output_logp, nbin, metric, together )
+                    output_burn, output_logp, nbin, metric, together, use_weights )
         
         print(txt_str)
     
