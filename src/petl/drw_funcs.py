@@ -21,7 +21,7 @@ quantity_support()
 import warnings
 
 
-def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, 
+def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
                  solver='minimize', suppress_warnings=True, jitter=True):
 
     """Fit time-series data to a given Gaussian process kernel using celerite.
@@ -44,7 +44,7 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
 
     nwalkers : int
         Number of walkers to use in the MCMC
- 
+
     nburn : int
         Number of burn-in steps to use in the MCMC
 
@@ -52,7 +52,7 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
         Number of samples to use in the MCMC
 
     solver : str, optional
-        Solver to use for the GP fit. Options are "minimize" for ``scipy.optimize.minimize`` and 
+        Solver to use for the GP fit. Options are "minimize" for ``scipy.optimize.minimize`` and
         "diff_evo" for ``scipy.optimize.differential_evolution``. Default is "minimize".
 
     suppress_warnings : bool, optional
@@ -183,8 +183,8 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
 
 
 
-def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000, 
-             solver='minimize', suppress_warnings=True, jitter=True, 
+def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
+             solver='minimize', suppress_warnings=True, jitter=True,
              clip=True):
 
     """Fit time-series data to a DRW using celerite and emcee.
@@ -215,7 +215,7 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
         Solver to use for the GP fit. Options are "minimize" for ``scipy.optimize.minimize`` and
         "diff_evo" for ``scipy.optimize.differential_evolution``. Default is "minimize".
 
-    suppress_warnings : bool, optional  
+    suppress_warnings : bool, optional
         Suppress warnings from the GP fit. Default is ``True``.
 
     jitter : bool, optional
@@ -241,7 +241,7 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
         - baseline_good
             If True, tau > baseline/10
 
-        - cadence_good 
+        - cadence_good
             If true, tau > mean cadence of the light curve
 
         - stn_good
@@ -288,8 +288,8 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
         bounds = dict(log_sigma=(smin, smax))
         kernel += terms.JitterTerm(log_sigma=sval, bounds=bounds)
 
-    samples, gp, statuses = celerite_fit(x, y, yerr, kernel, nwalkers, 
-                                         nburn, nsamp, solver, 
+    samples, gp, statuses = celerite_fit(x, y, yerr, kernel, nwalkers,
+                                         nburn, nsamp, solver,
                                          suppress_warnings, jitter)
 
     return samples, gp, statuses
@@ -298,8 +298,10 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
 
 def psd_from_gp(fLS, powerLS, gp, samples, baseline):
 
-    """Calculate the PSD of a light curve using the DRW fit from celerite. This assumes that a Lomb-Scargle
-    periodogram has been made from the light curve, giving a list of frequencies and powers.
+    """Calculate the PSD of a light curve using the DRW fit from celerite.
+    This assumes that a Lomb-Scargle periodogram has been made from the
+    light curve, giving a list of frequencies and powers.
+
 
     Parameters
     ----------
@@ -328,7 +330,8 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
         Frequencies at which the PSD is evaluated
 
     psd_credint : list of astropy.units.Quantity
-        An (n,3) array of the PSD, with the first columns being the 16th percentile, the second column being the median,
+        An (n,3) array of the PSD, with the first columns being
+        the 16th percentile, the second column being the median,
         and the third column being the 84th percentile.
 
     """
@@ -340,7 +343,7 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
     psd_samples = np.empty( (len(f_eval), len(samples)) )
     kernel = gp.kernel
 
-    #Get the PSD for each parameter-set in the sample 
+    #Get the PSD for each parameter-set in the sample
     for i, s in enumerate(samples):
         gp.set_parameter_vector(s)
         psd_samples[:, i] = kernel.get_psd(2*np.pi*f_eval)/(2*np.pi)
@@ -359,7 +362,7 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
 
     psd_credint[:, 0] = psd_credint[:, 0]*f_norm
     psd_credint[:, 2] = psd_credint[:, 2]*f_norm
-    psd_credint[:, 1] = psd_credint[:, 1]*f_norm 
+    psd_credint[:, 1] = psd_credint[:, 1]*f_norm
 
     return f_eval, psd_credint
 
@@ -412,9 +415,12 @@ def binLS(fLS, powerLS_samp, num_bins):
 
     #Get data for bins (16th, 50th, 84th percentile for each bin mean)
     draws_binned = np.empty((len(binEdges)-1, 3))
-    draws_binned[:, 0], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 0], statistic='mean', bins=binEdges)
-    draws_binned[:, 2], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 2], statistic='mean', bins=binEdges)
-    draws_binned[:, 1], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 1], statistic='mean', bins=binEdges)    
+    draws_binned[:, 0], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 0],
+                                                                     statistic='mean', bins=binEdges)
+    draws_binned[:, 2], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 2],
+                                                                     statistic='mean', bins=binEdges)
+    draws_binned[:, 1], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 1],
+                                                                     statistic='mean', bins=binEdges)
 
     #Get error (upper and lower) for each bin value
     bin_err = np.array([draws_binned[:, 1] - draws_binned[:, 0], draws_binned[:, 2] - draws_binned[:, 1]])
