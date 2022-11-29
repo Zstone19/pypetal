@@ -1,5 +1,6 @@
 import petl.utils as utils
 import petl.plotting as plotting
+from petl.formatting import write_data
 
 import os
 
@@ -123,39 +124,26 @@ use_for_javelin: {}
     if jitter:
         jitters.append( np.median(res['jitter']) )
         
-    #Write mask
-    f = open( output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_mask.dat', 'w' )
-    for i in range(len(cont_mask)):
-        f.write( str(cont_mask[i]) + '\n' )
         
-    f.close()
+        
+    #Write mask
+    dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_mask.dat'
+    write_data( cont_mask, dat_fname )
         
     #Write LC fit
-    f = open( output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.dat', 'w' )
-    f.write('#time,light curve,error')
-    for i in range(len(res['fit_x'])):
-        f.write( '{},{},{}'.format(res['fit_x'][i], res['fit_y'][i], res['fit_err'][i]) + '\n' )
-        
-    f.close()
-    
+    dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.dat'
+    header = '#time,light curve,error'
+    write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )    
     
     #Write the MCMC chains
-    f = open( output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_chain.dat', 'w' )
+    dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_chain.dat'
     
     if jitter:
-        f.write('#sigma,tau,jitter')
-        
-        for i in range(len(res['tau'])):
-            f.write( '{},{},{}'.format(res['sigma'][i], res['tau'][i], res['jitter'][i]) + '\n' )
-
-        f.close()
-        
+        header = '#sigma,tau,jitter'
+        write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
     else:
-        f.write('#sigma,tau')
-        for i in range(len(res['tau'])):        
-            f.write( '{},{}'.format( res['sigma'][i], res['tau'][i] ) + '\n' )
-        
-        f.close()
+        header = '#sigma,tau'
+        write_data( [ res['sigma'], res['tau'] ], dat_fname, header )
     
     
     
@@ -164,12 +152,10 @@ use_for_javelin: {}
         y_new = y[~cont_mask]
         yerr_new = yerr[~cont_mask]
         
-        f = open( output_dir + line_names[0] + '_data.dat', 'w' )
-        for i in range(len(x_new)):
-            f.write( '{},{},{}'.format( x_new[i], y_new[i], yerr_new[i] ) + '\n' )
-    
-        f.close()
-    
+        dat_fname = output_dir + line_names[0] + '_data.dat'
+        write_data([x_new, y_new, yerr_new], dat_fname)
+        
+            
     line_masks = []
     
     for i in range(len(line_fnames)):
@@ -191,50 +177,31 @@ use_for_javelin: {}
         line_masks.append(line_mask)
         
         #Write mask
-        f = open( output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_mask.dat', 'w' )
-        for j in range(len(line_mask)):
-            f.write( str(line_mask[j]) + '\n' )
-            
-        f.close()
+        dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_mask.dat'
+        write_data(line_mask, dat_fname)
                 
         #Write LC fit
-        f = open( output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.dat', 'w' )
-        f.write('#time,light curve,error')
-        for j in range(len(res['fit_x'])):
-            f.write( '{},{},{}'.format(res['fit_x'][j], res['fit_y'][j], res['fit_err'][j]) + '\n' )
-            
-        f.close()
-        
+        dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.dat'
+        header = '#time,light curve,error'
+        write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )        
         
         #Write the MCMC chains
-        f = open( output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_chain.dat', 'w' )
+        dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_chain.dat'
 
         if jitter:
-            f.write('#sigma,tau,jitter')
-            
-            for j in range(len(res['tau'])):
-                f.write( '{},{},{}'.format(res['sigma'][j], res['tau'][j], res['jitter'][j]) + '\n' )
-
-            f.close()
-            
+            header = '#sigma,tau,jitter'
+            write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
         else:
-            f.write('#sigma,tau')
-            for j in range(len(res['tau'])):        
-                f.write( '{},{}'.format( res['sigma'][j], res['tau'][j] ) + '\n' )
-            
-            f.close()
-        
+            header = '#sigma,tau'
+            write_data( [ res['sigma'], res['tau'] ], dat_fname, header )        
         
         if reject_data[i+1]:
             x_new = x[~line_mask]
             y_new = y[~line_mask]
             yerr_new = yerr[~line_mask]
             
-            f = open( output_dir + line_names[i+1] + '_data.dat', 'w' )
-            for j in range(len(x_new)):
-                f.write( '{},{},{}'.format( x_new[j], y_new[j], yerr_new[j] ) + '\n' )
-    
-            f.close()
+            dat_fname = output_dir + line_names[i+1] + '_data.dat'
+            write_data( [x_new, y_new, yerr_new], dat_fname )
     
     tot_masks = []
     tot_masks.append(cont_mask)
@@ -349,24 +316,14 @@ nbin: {}
 
 
         #Write CCF to file
-        f = open(output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.dat', 'w+')
-
-        f.write('#Lag,CCF' + '\n')
-        for j in range( len( res['CCF'] ) ):
-            f.write( '{:10.5f},{:10.5f}'.format( res['CCF_lags'][j], res['CCF'][j] ) + '\n' )
-        
-        f.close()
-        
+        dat_fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.dat'
+        header = '#Lag,CCF'
+        write_data( [ res['CCF_lags'], res['CCF'] ], dat_fname, header )        
         
         #Write CCCD, CCPD to file
-        f = open(output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf_dists.dat', 'w+')
-        
-        f.write('#CCCD,CCPD' + '\n' )
-        for j in range( len( res['CCCD_lags'] ) ):
-            f.write( '{:10.5f},{:10.5f}'.format( res['CCCD_lags'][j], res['CCPD_lags'][j] ) + '\n' )
-
-        f.close()
-        
+        dat_fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf_dists.dat'
+        header = '#CCCD,CCPD'
+        write_data( [ res['CCCD_lags'], res['CCPD_lags'] ], dat_fname, header )        
         
         
         res['name'] = line_names[i]
@@ -727,20 +684,12 @@ use_weights: {}
 
 
 
-        #Write fits to light curves        
-        for i in range( bestfit_model.nlc ):
-            
-            f = open(output_dir + r'javelin/' + line_names[i] + '_lc_fits.dat', 'w')
-            
-            for j in range(len( bestfit_model.jlist[i] )):
-                
-                f.write('{},{},{}'.format( bestfit_model.jlist[i][j], 
-                                        bestfit_model.mlist[i][j] + bestfit_model.blist[i],
-                                        bestfit_model.elist[i][j] ) + '\n' )
-            
-            f.close()
-            
-            
+        #Write fits to light curves
+        dat_fname = output_dir + r'javelin/' + line_names[i] + '_lc_fits.dat'
+        dat = [ bestfit_model.jlist[i], 
+                bestfit_model.mlist[i] + bestfit_model.blist[i],
+                bestfit_model.elist[i] ]
+        write_data( dat, dat_fname )            
 
         return res
     
@@ -812,15 +761,10 @@ use_weights: {}
                 else:
                     name = line_names[i]
             
-                f = open(output_dir + line_names[i+1] + r'/javelin/' + name + '_lc_fits.dat', 'w')
-                
-                for k in range(len( bestfit_model.jlist[i] )):
-                    
-                    f.write('{},{},{}'.format( bestfit_model.jlist[j][k], 
-                                            bestfit_model.mlist[j][k] + bestfit_model.blist[j],
-                                            bestfit_model.elist[j][k] ) + '\n' )
-                
-                f.close()
-            
+                dat_fname = output_dir + line_names[i+1] + r'/javelin/' + name + '_lc_fits.dat'
+                dat = [ bestfit_model.jlist[j], 
+                        bestfit_model.mlist[j] + bestfit_model.blist[j],
+                        bestfit_model.elist[j] ]
+                write_data( dat, dat_fname )            
             
         return res_tot
