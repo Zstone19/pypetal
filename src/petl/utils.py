@@ -14,7 +14,7 @@ from javelin.lcio import writelc
 from javelin.lcmodel import Cont_Model, Rmap_Model, Pmap_Model, SPmap_Model
 
 import petl.drw_funcs as drw
-import petl.PYCCF as pyccf
+import petl.pyccf as pyccf
 
 
 ##############################################################
