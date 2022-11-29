@@ -575,7 +575,7 @@ def prob_tau(x1, x2, laglim=None, lagvals=None, Nlag=1000):
     sort_ind = np.argsort(x2)
     x2 = x2[sort_ind]
     
-    basline = np.max([ x1[-1]-x1[0], x2[-1]-x2[0] ])
+    baseline = np.max([ x1[-1]-x1[0], x2[-1]-x2[0] ])
     Nlag = int(Nlag)
     
     if (laglim is None) & (lagvals is None):
