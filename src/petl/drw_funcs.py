@@ -1,24 +1,22 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import matplotlib.gridspec as gridspec
-from astropy import units as u
+import warnings
 
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
 import corner
+
+import numpy as np
+
 import celerite
-import celerite.terms as terms
+from celerite import terms
 import emcee
 
 from scipy.optimize import minimize, curve_fit, differential_evolution
 import scipy.stats as stat
+
+from astropy import units as u
 from astropy.timeseries import LombScargle
-
-import os
-
 from astropy.visualization import quantity_support
 quantity_support()
-
-import warnings
 
 
 def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
@@ -153,7 +151,7 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
     tau = 1/np.exp(s[1])
     sig_drw = np.sqrt( np.exp(s[0])/2 )
 
-    if jitter == True:
+    if jitter is True:
         sig_n = np.exp(s[2])
     else:
         sig_n = 0
@@ -265,7 +263,7 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
 
 
     #Bounds and value for c
-    if clip == True:
+    if clip is True:
         min_cadence = np.clip(np.min( np.diff(x.value) ), 1e-8, None)
     else:
         min_cadence = np.min( np.diff(x.value) )
@@ -279,7 +277,7 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
     kernel = terms.RealTerm(log_a=aval, log_c=cval, bounds=bounds )
 
 
-    if jitter == True:
+    if jitter is True:
         #Bounds and value for s (jitter)
         smin = -10
         smax = np.log(amp)
@@ -415,13 +413,13 @@ def binLS(fLS, powerLS_samp, num_bins):
 
     #Get data for bins (16th, 50th, 84th percentile for each bin mean)
     draws_binned = np.empty((len(binEdges)-1, 3))
-    draws_binned[:,0], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 0],
+    draws_binned[:,0], _, _ = stat.binned_statistic(fLS, bins_credint[:, 0],
                                                                      statistic='mean',
                                                                      bins=binEdges)
-    draws_binned[:,2], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 2],
+    draws_binned[:,2], _, _ = stat.binned_statistic(fLS, bins_credint[:, 2],
                                                                      statistic='mean',
                                                                      bins=binEdges)
-    draws_binned[:,1], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 1],
+    draws_binned[:,1], _, _ = stat.binned_statistic(fLS, bins_credint[:, 1],
                                                                      statistic='mean',
                                                                      bins=binEdges)
 
@@ -630,7 +628,7 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
     powerLS_samps = []
 
 
-    for i in range(nsamp):
+    for _ in range(nsamp):
         y_samp = y.value + np.random.normal(0, yerr.value)
         y_samp *= y.unit
 
@@ -755,7 +753,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     tau_vals = 1/np.exp(samples[:, 1])
     sig_vals = np.sqrt( np.exp(samples[:, 0])/2 )
 
-    if jitter == True:
+    if jitter is True:
         n=3
         jitter_vals = np.exp(samples[:, 2])
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals), np.log10(jitter_vals) )).T
@@ -784,7 +782,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     tau_title = r'$' + '{:.2f}'.format(tau) + '^{' + ' +{:.2f}'.format(tau_err_u) +  '}_{' + '-{:.2f}'.format(tau_err_l) + '}$'
     titles.append(tau_title)
 
-    if jitter == True:
+    if jitter is True:
         jit = np.log10(np.median(jitter_vals))
         jit_err_l = jit - np.log10( np.percentile(jitter_vals,16) ) 
         jit_err_u = np.log10( np.percentile(jitter_vals,84) ) - jit
@@ -813,14 +811,14 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
 
     axs[1,1].title.set_text(tau_title)
     axs[1,1].title.set_fontsize(17)
-    if jitter == True:
+    if jitter is True:
         axs[2,2].title.set_text(jit_title)
         axs[2,2].title.set_fontsize(17)
 
     #Red out bad tau regions
     axs[1,1].axvspan(np.log10(0.2*baseline.value), np.log10(100*baseline.value), color= "red", zorder=-5, alpha=0.2)
 
-    if jitter == True:
+    if jitter is True:
         axs[2,1].axvspan(np.log10(0.2*baseline.value), np.log10(100*baseline.value), color= "red", zorder=-5, alpha=0.2)
 
     axs[1,0].axhspan(np.log10(0.2*baseline.value), np.log10(100*baseline.value), color= "red", zorder=-5, alpha=0.2)
@@ -857,7 +855,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
                 fmt='.k', capsize=1., alpha=.7, ms=8)
 
 
-    if show_mean == True:
+    if show_mean is True:
         ax1.plot(t-x[0].value, mu, color='orange', zorder=-1)
     ax1.fill_between(t-x[0].value, mu+std, mu-std, color='orange', alpha=.3)
 
@@ -922,14 +920,14 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     f_br_plus = f_br + f_br_err
     f_br_minus = f_br - f_br_err
 
-    if f_br_minus < 0.0 and np.isfinite(f_br_plus) == True:    
+    if f_br_minus < 0.0 and np.isfinite(f_br_plus) is True:    
         ls_diff = np.log10(f_br_plus) - np.log10(f_br)
         f_br_minus = 10**( np.log10(f_br) - ls_diff )
 
 
     f_br_val = psd_credint[:, 2][0]   
 
-    if np.isfinite(f_br_plus) == True:
+    if np.isfinite(f_br_plus) is True:
         #Dat for f_br line
         t = np.logspace(np.log10(f_br_minus), np.log10(f_br_plus), 100)
         dat = np.full(len(t), f_br_val)
@@ -965,10 +963,10 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
 
     fig = plt.gcf()
 
-    if filename != None:
+    if filename is not None:
         fig.savefig(f'{filename}', bbox_inches='tight')
 
-    if show == True:
+    if show is True:
         plt.show()
 
     return fig, axs
