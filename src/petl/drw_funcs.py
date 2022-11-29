@@ -665,8 +665,8 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
     fit_vals, fit_err = psd_sbpl(binCenters[1:-4], bin_vals[1:-4], 
                                  None, p0, bounds)
 
-    return fLS, powerLS, f_eval, psd_credint,
-           bin_vals, bin_err, binCenters, lower_err,
+    return fLS, powerLS, f_eval, psd_credint, \
+           bin_vals, bin_err, binCenters, lower_err, \
            fit_vals, fit_err
     
     
