@@ -415,15 +415,19 @@ def binLS(fLS, powerLS_samp, num_bins):
 
     #Get data for bins (16th, 50th, 84th percentile for each bin mean)
     draws_binned = np.empty((len(binEdges)-1, 3))
-    draws_binned[:, 0], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 0],
-                                                                     statistic='mean', bins=binEdges)
-    draws_binned[:, 2], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 2],
-                                                                     statistic='mean', bins=binEdges)
-    draws_binned[:, 1], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 1],
-                                                                     statistic='mean', bins=binEdges)
+    draws_binned[:,0], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 0],
+                                                                     statistic='mean',
+                                                                     bins=binEdges)
+    draws_binned[:,2], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 2],
+                                                                     statistic='mean',
+                                                                     bins=binEdges)
+    draws_binned[:,1], bin_edges, binnumber = stat.binned_statistic(fLS, bins_credint[:, 1],
+                                                                     statistic='mean',
+                                                                     bins=binEdges)
 
     #Get error (upper and lower) for each bin value
-    bin_err = np.array([draws_binned[:, 1] - draws_binned[:, 0], draws_binned[:, 2] - draws_binned[:, 1]])
+    bin_err = np.array([draws_binned[:, 1] - draws_binned[:, 0],
+                        draws_binned[:, 2] - draws_binned[:, 1]])
 
     binEdges[0] *= .99
 
@@ -435,7 +439,7 @@ def binLS(fLS, powerLS_samp, num_bins):
         #Get center of the bin
         cent = (np.log10(binEdges[i]) + np.log10(binEdges[i+1]) )/2
 
-        binCenters.append( 10**cent )    
+        binCenters.append( 10**cent )
 
     bin_vals = draws_binned[:, 1]
     lower_err = bin_err[1]
@@ -444,7 +448,7 @@ def binLS(fLS, powerLS_samp, num_bins):
     binCenters = np.concatenate( ([fLS[0].value], binCenters ) )
     bin_vals = np.concatenate( ([bin_vals[0]], bin_vals ) )
     bin_err = np.concatenate( ([0.], bin_err ) )
-    lower_err = np.concatenate( ([0.], lower_err ) )  
+    lower_err = np.concatenate( ([0.], lower_err ) )
 
     binCenters = np.append( binCenters, fLS[-1].value )
     bin_vals = np.append( bin_vals, bin_vals[-1] )
@@ -457,7 +461,7 @@ def binLS(fLS, powerLS_samp, num_bins):
     binCenters = np.array(binCenters)[mask_finite]
     bin_vals = np.array(bin_vals)[mask_finite]
     bin_err = np.array(bin_err)[mask_finite]
-    lower_err = np.array(lower_err)[mask_finite] 
+    lower_err = np.array(lower_err)[mask_finite]
 
     return binCenters, bin_vals, bin_err, lower_err
 
@@ -468,11 +472,14 @@ def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
 
     """A smoothly broken power law:
 
-    .. math:: 
+    .. math::
         P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}
+
+
 
     Parameters
     ----------
+
     f : array_like
         Frequencies at which to evaluate the power law.
 
@@ -492,7 +499,7 @@ def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
 
     Returns
     -------
-    
+
     power : array_like
         The power law.
 
@@ -540,11 +547,13 @@ def psd_sbpl(f, psd, err, p0, bounds):
 
 
     try:
-        soln = curve_fit(smoothly_broken_power_law, f, psd, sigma=err, p0=p0, bounds=bounds, maxfev=10000)
+        soln = curve_fit(smoothly_broken_power_law, f, psd,
+                         sigma=err, p0=p0, bounds=bounds, maxfev=10000)
         fit_vals = soln[0]
         fit_err = np.sqrt(np.diag(soln[1]))
     except:
-        soln = curve_fit(smoothly_broken_power_law, f, psd, sigma=None, p0=None, bounds=bounds, maxfev=10000)
+        soln = curve_fit(smoothly_broken_power_law, f, psd,
+                         sigma=None, p0=None, bounds=bounds, maxfev=10000)
         fit_vals = soln[0]
         fit_err = np.sqrt(np.diag(soln[1]))
 
@@ -569,7 +578,7 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
     yerr : array_like
         The uncertainty in the light curve
 
-    samples : array_like   
+    samples : array_like
         The samples from the MCMC fit
 
     gp : celerite.GP
@@ -608,10 +617,12 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
         The centers of the bins for the binned Lomb-Scargle periodogram
 
     fit_vals : list of astropy.unit.Quantity
-        The best fit parameters for the smoothly broken power law fit to the Lomb-Scargle periodogram
+        The best fit parameters for the smoothly broken power law fit to
+        the Lomb-Scargle periodogram
 
     fit_errs : list of astropy.unit.Quantity
-        The errors on the best fit parameters for the smoothly broken power law fit to the Lomb-Scargle periodogram
+        The errors on the best fit parameters for the smoothly broken
+        power law fit to the Lomb-Scargle periodogram
 
     """
 
@@ -646,14 +657,17 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
     tau = 1/np.exp(s[1])
     f = 1/2/np.pi/tau
 
-    bounds = np.array([(.1*np.nanmax(bin_vals), 10*np.nanmax(bin_vals)), 
-                       (fLS[0].value, fLS[-1].value), 
+    bounds = np.array([(.1*np.nanmax(bin_vals), 10*np.nanmax(bin_vals)),
+                       (fLS[0].value, fLS[-1].value),
                        (-3., 0.), (.1, 5.)]).T
     p0 = [np.nanmax(bin_vals), f, 0., 2.]
 
-    fit_vals, fit_err = psd_sbpl(binCenters[1:-4], bin_vals[1:-4], None, p0, bounds)
+    fit_vals, fit_err = psd_sbpl(binCenters[1:-4], bin_vals[1:-4], 
+                                 None, p0, bounds)
 
-    return fLS, powerLS, f_eval, psd_credint, bin_vals, bin_err, binCenters, lower_err, fit_vals, fit_err
+    return fLS, powerLS, f_eval, psd_credint,
+           bin_vals, bin_err, binCenters, lower_err,
+           fit_vals, fit_err
     
     
     
