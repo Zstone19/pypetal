@@ -9,12 +9,11 @@ AUTHOR = 'Zachary Stone'
 EMAIL = 'stone28@illinois.edu'
 
 #Get requirements.txt
-f = open('requirements.txt', 'r')
 REQUIREMENTS = []
+with open('requirements.txt', 'r', encoding='UTF-8') as f:
 
-for line in f.readlines():
-    REQUIREMENTS.append( line.strip('\n\r')  )
-f.close()
+    for line in f.readlines():
+        REQUIREMENTS.append( line.strip('\n\r')  )
 
 
 
