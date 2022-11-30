@@ -648,14 +648,15 @@ use_weights: {}
         plt.close()
         
         
-        
-        #Corner plot
-        fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
-                                          fname= output_dir + 'javelin/javelin_corner.pdf' )
-            
-        plt.cla()
-        plt.clf()
-        plt.close()
+        if (fixed is None) | (fixed is np.ones( 2 + 3*len(line_fnames) )):
+                    
+            #Corner plot
+            fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
+                                            fname= output_dir + 'javelin/javelin_corner.pdf' )
+                
+            plt.cla()
+            plt.clf()
+            plt.close()
 
 
 
