@@ -683,11 +683,13 @@ use_weights: {}
 
 
         #Write fits to light curves
-        dat_fname = output_dir + r'javelin/' + line_names[i] + '_lc_fits.dat'
-        dat = [ bestfit_model.jlist[i], 
-                bestfit_model.mlist[i] + bestfit_model.blist[i],
-                bestfit_model.elist[i] ]
-        write_data( dat, dat_fname )            
+        for i in range(len(line_names)):
+            dat_fname = output_dir + r'javelin/' + line_names[i] + '_lc_fits.dat'
+            dat = [ bestfit_model.jlist[i], 
+                    bestfit_model.mlist[i] + bestfit_model.blist[i],
+                    bestfit_model.elist[i] ]
+            write_data( dat, dat_fname )            
+
 
         return res
     
