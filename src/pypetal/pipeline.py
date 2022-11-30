@@ -485,7 +485,7 @@ def run_pipeline(fnames, output_dir,
         fname = os.path.basename( cont_fname )
         
         #Write to csv
-        write_data( [ dat['x'], dat['y'], dat['err'] ], input_dir )        
+        write_data( [ dat['x'], dat['y'], dat['err'] ], input_dir + fname )        
         cont_fname = input_dir + fname        
         
         
@@ -503,7 +503,7 @@ def run_pipeline(fnames, output_dir,
             fname = os.path.basename( line_fnames[i] )
                 
             #Write to csv
-            write_data( [dat['x'], dat['y'], dat['err']], input_dir )
+            write_data( [dat['x'], dat['y'], dat['err']], input_dir + fname )
             line_fnames[i] = input_dir + fname
 
         
