@@ -235,7 +235,6 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read general kwargs
     
     verbose = general_kwargs['verbose']
-    use_weights = general_kwargs['use_weights']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     
