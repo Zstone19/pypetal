@@ -722,7 +722,7 @@ use_weights: {}
 
             
             #Corner plot
-            if (fixed is None) | (fixed is np.ones( 2 + 3*len(line_fnames) )):
+            if (fixed[i] is None) | (fixed[i] is np.ones( 2 + 3*len(line_fnames) )):
                 fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
                                                 fname= output_dir + line_names[i+1] + '/javelin/javelin_corner.pdf' )
                     
