@@ -722,12 +722,13 @@ use_weights: {}
 
             
             #Corner plot
-            fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
-                                              fname= output_dir + 'javelin/javelin_corner.pdf' )
-                
-            plt.cla()
-            plt.clf()
-            plt.close()
+            if (fixed is None) | (fixed is np.ones( 2 + 3*len(line_fnames) )):
+                fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
+                                                fname= output_dir + line_names[i+1] + '/javelin/javelin_corner.pdf' )
+                    
+                plt.cla()
+                plt.clf()
+                plt.close()
             
             
             bestfit_model = utils.javelin_pred_lc( res['rmap_model'], 
