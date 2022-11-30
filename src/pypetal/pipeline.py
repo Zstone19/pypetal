@@ -599,7 +599,7 @@ def run_pipeline(fnames, output_dir,
             else:
                 x, y, yerr = np.loadtxt( line_fnames[i-1], delimiter=',', unpack=True, usecols=[0,1,2] )
             
-            write_data( [x,y,yerr], output_dir + 'light_curves/' + line_names[i] + '.dat', np.fill_like(x, False) )
+            write_data( [x,y,yerr], output_dir + 'light_curves/' + line_names[i] + '.dat', np.full_like(x, False) )
             
 
 
