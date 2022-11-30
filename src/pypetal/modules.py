@@ -133,7 +133,7 @@ use_for_javelin: {}
     #Write LC fit
     dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.dat'
     header = '#time,light curve,error'
-    write_data( [ res['fit_x'].value, res['fit_y'].value, res['fit_err'].value ], dat_fname, header )    
+    write_data( [ res['fit_x'].value, res['fit_y'], res['fit_err'] ], dat_fname, header )    
     
     #Write the MCMC chains
     dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_chain.dat'
@@ -183,7 +183,7 @@ use_for_javelin: {}
         #Write LC fit
         dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.dat'
         header = '#time,light curve,error'
-        write_data( [ res['fit_x'].value, res['fit_y'].value, res['fit_err'].value ], dat_fname, header )        
+        write_data( [ res['fit_x'].value, res['fit_y'], res['fit_err'] ], dat_fname, header )        
         
         #Write the MCMC chains
         dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_chain.dat'
