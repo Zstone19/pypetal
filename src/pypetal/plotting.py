@@ -707,10 +707,10 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
     ----------
     
     res : dict
-        The output of ``petl.modules.run_javelin``.
+        The output of ``pypetal.modules.run_javelin``.
         
     bestfit_model : dict
-        The bestfit model after using ``petl.utils.javelin_pred_lc``.
+        The bestfit model after using ``pypetal.utils.javelin_pred_lc``.
 
     time_unit : str, optional
         The time unit for the light curves. Default is 'd'.
