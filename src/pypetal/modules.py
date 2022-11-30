@@ -626,7 +626,7 @@ use_weights: {}
                                 fixed=fixed, p_fix=p_fix, subtract_mean=subtract_mean,
                                 nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=threads,
                                 output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
-                                verbose=verbose)
+                                nbin=nbin, verbose=verbose)
 
 
         #Plot histograms
