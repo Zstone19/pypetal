@@ -470,7 +470,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     ----------
     
     res : dict
-        The output of ``petl.modules.run_javelin``.
+        The output of ``pypetal.modules.run_javelin``.
         
     fixed : dict, optional
         The ``fixed`` argument passed to JAVELIN. If ``None``, all parameters will be assumed to vary. Default is ``None``.
@@ -624,7 +624,7 @@ def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
     ----------
     
     res : dict
-        The output of ``petl.modules.run_javelin``.
+        The output of ``pypetal.modules.run_javelin``.
         
     nbins : int, optional
         The number of bins to use for the histograms. Default is 20.

@@ -2,5 +2,5 @@
 Plotting
 =========
 
-.. automodule:: petl.plotting
+.. automodule:: pypetal.plotting
     :members:

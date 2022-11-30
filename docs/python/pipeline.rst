@@ -1,6 +1,6 @@
-=================
-The PETL Pipeline
-=================
+=====================
+The pyPetal Pipeline
+=====================
 
-.. automodule:: petl.pipeline
+.. automodule:: pypetal.pipeline
     :members:

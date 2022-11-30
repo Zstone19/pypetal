@@ -1,5 +1,5 @@
 pyPETaL: A Pipeline for Estimating AGN Time Lags
-==========================================
+=================================================
 
 Installation
 ------------
@@ -8,7 +8,7 @@ A number of different packages and softwares are required. Most can be installed
     A Fortran compiler (>F90)
 ```
 
-PETL is available on PyPI and can be installed with pip: **(NOT IMPLEMENTED YET)**
+pyPetal is available on PyPI and can be installed with pip: **(NOT IMPLEMENTED YET)**
 ```
     pip install pypetal
 ```
@@ -16,7 +16,7 @@ PETL is available on PyPI and can be installed with pip: **(NOT IMPLEMENTED YET)
 Or, if you want to install the latest development version:
 ```
     git clone https://github.com/Zstone19/pypetal.git
-    cd petl
+    cd pypetal
     python setup.py install
 ```
 

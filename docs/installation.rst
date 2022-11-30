@@ -22,4 +22,4 @@ PLIKE is an optional algorithm that is used in pyPetal. There is a script availa
 ::
     sh build_plike.sh
 
-.. note:: PLIKE is not required to run pyPetal, it is an optional part of the pyZDCF module to get an estimate of the time lag. If installing through ``build_plike.sh``, PETL assumes that ``gfortran`` is the Fortran compiler used.
+.. note:: PLIKE is not required to run pyPetal, it is an optional part of the pyZDCF module to get an estimate of the time lag. If installing through ``build_plike.sh``, pyPetal assumes that ``gfortran`` is the Fortran compiler used.

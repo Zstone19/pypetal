@@ -2,11 +2,11 @@
 DRW-Based Outlier Rejection
 ============================
 
-.. automodule:: petl.drw_funcs
+.. automodule:: pypetal.drw_funcs
     :members:
 
-.. automodule:: petl.utils
+.. automodule:: pypetal.utils
     :members: drw_flag
 
-.. automodule:: petl.modules
+.. automodule:: pypetal.modules
     :members: drw_rej_tot
