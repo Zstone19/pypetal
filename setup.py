@@ -20,7 +20,7 @@ with open('requirements.txt', 'r', encoding='UTF-8') as f:
 setup(
     name=NAME,
     version=VERSION,
-    url='https://github.com/Zstone19/petl',
+    url='https://github.com/Zstone19/pypetal',
     author=AUTHOR,
     author_email=EMAIL,
     maintainer=AUTHOR,
