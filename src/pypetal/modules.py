@@ -755,7 +755,7 @@ use_weights: {}
                 if j == 0:
                     name = line_names[0]
                 else:
-                    name = line_names[i]
+                    name = line_names[i+1]
             
                 dat_fname = output_dir + line_names[i+1] + r'/javelin/' + name + '_lc_fits.dat'
                 dat = [ bestfit_model.jlist[j], 
