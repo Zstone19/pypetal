@@ -485,7 +485,7 @@ def run_pipeline(fnames, output_dir,
         fname = os.path.basename( cont_fname )
         
         #Write to csv
-        write_data( [ dat['x'], dat['y'], dat['err'] ], fname )        
+        write_data( [ dat['x'], dat['y'], dat['err'] ], input_dir )        
         cont_fname = input_dir + fname        
         
         
@@ -503,7 +503,7 @@ def run_pipeline(fnames, output_dir,
             fname = os.path.basename( line_fnames[i] )
                 
             #Write to csv
-            write_data( [dat['x'], dat['y'], dat['err']], fname )
+            write_data( [dat['x'], dat['y'], dat['err']], input_dir )
             line_fnames[i] = input_dir + fname
 
         
@@ -599,7 +599,7 @@ def run_pipeline(fnames, output_dir,
             else:
                 x, y, yerr = np.loadtxt( line_fnames[i-1], delimiter=',', unpack=True, usecols=[0,1,2] )
             
-            write_data( [x,y,yerr,np.full_like(x, False)], output_dir + 'light_curves/' + line_names[i] + '.dat' )
+            write_data( [x,y,yerr,np.full_like(x, False, dtype=bool)], output_dir + 'light_curves/' + line_names[i] + '.dat' )
             
 
 
