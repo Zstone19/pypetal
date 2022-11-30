@@ -33,11 +33,11 @@ def write_data(arr, fname, header=None):
 
             for i in range(rows):
 
-                string = "{},".format(arr[i][0])
+                string = "{},".format(arr[0][i])
                 for j in range(1, cols-1):
-                    string += "{},".format(arr[i][j])
+                    string += "{},".format(arr[j][i])
 
-                string += "{}\n".format(arr[i][cols-1])
+                string += "{}\n".format(arr[-1][i])
 
                 file.write(string)
 
