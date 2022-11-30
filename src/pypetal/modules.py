@@ -567,26 +567,16 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     #--------------------------------------------------
     #Account for parameters if javelin['together'] = False
     if not together:
-            
-        if 'laglimit' not in params:
+          
+        if ( type(laglimit) is str ) | ( laglimit is None ):
             laglimit = np.full( len(line_fnames), laglimit )
-    
-        if not ('fixed' in params):
             
-            fixed_og = fixed
-            p_fix_og = p_fix
-            
-            fixed = []
-            p_fix = []
-            for i in range(len(line_fnames)):
-                fixed.append( fixed_og )
-                p_fix.append( p_fix_og )
-    
+        if ( len(line_fnames) == 1 ) & ( laglimit is not None ):
+            laglimit = [laglimit]
     
         if fixed is None:
             fixed = np.full( len(line_fnames), fixed )
             p_fix = np.full( len(line_fnames), p_fix )
-    
     
         if ( len(fixed) < len(line_fnames) ) or ( len(fixed) == 5 ):
             fixed_og = fixed
