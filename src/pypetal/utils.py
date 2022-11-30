@@ -879,6 +879,9 @@ def run_javelin(cont_fname, line_fnames, line_names,
         rmod = Rmap_Model(tot_dat)
     elif rm_type == 'phot':
         rmod = Pmap_Model(tot_dat)
+        
+    if len(tot_fnames) == 2:
+        laglimit = [laglimit]
     
     rmod.do_mcmc(conthpd=conthpd, fixed=fixed, p_fix=p_fix, lagtobaseline=lagtobaseline, laglimit=laglimit,
                  nwalkers=nwalkers, nburn=nburn, nchain=nchain, 
