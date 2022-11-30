@@ -6,7 +6,7 @@ from matplotlib.colors import ListedColormap
 import palettable
 
 import corner
-import petl.utils as utils
+import pypetal.utils as utils
 
 import matplotlib as mpl
 

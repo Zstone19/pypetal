@@ -3,7 +3,7 @@ import os
 import sys
 sys.path.insert( 0, os.path.abspath('../..') )
 sys.path.insert( 1, os.path.abspath("../src/"))
-sys.path.insert( 2, os.path.abspath("../src/petl/"))
+sys.path.insert( 2, os.path.abspath("../src/pypetal/"))
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -13,7 +13,7 @@ sys.path.insert( 2, os.path.abspath("../src/petl/"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'petl'
+project = 'pypetal'
 copyright = '2022, Zachary Stone'
 author = 'Zachary Stone'
 release = '0.1.0'
@@ -66,7 +66,7 @@ napoleon_attr_annotations = True
 html_context = dict(
     display_github=True,
     github_user="Zstone19",
-    github_repo="petl",
+    github_repo="pypetal",
     conf_py_path="/docs/",
 )
 

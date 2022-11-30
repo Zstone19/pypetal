@@ -1,6 +1,6 @@
 import petl.utils as utils
 import petl.plotting as plotting
-from petl.formatting import write_data
+from pypetal.formatting import write_data
 
 import os
 

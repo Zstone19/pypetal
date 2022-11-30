@@ -1,4 +1,4 @@
-import petl.pipeline as pl
+import pypetal.pipeline as pl
 import glob
 import shutil
 

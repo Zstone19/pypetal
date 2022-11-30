@@ -1,4 +1,4 @@
-import petl.modules as modules
+import pypetal.modules as modules
 
 import os
 

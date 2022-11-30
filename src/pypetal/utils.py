@@ -13,8 +13,8 @@ from javelin.zylc import get_data
 from javelin.lcio import writelc
 from javelin.lcmodel import Cont_Model, Rmap_Model, Pmap_Model, SPmap_Model
 
-import petl.drw_funcs as drw
-import petl.pyccf as pyccf
+import pypetal.drw_funcs as drw
+import pypetal.pyccf as pyccf
 
 
 ##############################################################

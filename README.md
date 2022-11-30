@@ -1,4 +1,4 @@
-PETL: A Pipeline for Estimating AGN Time Lags
+pyPETaL: A Pipeline for Estimating AGN Time Lags
 ==========================================
 
 Installation
@@ -10,17 +10,17 @@ A number of different packages and softwares are required. Most can be installed
 
 PETL is available on PyPI and can be installed with pip: **(NOT IMPLEMENTED YET)**
 ```
-    pip install petl
+    pip install pypetal
 ```
 
 Or, if you want to install the latest development version:
 ```
-    git clone https://github.com/Zstone19/petl.git
+    git clone https://github.com/Zstone19/pypetal.git
     cd petl
     python setup.py install
 ```
 
-PLIKE is an optional algorithm that is used in PETL. There is a script available in the main directory to install and compile PLIKE (assuming that `gfortran` is installed). To install PLIKE, run the following command:
+PLIKE is an optional algorithm that is used in pyPetal. There is a script available in the main directory to install and compile PLIKE (assuming that `gfortran` is installed). To install PLIKE, run the following command:
 ```
     sh build_plike.sh
 ```
