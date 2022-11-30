@@ -1,4 +1,5 @@
 import pypetal.modules as modules
+from pypetal.formatting import write_data
 
 import os
 
@@ -484,13 +485,7 @@ def run_pipeline(fnames, output_dir,
         fname = os.path.basename( cont_fname )
         
         #Write to csv
-        f = open( input_dir + fname, 'w' )
-        
-        for i in range(len(dat)):
-            f.write( '{},{},{}'.format(dat['x'][i], dat['y'][i], dat['err'][i]) + '\n' )
-
-        f.close()
-        
+        write_data( [ dat['x'], dat['y'], dat['err'] ], fname )        
         cont_fname = input_dir + fname        
         
         
@@ -508,14 +503,9 @@ def run_pipeline(fnames, output_dir,
             fname = os.path.basename( line_fnames[i] )
                 
             #Write to csv
-            f = open( input_dir + fname, 'w' )
-            
-            for j in range(len(dat)):
-                f.write( '{},{},{}'.format( dat['x'][j], dat['y'][j], dat['err'][j] ) + '\n' )
-
-            f.close()
-            
+            write_data( [dat['x'], dat['y'], dat['err']], fname )
             line_fnames[i] = input_dir + fname
+
         
     drw_rej_res = {}
     pyccf_res = {}
@@ -534,14 +524,8 @@ def run_pipeline(fnames, output_dir,
                 x, y, yerr = np.loadtxt( line_fnames[i-1], delimiter=',', unpack=True, usecols=[0,1,2] )
             
             mask = drw_rej_res['masks'][i]
-            
-            f = open( output_dir + 'light_curves/' + line_names[i] + '.dat', 'w' )
-            f.write('#x,y,yerr,mask\n')
-            for j in range(len(x)):
-                f.write( '{},{},{},{}\n'.format( x[i], y[i], yerr[i], mask[i] ) )
-                
-            f.close()
-                
+            write_data( [x,y,yerr,mask], output_dir + 'light_curves/' + line_names[i] + '.dat', '#x,y,yerr,mask' )
+                            
                 
         #If rejecting data, make the new files the ones without rejected data
         if drw_rej_res['reject_data'][0]:
@@ -615,12 +599,8 @@ def run_pipeline(fnames, output_dir,
             else:
                 x, y, yerr = np.loadtxt( line_fnames[i-1], delimiter=',', unpack=True, usecols=[0,1,2] )
             
-            f = open( output_dir + 'light_curves/' + line_names[i] + '.dat', 'w' )
-            f.write('#x,y,yerr,mask\n')
-            for j in range(len(x)):
-                f.write( '{},{},{},{}\n'.format( x[i], y[i], yerr[i], True ) )
-                
-            f.close()
+            write_data( [x,y,yerr], output_dir + 'light_curves/' + line_names[i] + '.dat', np.fill_like(x, True) )
+            
 
 
     if run_pyccf:
