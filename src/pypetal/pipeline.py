@@ -14,7 +14,7 @@ def run_pipeline(fnames, output_dir,
                  run_javelin=False, javelin_params={},
                  **kwargs):
     
-    """ Run the PETL pipe line on a list of files. Individual modules can be specified, but are not run by default.
+    """ Run the pyPetal pipeline on a list of files. Individual modules can be specified, but are not run by default.
     
     
     Default parameters

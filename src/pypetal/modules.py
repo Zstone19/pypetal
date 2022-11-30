@@ -1,5 +1,5 @@
-import petl.utils as utils
-import petl.plotting as plotting
+import pypetal.utils as utils
+import pypetal.plotting as plotting
 from pypetal.formatting import write_data
 
 import os
