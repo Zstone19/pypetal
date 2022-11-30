@@ -170,7 +170,7 @@ def drw_flag(times, data, error,
         'mask': flag_mask,
         'tau' : tau_vals,
         'sigma': sig_vals,
-        'fit_x': times,
+        'fit_x': t,
         'fit_y': mu,
         'fit_err': std
     }
