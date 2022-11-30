@@ -1,9 +1,9 @@
 from setuptools import setup
 
 
-NAME = 'petl'
+NAME = 'pypetal'
 VERSION = '0.1.0'
-URL = 'https://github.com/Zstone19/petl'
+URL = 'https://github.com/Zstone19/pypetal'
 
 AUTHOR = 'Zachary Stone'
 EMAIL = 'stone28@illinois.edu'
@@ -28,7 +28,7 @@ setup(
     license='MIT',
     install_requires=REQUIREMENTS,
     python_requires='>=3.8,<3.11',
-    packages=['petl'],
-    package_dir={'petl':'./src/petl'},
+    packages=['pypetal'],
+    package_dir={'pypetal':'./src/pypetal'},
     include_package_data=True
 )
