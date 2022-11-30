@@ -583,6 +583,11 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
                 p_fix.append( p_fix_og )
     
     
+        if fixed is None:
+            fixed = np.full( len(line_fnames), fixed )
+            p_fix = np.full( len(line_fnames), p_fix )
+    
+    
         if ( len(fixed) < len(line_fnames) ) or ( len(fixed) == 5 ):
             fixed_og = fixed
             p_fix_og = p_fix
