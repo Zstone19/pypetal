@@ -500,18 +500,16 @@ def run_pipeline(output_dir, arg2,
 
         #Read in file        
         try:
-            dat = Table.read( cont_fname, format=file_fmt,
-                             names=['x', 'y', 'err'])
+            dat = Table.read( cont_fname, format=file_fmt)
         except:
-            dat = Table.read( cont_fname, format='ascii',
-                             names=['x', 'y', 'err'])
+            dat = Table.read( cont_fname, format='ascii')
         
     
         #Get filename
         fname = os.path.basename( cont_fname )
         
         #Write to csv
-        write_data( [ dat['x'], dat['y'], dat['err'] ], input_dir + fname )        
+        write_data( [ dat[ dat.colnames[0] ], dat[ dat.colnames[1] ], dat[ dat.colnames[2] ] ], input_dir + fname )        
         cont_fname = input_dir + fname        
         
         
@@ -519,17 +517,15 @@ def run_pipeline(output_dir, arg2,
             
             #Read in file
             try:
-                dat = Table.read( line_fnames[i], format=file_fmt,
-                                 names=['x', 'y', 'err'])
+                dat = Table.read( line_fnames[i], format=file_fmt)
             except:
-                dat = Table.read( line_fnames[i], format='ascii',
-                                 names=['x', 'y', 'err'])
+                dat = Table.read( line_fnames[i], format='ascii')
                 
             #Get filename
             fname = os.path.basename( line_fnames[i] )
                 
             #Write to csv
-            write_data( [dat['x'], dat['y'], dat['err']], input_dir + fname )
+            write_data( [ dat[ dat.colnames[0] ], dat[ dat.colnames[1] ], dat[ dat.colnames[2] ] ], input_dir + fname )
             line_fnames[i] = input_dir + fname
 
         
