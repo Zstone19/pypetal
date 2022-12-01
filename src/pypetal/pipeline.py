@@ -20,12 +20,16 @@ def run_pipeline(output_dir, arg2,
     
     Default parameters
     -------------------    
-    
-    line_fnames : str, list of str
-        Path to the line light curve file(s). The first light curve file will be considered the "continuum" light curve.
-    
+        
     output_dir : str
         Path to the directory containing the output.
+            
+    arg2 : list
+        Either a list of paths to the light curve files, or an array of the light curves.
+        
+    .. note:: The first light curve will be assumed to be the continuum light curve.
+    .. note:: pyPetal will use the first 3 columns of the light curve files, and assume they represent the time, values, and uncertainty in the light curves.
+    .. warning:: By default, set to ``None``. If left to ``None``, pyPetal will raise an error.    
         
     line_names : str, list of str, optional
         Name(s) of the line(s). If ``None``, the lines will be named in chronological order (i.e. Line 1, Line 2, etc).
@@ -36,154 +40,155 @@ def run_pipeline(output_dir, arg2,
     DRW rejection parameters
     -------------------------
     
-        nsig : float
-            The algorithm will flag all data points greater than nsig*sigma away from the mean of the DRW fit to the light curve. 
-            Default is 1.
-    
-        jitter : bool
-            If ``True``, will include a noise term in the model to account for extra noise. Default is ``True``.
-    
-        nwalker : int
-            Number of walkers for the MCMC. Default is 32.
+    nsig : float
+        The algorithm will flag all data points greater than nsig*sigma away from the mean of the DRW fit to the light curve. 
+        Default is 1.
 
-        nburn : int
-            Number of burn-in steps for the MCMC. Default is 300.
-            
-        nchain : int
-            Number of steps for the MCMC. Default is 1000.
-    
-        reject_data : bool
-            If ``True``, will use light curves without the rejected data points for the rest of the pipeline. These
-            light curves will be saved in the given output directory as csv files labeled '{line name}_data.dat'. 
-            Default is ``True``.
-            
-        clip : bool, list of bool
-            If ``True``, the light curves will be clipped so that the time between two observations is not less than 1e-8 days.
-            This can also be input as a list of bool for each light curve. Default is ``True``.
-            
-        use_for_javelin : bool
-            If ``True``, the output DRW parameters will be used as fixed DRW parameters for JAVELIN. The DRW parameters for the continuum
-            will be used as these fixed parameters in JAVELIN. Default is ``False``.
+    jitter : bool
+        If ``True``, will include a noise term in the model to account for extra noise. Default is ``True``.
+
+    nwalker : int
+        Number of walkers for the MCMC. Default is 32.
+
+    nburn : int
+        Number of burn-in steps for the MCMC. Default is 300.
+        
+    nchain : int
+        Number of steps for the MCMC. Default is 1000.
+
+    reject_data : bool, list of bool
+        If ``True``, will use light curves without the rejected data points for the rest of the pipeline. These
+        light curves will be saved in the given output directory as csv files labeled '{line name}_data.dat'. This
+        parameter can be input as a list, to specify for each light curve. If one value is given and multiple light
+        curves are input, the same value will be used for all light curves. Default is ``True``.
+        
+    clip : bool, list of bool
+        If ``True``, the light curves will be clipped so that the time between two observations is not less than $10^{-8}$ days.
+        This can also be input as a list of bool for each light curve. If one value is given and multiple light
+        curves are input, the same value will be used for all light curves. Default is ``True``.
+        
+    use_for_javelin : bool
+        If ``True``, the output DRW parameters will be used as fixed DRW parameters for JAVELIN. The DRW parameters for the continuum
+        will be used as these fixed parameters in JAVELIN. Default is ``False``.
              
     
     PyCCF parameters    
     -----------------
     
-        lag_bounds : (2,) list
-            Lower and upper bounds to search for the lag. If None, will be set to [-200, 200].
-            Default is ``None``. 
+    lag_bounds : (2,) list
+        Lower and upper bounds to search for the lag. If None, will be set to [-200, 200].
+        Default is ``None``. 
+    
+    interp : float
+        The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
+        shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
+        If set to ``None``, will be set to half of the average cadence of the light curves. The default is ``None``. 
         
-        interp : float
-            The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
-            shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
-            If set to ``None``, will be set to half of the average cadence of the light curves. The default is ``None``. 
-            
-        nsim : int
-            The number of Monte Carlo simulations to run. The default is 1000.
-            
-        mcmode: int
-            The type of resampling to do for the Monte Carlo Simulations. 0 performs both FR and RSS, 1 performs FR, and 2 performs RSS.
-            The default is 0.
-            
-        sigmode : float
-            The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the 
-            interval (0,1). All peaks and centroids with correlation coefficient r_max <= sigmode will be considered as "failed". 
-            If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation). The default is 0.2. 
-            
-        thres : float
-            The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within 
-            the interval (0,1). The default is 0.8.
+    nsim : int
+        The number of Monte Carlo simulations to run. The default is 1000.
         
+    mcmode: int
+        The type of resampling to do for the Monte Carlo Simulations. 0 performs both FR and RSS, 1 performs FR, and 2 performs RSS.
+        The default is 0.
+        
+    sigmode : float
+        The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the 
+        interval (0,1). All peaks and centroids with correlation coefficient r_max <= sigmode will be considered as "failed". 
+        If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation). The default is 0.2. 
+        
+    thres : float
+        The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within 
+        the interval (0,1). The default is 0.8.
+    
         
     PyZDCF parameters
     -----------------
     
-        nsim : int
-            Number of Monte Carlo simulations to run. Default is 500.
-            
-        minpts : int
-            The minimum number of points to use in each bin when computing the ZDCF. 
-            Must be larger than 11. If set to 0, it will be set to 11. Default is 0
-            
-        uniform_sampling : bool
-            If True, the light curves will be assumed to be uniformly sampled.
-            Default is ``False``.
-            
-        omit_zero_lags : bool
-            If True, will omit the points with zero lags when computing the ZDCF.
-            Default is ``True``.
-            
-        sparse : bool, str
-            Determines whether to use a sparse matrix implementation for reduced RAM usage.
-            This feature is suitable for longer light curves (> 3000 data points). If True, will
-            use sparse matrix implementation. If set to 'auto', will use sparse matrix implementation
-            if there are more than 3000 data points per light curve. Default is 'auto'.
-            
-        prefix : str
-            Prefix to the output ZDCF file. Default is 'zdcf'.
+    nsim : int
+        Number of Monte Carlo simulations to run. Default is 500.
+        
+    minpts : int
+        The minimum number of points to use in each bin when computing the ZDCF. 
+        Must be larger than 11. If set to 0, it will be set to 11. Default is 0
+        
+    uniform_sampling : bool
+        If ``True``, the light curves will be assumed to be uniformly sampled.
+        Default is ``False``.
+        
+    omit_zero_lags : bool
+        If ``True``, will omit the points with zero lags when computing the ZDCF.
+        Default is ``True``.
+        
+    sparse : bool, str
+        Determines whether to use a sparse matrix implementation for reduced RAM usage.
+        This feature is suitable for longer light curves (> 3000 data points). If True, will
+        use sparse matrix implementation. If set to 'auto', will use sparse matrix implementation
+        if there are more than 3000 data points per light curve. Default is 'auto'.
+        
+    prefix : str
+        Prefix to the output ZDCF file. Default is 'zdcf'.
 
-        run_plike : bool
-            Whether to run the PLIKE algorithm on the ZDCF to get a maximum likelihood time lag.
-            Default is False. Note: the directory containing the PLIKE executable must be input
-            with the ``plike_dir`` argument, and the range of lags to search must be input with the
-            ``lag_bounds`` argument.
-            
-        plike_dir : str
-            Path to the PLIKE executable. Default is ``None``.
+    run_plike : bool
+        Whether to run the PLIKE algorithm on the ZDCF to get a maximum likelihood time lag.
+        Default is False. Note: the directory containing the PLIKE executable must be input
+        with the ``plike_dir`` argument, and the range of lags to search must be input with the
+        ``lag_bounds`` argument.
+        
+    plike_dir : str
+        Path to the PLIKE executable. Default is ``None``.
 
-        lag_bounds : (2,) list
-            The lower and upper bounds of lags to search for the PLIKE algorithm. If ``None``, the lower and 
-            upper bounds will be the (negative, positive) baseline of the light curves. Default is ``None``.
+    lag_bounds : (2,) list
+        The lower and upper bounds of lags to search for the PLIKE algorithm. If ``None``, the lower and 
+        upper bounds will be the (negative, positive) baseline of the light curves. Default is ``None``.
             
         
     JAVELIN parameters
     ------------------
-    
-        rm_type : str
-            The type of analysis to use when running JAVELIN. Can either be set to 'spec' for spectroscopic RM, or 
-            'phot' for photometric RM. Default is 'spec'.
-    
-        lagtobaseline : float
-            A log  prior is used to logarithmically penalizes lag values larger than 
-            x*baseline, where x is the value of this parameter. Default is 0.3.
-        
-        laglimit : (2,) list, str
-            The upper and lower bounds of the region of lags to search. If 'baseline', the it will be 
-            set to [-baseline, basleline]. Default is 'baseline'.
 
-        fixed : list
-            A list to determine what parameters to fix/vary when fitting the light curves. This should be an array
-            with a length equal to the number of parameters in the model (i.e. 2 + 3*(number of light curves) ). The fitted 
-            parameters will be the two DRW parameters ( log(sigma), log(tau) ) and three tophat parameters for each
-            non-continuum light curve (lag, width, scale). Setting to 0 will fix the parameter and setting to 1 will allow it to vary.
-            If ``None``, all parameters will be allowed to vary. The fixed parameters must match the fixed value in the 
-            array input to the ``p_fix`` argument. default is ``None``. 
-        
-        p_fix : list
-            A list of the fixed parameters, corresponding to the elements of the ``fixed`` array.
-            If ``None``, all parameters will be allowed to vary. Default is ``None``.
-        
-        subtract_mean : bool
-            If ``True``, will subtract the mean of all light curves before analysis
-            Default is ``True``.
-               
-        nwalkers : int
-            The number of walkers to use in the MCMC. Default is 100.
-        
-        nchain : int
-            The number of steps to take in the MCMC. Default is 100.
+    rm_type : str
+        The type of analysis to use when running JAVELIN. Can either be set to 'spec' for spectroscopic RM, or 
+        'phot' for photometric RM. Default is 'spec'.
+
+    lagtobaseline : float
+        A log  prior is used to logarithmically penalizes lag values larger than 
+        x*baseline, where x is the value of this parameter. Default is 0.3.
+    
+    laglimit : (2,) list, str
+        The upper and lower bounds of the region of lags to search. If 'baseline', the it will be 
+        set to [-baseline, basleline]. Default is 'baseline'.
+
+    fixed : list
+        A list to determine what parameters to fix/vary when fitting the light curves. This should be an array
+        with a length equal to the number of parameters in the model (i.e. 2 + 3*(number of light curves) ). The fitted 
+        parameters will be the two DRW parameters ( log(sigma), log(tau) ) and three tophat parameters for each
+        non-continuum light curve (lag, width, scale). Setting to 0 will fix the parameter and setting to 1 will allow it to vary.
+        If ``None``, all parameters will be allowed to vary. The fixed parameters must match the fixed value in the 
+        array input to the ``p_fix`` argument. default is ``None``. 
+    
+    p_fix : list
+        A list of the fixed parameters, corresponding to the elements of the ``fixed`` array.
+        If ``None``, all parameters will be allowed to vary. Default is ``None``.
+    
+    subtract_mean : bool
+        If ``True``, will subtract the mean of all light curves before analysis. Default is ``True``.
             
-        nburn : int 
-            The number of steps to take in the burn-in phase of the MCMC. Default is 100.
+    nwalkers : int
+        The number of walkers to use in the MCMC. Default is 100.
+    
+    nchain : int
+        The number of steps to take in the MCMC. Default is 100.
         
-        output_chains : bool
-            If ``True``, will output the MCMC chains to a file. Default is ``True``.
-            
-        output_burn : bool
-            If ``True``, will output the MCMC burn-in chains to a file. Default is ``True``.
-            
-        output_logp : bool
-            If ``True``, will output the MCMC log probability to a file. Default is ``True``.            
+    nburn : int 
+        The number of steps to take in the burn-in phase of the MCMC. Default is 100.
+    
+    output_chains : bool
+        If ``True``, will output the MCMC chains to a file. Default is ``True``.
+        
+    output_burn : bool
+        If ``True``, will output the MCMC burn-in chains to a file. Default is ``True``.
+        
+    output_logp : bool
+        If ``True``, will output the MCMC log probability to a file. Default is ``True``.            
     
     .. warning:: JAVELIN cannot utilize multiple bands for photometric RM, so ``together" must be set to ``False" if ``rm_type='phot'``.
 
@@ -191,21 +196,21 @@ def run_pipeline(output_dir, arg2,
     Additional kwargs
     -----------------
     
-        verbose : bool
-            Whether to print out progress. Default is ``False``.
-            
-        use_weights: bool
-            Whether to use weights (from Grier et al. (2017)) in calculating the time lags. Default is ``False``. 
-            
-        file_fmt : str
-            The format of the input files. All files must be 'csv' to be used. If the files are not 'csv',
-            the files will be converted to 'csv' and used for subsequent analysis. Default is 'csv'.
-            
-        time_unit : str
-            The unit of the time values. Default is 'd'.
-            
-        lc_unit : str
-            the unit of the light curve values and uncertainties. Default is 'mag'.
+    verbose : bool
+        Whether to print out progress. Default is ``False``.
+        
+    use_weights: bool
+        Whether to use weights (from Grier et al. (2017)) in calculating the time lags. Default is ``False``. 
+        
+    file_fmt : str
+        The format of the input files. All files must be 'csv' to be used. If the files are not 'csv',
+        the files will be converted to 'csv' and used for subsequent analysis. Default is 'csv'.
+        
+    time_unit : str
+        The unit of the time values. Default is 'd'.
+        
+    lc_unit : str
+        The unit of the light curve values and uncertainties. Default is 'mag'.
             
             
     Returns
