@@ -1,6 +1,8 @@
 pyPETaL: A Pipeline for Estimating AGN Time Lags
 =================================================
 
+[![Documentation Status](https://readthedocs.org/projects/petl1/badge/?version=latest)](https://petl1.readthedocs.io/en/latest/?badge=latest)
+
 Installation
 ------------
 A number of different packages and softwares are required. Most can be installed through `pip` or `python setup.py install`. Only a few are not available through `pip` and must be installed manually.
