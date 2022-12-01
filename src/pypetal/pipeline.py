@@ -7,7 +7,7 @@ import numpy as np
 from astropy.table import Table
 
     
-def run_pipeline(fnames, output_dir, 
+def run_pipeline(output_dir, arg2, 
                  line_names=None, 
                  run_drw_rej=False, drw_rej_params={},
                  run_pyccf=False, pyccf_params={},
@@ -361,6 +361,32 @@ def run_pipeline(fnames, output_dir,
             The combined model after using the best-fit DRW and tophat parameters to fit each light curve.
                 
     """
+
+    if arg2 is None:
+        raise Exception('Please provide a list of light curve filenames or the light curves themselves')
+    else:
+        arg2 = np.array(arg2)
+    
+    if arg2.dtype is not str:
+        os.makedirs( output_dir + 'input_lcs/', exist_ok=True )        
+        fnames = []
+        
+        for i in range( len(arg2) ):
+            
+            if i == 0:
+                name = 'continuum' 
+            else:
+                name = 'line{}'.format(i+1)
+            
+            write_data( arg2[i], output_dir + 'input_lcs/' + name + '.dat' )
+            fnames.append( output_dir + 'input_lcs/' + name + '.dat' )
+            
+        fnames = np.array(fnames)
+    else:
+        fnames = arg2
+        
+    
+
 
     if len(fnames) < 2:
         print('ERROR: Requires at least two light curves to run pipeline.')
