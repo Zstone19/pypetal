@@ -3,6 +3,7 @@ import pypetal.plotting as plotting
 from pypetal.formatting import write_data
 
 import os
+import shutil
 
 import numpy as np
 from astropy.table import Table
@@ -469,7 +470,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
                             verbose=verbose)   
                     
             plike_fname = plike_dir + 'plike.out'        
-            os.rename( plike_fname, 
+            shutil.move( plike_fname, 
                       output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out' )
             
             plike_dat = Table.read( output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out', 
