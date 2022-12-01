@@ -2,8 +2,9 @@
 Installation
 =============
 
-A number of different packages and softwares are required. Most can be installed through ``pip`` or ``python setup.py install``. Only a few are not available through ``pip`` and must be installed manually.
-    #. A Fortran compiler (>F90)
+External requirements (not installed by ``pip`` or ``setup.py``):
+
+* A Fortran compiler (>F90)
 
 
 pyPetal is available on PyPI and can be installed with pip:

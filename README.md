@@ -5,7 +5,7 @@ pyPETaL: A Pipeline for Estimating AGN Time Lags
 
 Installation
 ------------
-A number of different packages and softwares are required. Most can be installed through `pip` or `python setup.py install`. Only a few are not available through `pip` and must be installed manually.
+External requirements (not installed by ``pip`` or ``setup.py``):
 ```
     A Fortran compiler (>F90)
 ```
@@ -19,7 +19,7 @@ Or, if you want to install the latest development version:
 ```
     git clone https://github.com/Zstone19/pypetal.git
     cd pypetal
-    python setup.py install
+    pip install .
 ```
 
 PLIKE is an optional algorithm that is used in pyPetal. There is a script available in the main directory to install and compile PLIKE (assuming that `gfortran` is installed). To install PLIKE, run the following command:
