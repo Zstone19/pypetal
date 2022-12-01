@@ -2,3 +2,5 @@ build_plike.sh
 examples/dat/javelin_continuum.dat
 examples/dat/javelin_yelm.dat
 examples/dat/javelin_zing.dat
+examples/dat/pyccf_lc1.dat
+examples/dat/pyccf_lc2.dat
