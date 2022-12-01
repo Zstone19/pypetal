@@ -382,6 +382,7 @@ def run_pipeline(output_dir, arg2,
             fnames.append( output_dir + 'input_lcs/' + name + '.dat' )
             
         fnames = np.array(fnames)
+        file_fmt = 'csv'
     else:
         fnames = arg2
         
@@ -659,6 +660,11 @@ def run_pipeline(output_dir, arg2,
     if run_pyzdcf:
         tot_res['pyzdcf_res'] = pyzdcf_res
         tot_res['plike_res'] = plike_res
+
+
+    if arg2.dtype is not str:
+        import shutil
+        shutil.rmtree( output_dir + 'input_lcs/' ) 
 
     
     return tot_res
