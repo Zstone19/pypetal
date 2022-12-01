@@ -661,7 +661,7 @@ def run_pipeline(output_dir, arg2,
         tot_res['plike_res'] = plike_res
 
 
-    if arg2.dtype is not str:
+    if arg2[0] is not str:
         import shutil
         shutil.rmtree( output_dir + 'input_lcs/' ) 
 
