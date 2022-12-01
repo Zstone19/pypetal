@@ -757,11 +757,14 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         n=3
         jitter_vals = np.exp(samples[:, 2])
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals), np.log10(jitter_vals) )).T
-        labels = [r'$\log_{10}\ (\sigma_{\rm DRW}$ /mag$)$', r'$\log_{10}\ (\tau_{\rm DRW, obs}$ /days$)$', r'$\log_{10}\ (\sigma_n$ /mag$)$']
+        labels = [r'$\log_{10}\ (\sigma_{\rm DRW}$ /' + str(x.unit) + '$)$', 
+                  r'$\log_{10}\ (\tau_{\rm DRW}$ /' + str(unit) + '$)$', 
+                  r'$\log_{10}\ (\sigma_n$ /' + str(unit) + '$)$']
     else:
         n=2
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals) )).T
-        labels = [r'$\log_{10}\ (\sigma_{\rm DRW}$ /mag$)$', r'$\log_{10}\ (\tau_{\rm DRW, obs}$ /days$)$']
+        labels = [r'$\log_{10}\ (\sigma_{\rm DRW}$' + str(x.unit) + '$)$', 
+                  r'$\log_{10}\ (\tau_{\rm DRW}$ /' + str(unit) + '$)$']
 
 
     #This is an array of the following: [[tau, sig, jit], [tau, sig, jit], ..., [tau, sig, jit]]
