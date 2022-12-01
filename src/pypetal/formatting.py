@@ -16,7 +16,7 @@ def str2unit(x):
 
 def write_data(arr, fname, header=None):
 
-    arr = np.array(arr)
+    arr = np.array(arr, dtype=object)
 
     ndim = len( arr.shape )
     assert ndim <= 2
