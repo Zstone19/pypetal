@@ -69,6 +69,9 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     if type(reject_data) is bool:
         reject_data = np.full( len(line_fnames) + 1, True)
         
+    if (use_for_javelin) & (reject_data[0] is False):
+        raise Exception('Cannot use continuum for Javelin without fitting it to a DRW first')
+        
     #--------------------------------------------------
     #Get units
     
