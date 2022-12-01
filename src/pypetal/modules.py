@@ -109,46 +109,46 @@ use_for_javelin: {}
     
     
     #Do continuum
-    x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
-
-    res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
-                                nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
-                                nsig=nsig, jitter=jitter, clip=clip[0], 
-                                target=line_names[0], 
-                                fname=output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.pdf', plot=verbose)
-    
-    cont_mask = res['mask']
-    
-    sigmas.append( np.median(res['sigma']) )
-    taus.append( np.median(res['tau']) )
-    
-    if jitter:
-        jitters.append( np.median(res['jitter']) )
-        
-        
-        
-    #Write mask
-    dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_mask.dat'
-    write_data( cont_mask, dat_fname )
-        
-    #Write LC fit
-    dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.dat'
-    header = '#time,light curve,error'
-    write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )    
-    
-    #Write the MCMC chains
-    dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_chain.dat'
-    
-    if jitter:
-        header = '#sigma,tau,jitter'
-        write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
-    else:
-        header = '#sigma,tau'
-        write_data( [ res['sigma'], res['tau'] ], dat_fname, header )
-    
-    
     
     if reject_data[0]:
+        x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
+
+        res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
+                                    nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
+                                    nsig=nsig, jitter=jitter, clip=clip[0], 
+                                    target=line_names[0], 
+                                    fname=output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.pdf', plot=verbose)
+        
+        cont_mask = res['mask']
+        
+        sigmas.append( np.median(res['sigma']) )
+        taus.append( np.median(res['tau']) )
+        
+        if jitter:
+            jitters.append( np.median(res['jitter']) )
+            
+            
+            
+        #Write mask
+        dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_mask.dat'
+        write_data( cont_mask, dat_fname )
+            
+        #Write LC fit
+        dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.dat'
+        header = '#time,light curve,error'
+        write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )    
+        
+        #Write the MCMC chains
+        dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_chain.dat'
+        
+        if jitter:
+            header = '#sigma,tau,jitter'
+            write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
+        else:
+            header = '#sigma,tau'
+            write_data( [ res['sigma'], res['tau'] ], dat_fname, header )
+    
+    
         x_new = x[~cont_mask]
         y_new = y[~cont_mask]
         yerr_new = yerr[~cont_mask]
@@ -156,53 +156,62 @@ use_for_javelin: {}
         dat_fname = output_dir + line_names[0] + '_data.dat'
         write_data([x_new, y_new, yerr_new], dat_fname)
         
+    else:
+        cont_mask = np.full( len(x), False )
+        
             
     line_masks = []
     
     for i in range(len(line_fnames)):
-        x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
-        
-        res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
-                                    nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
-                                    nsig=nsig, jitter=jitter, clip=clip[i+1],
-                                    target=line_names[i+1],
-                                    fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', plot=verbose)
-        
-        sigmas.append( np.median(res['sigma']) )
-        taus.append( np.median(res['tau']) )
-        
-        if jitter:
-            jitters.append( np.median(res['jitter']) )
-        
-        line_mask = res['mask']
-        line_masks.append(line_mask)
-        
-        #Write mask
-        dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_mask.dat'
-        write_data(line_mask, dat_fname)
-                
-        #Write LC fit
-        dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.dat'
-        header = '#time,light curve,error'
-        write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )        
-        
-        #Write the MCMC chains
-        dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_chain.dat'
-
-        if jitter:
-            header = '#sigma,tau,jitter'
-            write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
-        else:
-            header = '#sigma,tau'
-            write_data( [ res['sigma'], res['tau'] ], dat_fname, header )        
         
         if reject_data[i+1]:
+            x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
+            
+            res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
+                                        nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
+                                        nsig=nsig, jitter=jitter, clip=clip[i+1],
+                                        target=line_names[i+1],
+                                        fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', plot=verbose)
+            
+            sigmas.append( np.median(res['sigma']) )
+            taus.append( np.median(res['tau']) )
+            
+            if jitter:
+                jitters.append( np.median(res['jitter']) )
+            
+            line_mask = res['mask']
+            
+            #Write mask
+            dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_mask.dat'
+            write_data(line_mask, dat_fname)
+                    
+            #Write LC fit
+            dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.dat'
+            header = '#time,light curve,error'
+            write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )        
+            
+            #Write the MCMC chains
+            dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_chain.dat'
+
+            if jitter:
+                header = '#sigma,tau,jitter'
+                write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
+            else:
+                header = '#sigma,tau'
+                write_data( [ res['sigma'], res['tau'] ], dat_fname, header )        
+        
+
             x_new = x[~line_mask]
             y_new = y[~line_mask]
             yerr_new = yerr[~line_mask]
             
             dat_fname = output_dir + line_names[i+1] + '_data.dat'
             write_data( [x_new, y_new, yerr_new], dat_fname )
+        
+        else:
+            line_mask = np.full( len(x), False )
+            
+        line_masks.append(line_mask)
     
     tot_masks = []
     tot_masks.append(cont_mask)
