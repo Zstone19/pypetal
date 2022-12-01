@@ -581,7 +581,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
         'output_logp': True,
         'nbin': 50,
         'metric': 'med',
-        'together': True,
+        'together': False,
         'rm_type': 'spec',
         'use_weights': False
     }

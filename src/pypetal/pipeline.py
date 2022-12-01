@@ -462,7 +462,7 @@ def run_pipeline(output_dir, arg2,
     if 'together' in javelin_params:
         javelin_together = javelin_params['together']
     else:
-        javelin_together = True
+        javelin_together = False
         
         
     if 'rm_type' in javelin_params:
