@@ -563,10 +563,10 @@ def run_pipeline(output_dir, arg2,
                 
         #If rejecting any data, make the new files the ones without rejected data
         if np.any( drw_kwargs['reject_data'] ):
-            cont_fname = output_dir + line_names[0] + '_data.dat'
+            cont_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
             
             for i in range(len(line_fnames)):
-                line_fnames[i] = output_dir + line_names[i] + '_data.dat'            
+                line_fnames[i] = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'            
 
         
         if 'use_for_javelin' in drw_rej_params:
