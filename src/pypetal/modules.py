@@ -67,7 +67,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
         clip = np.full( len(line_fnames) + 1, clip)
         
     if type(reject_data) is bool:
-        reject_data = np.full( len(line_fnames) + 1, True)
+        reject_data = np.full( len(line_fnames) + 1, reject_data )
         
     if (use_for_javelin) & (reject_data[0] is False):
         raise Exception('Cannot use continuum for Javelin without fitting it to a DRW first')
@@ -110,6 +110,7 @@ use_for_javelin: {}
     if jitter:
         jitters = []
     
+    rejecting = np.any(reject_data)
     
     #Do continuum
     
@@ -156,16 +157,24 @@ use_for_javelin: {}
         y_new = y[~cont_mask]
         yerr_new = yerr[~cont_mask]
         
-        dat_fname = output_dir + line_names[0] + '_data.dat'
+        dat_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
         write_data([x_new, y_new, yerr_new], dat_fname)
         
     else:
+        x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
+        
         cont_mask = np.full( len(x), False )
         taus.append(None)
         sigmas.apend(None)
         
         if jitter:
             jitters.append(None)
+        
+        if rejecting:
+            dat_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
+            write_data([x, y, yerr], dat_fname)
+ 
+            
         
             
     line_masks = []
@@ -213,16 +222,24 @@ use_for_javelin: {}
             y_new = y[~line_mask]
             yerr_new = yerr[~line_mask]
             
-            dat_fname = output_dir + line_names[i+1] + '_data.dat'
+            dat_fname = output_dir + 'rejected_lcs/' + line_names[i+1] + '_data.dat'
             write_data( [x_new, y_new, yerr_new], dat_fname )
         
         else:
+            x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
+            
             line_mask = np.full( len(x), False )
             taus.append(None)
             sigmas.append(None)
             
             if jitter:
                 jitters.append(None)
+                
+            if rejecting:
+                dat_fname = output_dir + 'rejected_lcs/' + line_names[i+1] + '_data.dat'
+                write_data([x, y, yerr], dat_fname)
+
+                
             
             
             
