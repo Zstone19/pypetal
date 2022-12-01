@@ -158,6 +158,11 @@ use_for_javelin: {}
         
     else:
         cont_mask = np.full( len(x), False )
+        taus.append(None)
+        sigmas.apend(None)
+        
+        if jitter:
+            jitters.append(None)
         
             
     line_masks = []
@@ -210,6 +215,13 @@ use_for_javelin: {}
         
         else:
             line_mask = np.full( len(x), False )
+            taus.append(None)
+            sigmas.append(None)
+            
+            if jitter:
+                jitters.append(None)
+            
+            
             
         line_masks.append(line_mask)
     
@@ -228,6 +240,7 @@ use_for_javelin: {}
     
     if jitter:
         output['jitters'] = jitters
+    
     return output
 
 
