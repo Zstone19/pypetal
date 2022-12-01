@@ -366,7 +366,7 @@ def run_pipeline(output_dir, arg2,
         raise Exception('Please provide a list of light curve filenames or the light curves themselves')
 
     
-    if arg2[0] is not str:
+    if not isinstance(arg2[0], str):
         os.makedirs( output_dir + 'input_lcs/', exist_ok=True )        
         fnames = []
         
