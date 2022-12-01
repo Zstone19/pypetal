@@ -742,6 +742,8 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
 
     if unit == u.mag:
         unit_label = 'Magnitude'
+    elif unit == u.dimensionless_unscaled:
+        unit_label = 'Flux'
     else:
         unit_label = 'Flux [' + str(unit) + ']'
 
