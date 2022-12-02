@@ -34,7 +34,7 @@ mpl.rcParams['savefig.format'] = 'pdf'
 def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2, 
                        ccf_lags, ccf,
                        cccd_lags, ccpd_lags,
-                       nbin=50, time_unit='d', lc_unit='mJy', lc_names=['', ''],
+                       nbin=50, time_unit='d', lc_unit=['mJy', 'mJy'], lc_names=['', ''],
                        plot_weights=False, fname=None, show=False):
     
     """Plot the results of using pyCCF on two light curves.
@@ -134,17 +134,6 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     [bar.set_alpha(.25) for bar in bars]
     
     
-    if lc_unit == 'mag':
-        ytxt = 'Magnitude'
-        
-        ax1.invert_yaxis()
-        ax2.invert_yaxis()
-    elif lc_unit == 'Arbitrary Units':
-        ytxt = 'Flux'
-    else:
-        ytxt = 'Flux [' + str(lc_unit) + ']'
-    
-    
     #Increase y-bounds to fit text 
     ymin, ymax = ax1.get_ylim()
     ymax = ymin + (ymax - ymin)*1.15
@@ -236,7 +225,29 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
                     fontsize=14, color='r')
 
 
-    plt.figtext( .06, .5, ytxt, fontsize=19, rotation=90, va='center' )
+    #Add ylabels
+    if lc_unit[0] == 'mag':
+        ytxt = 'Magnitude'
+        ax1.invert_yaxis()
+        
+    elif lc_unit[0] == 'Arbitrary Units':
+        ytxt = 'Flux'
+    else:
+        ytxt = 'Flux [' + str(lc_unit[0]) + ']'
+    ax1.set_ylabel( ytxt, fontsize=19, va='center' )
+    
+    
+    if lc_unit[1] == 'mag':
+        ytxt = 'Magnitude'
+        ax2.invert_yaxis()
+        
+    elif lc_unit[1] == 'Arbitrary Units':
+        ytxt = 'Flux'
+    else:
+        ytxt = 'Flux [' + str(lc_unit[1]) + ']'
+    ax2.set_ylabel( ytxt, fontsize=19, va='center' )
+    
+    
 
     plt.figtext( .94, .72, 'CCF', rotation=270, fontsize=19 )
     plt.figtext( .94, .45, 'CCCD', rotation=270, fontsize=19 )
@@ -298,7 +309,7 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
 def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
                         dcf_df, 
                         plike_dict=None,
-                        time_unit='d', lc_unit='mJy', lc_names=['', ''],
+                        time_unit='d', lc_unit=['mJy', 'mJy'], lc_names=['', ''],
                         fname=None, show=False):
 
     """Plot the results of pyZDCF.
@@ -404,18 +415,6 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
     ax3.yaxis.tick_right()
     ax3.yaxis.set_ticks_position('both')
 
-
-    if lc_unit == 'mag':
-        ytxt = 'Magnitude'
-        
-        ax1.invert_yaxis()
-        ax2.invert_yaxis()
-    elif lc_unit == 'Arbitrary Units':
-        ytxt = 'Flux'
-    else:
-        ytxt = 'Flux [' + str(lc_unit) + ']'
-
-
     for i, ax in enumerate([ax1, ax2]):
         y1, y2 = ax.get_ylim()
         y2 = y1 + (y2-y1)*1.3
@@ -437,7 +436,31 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
     ax3.locator_params('x', nbins=5)
     ax3.locator_params('y', nbins=5)
 
-    plt.figtext( .07, .5, ytxt, fontsize=17, rotation=90, va='center' )
+    
+    
+    #Add ylabels
+    if lc_unit[0] == 'mag':
+        ytxt = 'Magnitude'
+        ax1.invert_yaxis()
+        
+    elif lc_unit[0] == 'Arbitrary Units':
+        ytxt = 'Flux'
+    else:
+        ytxt = 'Flux [' + str(lc_unit[0]) + ']'
+    ax1.set_ylabel( ytxt, fontsize=19, va='center' )
+    
+    
+    if lc_unit[1] == 'mag':
+        ytxt = 'Magnitude'
+        ax2.invert_yaxis()
+        
+    elif lc_unit[1] == 'Arbitrary Units':
+        ytxt = 'Flux'
+    else:
+        ytxt = 'Flux [' + str(lc_unit[1]) + ']'
+    ax2.set_ylabel( ytxt, fontsize=19, va='center' )
+    
+    
     plt.subplots_adjust(hspace=.03, wspace=.06)
 
     if fname is not None:
@@ -460,7 +483,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
 
 
 def plot_javelin_hist(res, fixed=None, nbin=50, 
-                      time_unit='d', lc_unit='mag',
+                      time_unit='d',
                       plot_weights=False, remove_fixed=True, fname=None):
 
 
@@ -480,9 +503,6 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
         
     time_unit : str, optional
         The unit of time for the light curves. Default is 'd'.
-        
-    lc_unit : str, optional
-        The unit of the light curves. Default is 'mag'.
         
     plot_weights : bool, optional
         If ``True``, will use the weights described in Grier et al. (2017) to weight the 
@@ -507,16 +527,6 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
         The axes for the plot.    
     
     """
-
-    if lc_unit == 'Arbitrary Units':
-        lc_unit_txt = ''
-    else:
-        lc_unit_txt = '[' + str(lc_unit) +']'
-    
-    time_unit_txt = '[' + str(time_unit) + ']'
-
-
-
 
     Ncol = 3
     Nrow = len(res['tophat_params'])//3 + 1
@@ -570,7 +580,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
                 ax[i,j].hist( vals, bins=nbin )
 
 
-    ax[0,0].set_xlabel(r'$\log_{10}(\sigma_{\rm DRW} \,\, ' + lc_unit_txt + ')$', fontsize=19)
+    ax[0,0].set_xlabel(r'$\log_{10}(\sigma_{\rm DRW})$', fontsize=19)
     ax[0,1].set_xlabel(r'$\log_{10}(\tau_{\rm DRW} \,\, ' + time_unit_txt + ')$', fontsize=19)
         
     for i in range(1, Nrow):
@@ -581,7 +591,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
             if j == 1:
                 ax[i,j].set_xlabel(r'w$_{' + names[i-1] + '}$ ' + time_unit_txt, fontsize=22)
             if j == 2:
-                ax[i,j].set_xlabel(r's$_{' + names[i-1] + '}$ ' + lc_unit_txt, fontsize=22)  
+                ax[i,j].set_xlabel(r's$_{' + names[i-1] + '}$', fontsize=22)  
                 
     for i in range(Nrow):
         ax[i, 0].set_ylabel('N', fontsize=19)
@@ -735,6 +745,10 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
         
     """
     
+    if isinstance(lc_unit, str):
+        lc_unit = np.full( tot_dat.nlc, lc_unit )
+    
+    
     cmap = ListedColormap( palettable.cartocolors.qualitative.Vivid_10.mpl_colors )    
     colors = cmap.colors
 
@@ -749,19 +763,6 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
     for i in range(len(ax)):
         ax[i].set_prop_cycle('color', palettable.cartocolors.qualitative.Bold_10.mpl_colors )
 
-
-        
-    if lc_unit == 'mag':
-        ytxt = 'Magnitude'
-        
-        for i in range(tot_dat.nlc):
-            ax[i].invert_yaxis()
-            
-    elif lc_unit == 'Arbitrary Units':
-        ytxt = 'Flux'
-    else:
-        ytxt = 'Flux [' + str(lc_unit) + ']'
-        
         
     for i in range(tot_dat.nlc):
         ax[i].errorbar( tot_dat.jlist[i], tot_dat.mlist[i] + tot_dat.blist[i], 
@@ -788,12 +789,21 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
         ax[i].tick_params('both', which='minor', length=5)
         
         ax[i].legend( bbox_to_anchor=(1.13, 1.03), fontsize=12 )
+        
+        
+        
+        if lc_unit[i] == 'mag':
+            ytxt = 'Magnitude'
+            ax[i].invert_yaxis()
+                
+        elif lc_unit[i] == 'Arbitrary Units':
+            ytxt = 'Flux'
+        else:
+            ytxt = 'Flux [' + str(lc_unit[i]) + ']'
 
+        ax[i].set_ylabel( ytxt, fontsize=22, va='center' )
             
     ax[-1].set_xlabel('Time [' + str(time_unit) + ']', fontsize=20)
-
-
-    plt.figtext(.05, .5, ytxt, va='center', rotation=90, fontsize=22)
 
     plt.subplots_adjust(hspace=0)
     

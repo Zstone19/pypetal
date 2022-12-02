@@ -76,7 +76,9 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     #Get units
     
     time_unit = str2unit(time_unit)
-    lc_unit = str2unit(lc_unit) 
+    
+    for i in range(len(lc_unit)):
+        lc_unit[i] = str2unit(lc_unit[i]) 
     
     #--------------------------------------------------
     if verbose:
@@ -117,7 +119,7 @@ use_for_javelin: {}
     if reject_data[0]:
         x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
 
-        res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
+        res = utils.drw_flag( x*time_unit, y*lc_unit[0], yerr*lc_unit[0], 
                                     nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
                                     nsig=nsig, jitter=jitter, clip=clip[0], 
                                     target=line_names[0], 
@@ -184,7 +186,7 @@ use_for_javelin: {}
         if reject_data[i+1]:
             x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
             
-            res = utils.drw_flag( x*time_unit, y*lc_unit, yerr*lc_unit, 
+            res = utils.drw_flag( x*time_unit, y*lc_unit[i+1], yerr*lc_unit[i+1], 
                                         nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
                                         nsig=nsig, jitter=jitter, clip=clip[i+1],
                                         target=line_names[i+1],
@@ -376,7 +378,7 @@ nbin: {}
         plotting.plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
                                     res['CCF_lags'], res['CCF'],
                                     res['CCCD_lags'], res['CCPD_lags'],
-                                    nbin=nbin, time_unit=time_unit, lc_unit=lc_unit,
+                                    nbin=nbin, time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                     lc_names=[line_names[0], line_names[i+1]],
                                     plot_weights=False,
                                     fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.pdf', show=verbose)
@@ -538,7 +540,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
             
         plotting.plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
                                      dcf_df, plike_dict,
-                                     time_unit=time_unit, lc_unit=lc_unit,
+                                     time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                      lc_names=[line_names[0], line_names[i+1]],
                                      fname=output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_zdcf.pdf', 
                                      show=verbose)    
@@ -751,7 +753,7 @@ use_weights: {}
             
             #Plot histograms
             fig, ax = plotting.plot_javelin_hist( res, fixed=fixed[i], nbin=nbin,
-                                                  time_unit=time_unit, lc_unit=lc_unit,
+                                                  time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                                   plot_weights=use_weights, remove_fixed=False,
                                                   fname= output_dir + line_names[i+1] + r'/javelin/javelin_histogram.pdf' )
             
@@ -781,7 +783,8 @@ use_weights: {}
             
             
             #Plot model fits
-            fig, ax = plotting.plot_javelin_bestfit(res, bestfit_model,
+            fig, ax = plotting.plot_javelin_bestfit(res, bestfit_model, time_unit=time_unit, 
+                                                    lc_unit=[lc_unit[0], lc_unit[i+1]],
                                                     fname= output_dir + line_names[i+1] + '/javelin/javelin_bestfit.pdf' )
 
             if verbose:
