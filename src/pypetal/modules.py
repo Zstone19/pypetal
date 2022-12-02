@@ -568,6 +568,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     #Read general kwargs
     
     verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']    
                 
@@ -780,6 +781,9 @@ use_weights: {}
             if (fixed[i] is None) | (fixed[i] is np.ones( 2 + 3*len(line_fnames) )):
                 fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
                                                 fname= output_dir + line_names[i+1] + '/javelin/javelin_corner.pdf' )
+                    
+                if plot:
+                    plt.show()
                     
                 plt.cla()
                 plt.clf()
