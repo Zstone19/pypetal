@@ -35,6 +35,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read general kwargs
     
     verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
         
@@ -123,7 +124,8 @@ use_for_javelin: {}
                                     nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
                                     nsig=nsig, jitter=jitter, clip=clip[0], 
                                     target=line_names[0], 
-                                    fname=output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.pdf', plot=verbose)
+                                    fname=output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.pdf', 
+                                    plot=plot)
         
         cont_mask = res['mask']
         
@@ -190,7 +192,8 @@ use_for_javelin: {}
                                         nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
                                         nsig=nsig, jitter=jitter, clip=clip[i+1],
                                         target=line_names[i+1],
-                                        fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', plot=verbose)
+                                        fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', 
+                                        plot=plot)
             
             sigmas.append( np.median(res['sigma']) )
             taus.append( np.median(res['tau']) )
@@ -280,6 +283,7 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read general kwargs
     
     verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     
@@ -381,7 +385,8 @@ nbin: {}
                                     nbin=nbin, time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                     lc_names=[line_names[0], line_names[i+1]],
                                     plot_weights=False,
-                                    fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.pdf', show=verbose)
+                                    fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.pdf', 
+                                    show=plot)
 
     
         res_tot.append(res)
@@ -405,6 +410,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read general kwargs
 
     verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
         
@@ -543,7 +549,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
                                      time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                      lc_names=[line_names[0], line_names[i+1]],
                                      fname=output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_zdcf.pdf', 
-                                     show=verbose)    
+                                     show=plot)    
     
     return res_tot, plike_tot
 
@@ -680,7 +686,7 @@ use_weights: {}
                                              plot_weights=use_weights, remove_fixed=False,
                                              fname= output_dir + 'javelin/javelin_histogram.pdf' )
         
-        if verbose:
+        if plot:
             plt.show()
             
         plt.cla()
@@ -713,7 +719,7 @@ use_weights: {}
         fig, ax = plotting.plot_javelin_bestfit(res, bestfit_model, time_unit=time_unit, lc_unit=lc_unit,
                                                 fname= output_dir + 'javelin/javelin_bestfit.pdf' )
 
-        if verbose:
+        if plot:
             plt.show()
         
         plt.cla()
@@ -757,7 +763,7 @@ use_weights: {}
                                                   plot_weights=use_weights, remove_fixed=False,
                                                   fname= output_dir + line_names[i+1] + r'/javelin/javelin_histogram.pdf' )
             
-            if verbose:
+            if plot:
                 plt.show()
                 
             plt.cla()
@@ -787,7 +793,7 @@ use_weights: {}
                                                     lc_unit=[lc_unit[0], lc_unit[i+1]],
                                                     fname= output_dir + line_names[i+1] + '/javelin/javelin_bestfit.pdf' )
 
-            if verbose:
+            if plot:
                 plt.show()
             
             plt.cla()

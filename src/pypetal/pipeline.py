@@ -413,6 +413,7 @@ def run_pipeline(output_dir, arg2,
     general_kwargs = kwargs
     default_kwargs = {
         'verbose': False,
+        'plot': False,
         'time_unit': 'd',
         'lc_unit': 'Arbitrary Units',
         'file_fmt': 'csv'
@@ -420,6 +421,7 @@ def run_pipeline(output_dir, arg2,
     general_kwargs = { **default_kwargs, **general_kwargs }
     
     verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     file_fmt = general_kwargs['file_fmt']
