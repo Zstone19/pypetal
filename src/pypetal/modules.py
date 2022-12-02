@@ -752,9 +752,14 @@ use_weights: {}
         for i in range(len(line_fnames)):
             names_i = [line_names[0], line_names[i+1]]
             
+            if isinstance(laglimit[i], str):
+                input_laglimit = laglimit[i]
+            else:
+                input_laglimit = [laglimit[i]]
+            
             res = utils.run_javelin(cont_fname, line_fnames[i], names_i, 
                                     output_dir=output_dir + names_i[1] + r'/javelin/', 
-                                    lagtobaseline=lagtobaseline, laglimit=[laglimit[i]],
+                                    lagtobaseline=lagtobaseline, laglimit=input_laglimit,
                                     fixed=fixed[i], p_fix=p_fix[i], subtract_mean=subtract_mean,
                                     nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=threads,
                                     output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
