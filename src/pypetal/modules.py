@@ -682,7 +682,7 @@ use_weights: {}
 
         #Plot histograms
         fig, ax = plotting.plot_javelin_hist( res, fixed=fixed, nbin=nbin,
-                                             time_unit=time_unit, lc_unit=lc_unit,
+                                             time_unit=time_unit,
                                              plot_weights=use_weights, remove_fixed=False,
                                              fname= output_dir + 'javelin/javelin_histogram.pdf' )
         
@@ -699,6 +699,10 @@ use_weights: {}
             #Corner plot
             fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
                                             fname= output_dir + 'javelin/javelin_corner.pdf' )
+                
+                
+            if plot:
+                plt.show()
                 
             plt.cla()
             plt.clf()
@@ -759,7 +763,7 @@ use_weights: {}
             
             #Plot histograms
             fig, ax = plotting.plot_javelin_hist( res, fixed=fixed[i], nbin=nbin,
-                                                  time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
+                                                  time_unit=time_unit,
                                                   plot_weights=use_weights, remove_fixed=False,
                                                   fname= output_dir + line_names[i+1] + r'/javelin/javelin_histogram.pdf' )
             

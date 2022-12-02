@@ -701,8 +701,6 @@ def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
             
     if fname is not None:
         plt.savefig( fname, dpi=200, bbox_inches='tight' )
-        
-    plt.show()
     
     return fig, ax
 
