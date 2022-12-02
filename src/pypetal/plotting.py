@@ -528,6 +528,8 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     
     """
 
+    time_unit_txt = '[' + str(time_unit) + ']'
+
     Ncol = 3
     Nrow = len(res['tophat_params'])//3 + 1
 
