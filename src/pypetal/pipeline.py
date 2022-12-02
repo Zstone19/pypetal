@@ -427,7 +427,7 @@ def run_pipeline(output_dir, arg2,
     file_fmt = general_kwargs['file_fmt']
     
     if isinstance(lc_unit, str):
-        lc_unit = np.full( len(fnames), lc_unit )
+        lc_unit = list( np.full( len(fnames), lc_unit ) )
         general_kwargs['lc_unit'] = lc_unit
     
     
