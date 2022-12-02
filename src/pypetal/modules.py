@@ -749,7 +749,7 @@ use_weights: {}
             
             res = utils.run_javelin(cont_fname, line_fnames[i], names_i, 
                                     output_dir=output_dir + names_i[1] + r'/javelin/', 
-                                    lagtobaseline=lagtobaseline, laglimit=laglimit[i],
+                                    lagtobaseline=lagtobaseline, laglimit=[laglimit[i]],
                                     fixed=fixed[i], p_fix=p_fix[i], subtract_mean=subtract_mean,
                                     nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=threads,
                                     output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
