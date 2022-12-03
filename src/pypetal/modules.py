@@ -286,12 +286,12 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
+    lag_bounds = general_kwargs['lag_bounds']
     
     #--------------------------------------------------
     #Read kwargs
     
     default_kwargs = {
-        'lag_bounds': np.full( len(line_fnames), None),
         'interp': None,
         'nsim': 1000,
         'mcmode': 0,
@@ -302,7 +302,6 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
         
     params = { **default_kwargs, **kwargs }
     
-    lag_bounds = params['lag_bounds']
     interp = params['interp']
     nsim = params['nsim']
     mcmode = params['mcmode']
@@ -311,7 +310,7 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     nbin = params['nbin']
 
     
-    if lag_bounds is None:
+    if lag_bounds is 'baseline':
         lag_bounds = np.full( len(line_fnames), None)
         
     if len(lag_bounds) != len(line_fnames):    
@@ -413,6 +412,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
+    lag_bounds = general_kwargs['lag_bounds']
         
     #--------------------------------------------------
     #Read kwargs
@@ -426,7 +426,6 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
         'prefix': 'zdcf',
         'run_plike': False,
         'plike_dir': None,
-        'lag_bounds': None
     }
         
     params = { **default_kwargs, **kwargs }
@@ -439,7 +438,6 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     prefix = params['prefix']
     run_plike = params['run_plike']
     plike_dir = params['plike_dir']
-    lag_bounds = params['lag_bounds']
         
     if (lag_bounds == 'baseline') or (lag_bounds is None):
         lag_bounds = np.full( len(line_fnames), 'baseline' )
@@ -570,14 +568,14 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     verbose = general_kwargs['verbose']
     plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
-    lc_unit = general_kwargs['lc_unit']    
+    lc_unit = general_kwargs['lc_unit']   
+    laglimit = general_kwargs['lag_bounds']
                 
     #--------------------------------------------------
     #Read kwargs
         
     default_kwargs = {
         'lagtobaseline': .3,
-        'laglimit': 'baseline',
         'fixed': None,
         'p_fix': None,
         'subtract_mean': True,
@@ -599,7 +597,6 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     params = { **default_kwargs, **kwargs }
     
     lagtobaseline = params['lagtobaseline']
-    laglimit = params['laglimit']
     fixed = params['fixed']
     p_fix = params['p_fix']
     subtract_mean = params['subtract_mean']

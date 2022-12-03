@@ -416,7 +416,8 @@ def run_pipeline(output_dir, arg2,
         'plot': False,
         'time_unit': 'd',
         'lc_unit': 'Arbitrary Units',
-        'file_fmt': 'csv'
+        'file_fmt': 'csv',
+        'lag_bounds': 'baseline'
     }
     general_kwargs = { **default_kwargs, **general_kwargs }
     
@@ -425,6 +426,7 @@ def run_pipeline(output_dir, arg2,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     file_fmt = general_kwargs['file_fmt']
+    lag_bounds = general_kwargs['lag_bounds']
     
     if isinstance(lc_unit, str):
         lc_unit = list( np.full( len(fnames), lc_unit ) )
