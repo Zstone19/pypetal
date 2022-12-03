@@ -34,6 +34,13 @@ def run_pipeline(output_dir, arg2,
     line_names : str, list of str, optional
         Name(s) of the line(s). If ``None``, the lines will be named in chronological order (i.e. Line 1, Line 2, etc).
         Default is ``None``.
+        
+    lag_bounds: list, optional
+        The minimum and maximum lag to search for all modules (pyCCF, PLIKE, JAVELIN). If 'baseline', the range searched
+        will be [-baseline, baseline], where baseline is the time span of the light curve. Multiple arguments 
+        can be specified, one for each light curve. If one argument is given, it will be assumed for all light curves.
+        Default is 'baseline'.
+
     
     
     
@@ -82,7 +89,7 @@ def run_pipeline(output_dir, arg2,
     interp : float
         The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be 
         shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
-        If set to ``None``, will be set to half of the average cadence of the light curves. The default is ``None``. 
+        If set to ``None``, will be set to half of the average cadence of the light curves. The default is 2. 
         
     nsim : int
         The number of Monte Carlo simulations to run. The default is 1000.
