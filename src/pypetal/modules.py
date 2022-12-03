@@ -292,7 +292,7 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read kwargs
     
     default_kwargs = {
-        'interp': None,
+        'interp': 2 + 1e-10,
         'nsim': 1000,
         'mcmode': 0,
         'sigmode': .2,
