@@ -1,5 +1,6 @@
 import numpy as np
 import astropy.units as u
+import re
 
 
 
@@ -12,9 +13,24 @@ def str2unit(x):
 
     return unit
 
-def err2str(val, up_err, lo_err, dec=2):
-    return "%(val)^{+%(up_err)}_{-%(lo_err)}" % {'val': round(val, dec), 'up_err': round(up_err, dec), 'lo_err': round(lo_err, dec)}
 
+#From https://stackoverflow.com/questions/5807952/removing-trailing-zeros-in-python/5808661#5808661
+def number_shaver(ch,
+                  regx = re.compile('(?<![\d.])0*(?:'
+                                    '(\d+)\.?|\.(0)'
+                                    '|(\.\d+?)|(\d+\.\d+?)'
+                                    ')0*(?![\d.])')  ,
+                  repl = lambda mat: mat.group(mat.lastindex)
+                                     if mat.lastindex!=3
+                                     else '0' + mat.group(3) ):
+    return regx.sub(repl,ch)
+
+def err2str(val, up_err, lo_err, dec=2):
+    val = number_shaver( str(round(val, dec)) )
+    up_err = number_shaver( str(round(up_err, dec)) )
+    lo_err = number_shaver( str(round(lo_err, dec)) )
+    
+    return val + '^{+' + up_err + '}_{-' + lo_err + '}'
 
 
 def write_data(arr, fname, header=None):
