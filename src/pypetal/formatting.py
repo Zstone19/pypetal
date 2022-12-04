@@ -12,6 +12,9 @@ def str2unit(x):
 
     return unit
 
+def err2str(val, up_err, lo_err, dec=2):
+    return "%(val)^{+%(up_err)}_{-%(lo_err)}" % {'val': round(val, dec), 'up_err': round(up_err, dec), 'lo_err': round(lo_err, dec)}
+
 
 
 def write_data(arr, fname, header=None):
