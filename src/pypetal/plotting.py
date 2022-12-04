@@ -7,6 +7,7 @@ import palettable
 
 import corner
 import pypetal.utils as utils
+from pypetal.formatting import err2str
 
 import matplotlib as mpl
 
@@ -162,10 +163,8 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     ymax = ymin + (ymax - ymin)*1.1
     ax4.set_ylim(ymin, ymax)
 
-    ax4.text(.05, .8, 
-            '${:.2f} ^'.format(cent_med) + '{+' + '{:.2f}'.format(cent_hi-cent_med)  + '}_{-' + '{:.2f}'.format(cent_med-cent_lo) + '}$ ' + lag_unit,
-            transform=ax4.transAxes,
-            fontsize=14)
+    res_txt = err2str(cent_med, cent_hi-cent_med, cent_med-cent_lo, dec=2) + ' ' + lag_unit
+    ax4.text(.05, .8, res_txt, transform=ax4.transAxes, fontsize=14)
     
     if plot_weights:
         bin_cents = np.zeros( len(bin_edges)-1 )
@@ -185,10 +184,8 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
         weighted_hi = np.percentile( weighted_lags, 84 )
         weighted_lo = np.percentile( weighted_lags, 16 )
         
-        ax4.text(.05, .6, 
-                    '${:.2f} ^'.format(weighted_med) + '{+' + '{:.2f}'.format(weighted_hi-weighted_med)  + '}_{-' + '{:.2f}'.format(weighted_med-weighted_lo) + '}$ ' + lag_unit,
-                    transform=ax4.transAxes,
-                    fontsize=14, color='r')
+        res_txt = err2str(weighted_med, weighted_hi-weighted_med, weighted_med-weighted_lo, dec=2) + ' ' + lag_unit
+        ax4.text(.05, .6, res_txt, transform=ax4.transAxes, fontsize=14, color='r')
 
     #----------------------------
     #Plot CCPD
@@ -199,10 +196,9 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     ymax = ymin + (ymax - ymin)*1.1
     ax5.set_ylim(ymin, ymax)
 
-    ax5.text(.05, .8, 
-            '${:.2f} ^'.format(peak_med) + '{+' + '{:.2f}'.format(peak_hi-peak_med)  + '}_{-' + '{:.2f}'.format(peak_med-peak_lo) + '}$ ' + lag_unit,
-            transform=ax5.transAxes,
-            fontsize=14)
+
+    res_txt = err2str( peak_med, peak_hi-peak_med, peak_med-peak_lo, dec=2 ) + ' ' + lag_unit
+    ax5.text(.05, .8, res_txt, transform=ax5.transAxes, fontsize=14)
     ax5.set_xlabel('Lag [' + str(lag_unit) + ']', fontsize=19)
     
     
@@ -219,10 +215,8 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
         weighted_hi = np.percentile( weighted_lags, 84 )
         weighted_lo = np.percentile( weighted_lags, 16 )
         
-        ax5.text(.05, .6, 
-                    '${:.2f} ^'.format(weighted_med) + '{+' + '{:.2f}'.format(weighted_hi-weighted_med)  + '}_{-' + '{:.2f}'.format(weighted_med-weighted_lo) + '}$ ' + lag_unit,
-                    transform=ax5.transAxes,
-                    fontsize=14, color='r')
+        res_txt = err2str(weighted_med, weighted_hi-weighted_med, weighted_med-weighted_lo, dec=2) + ' ' + lag_unit
+        ax5.text(.05, .6, transform=ax5.transAxes, fontsize=14, color='r')
 
 
     #Add ylabels
