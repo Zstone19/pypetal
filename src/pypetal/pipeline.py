@@ -500,18 +500,20 @@ def run_pipeline(output_dir, arg2,
         p_fix = None
         
     if not javelin_together:
-        if len(fixed) < len(line_fnames):
         
-            fixed_og = fixed
-            p_fix_og = p_fix
+        if fixed is not None:
+            if len(fixed) < len(line_fnames):
             
-            fixed = []
-            p_fix = []
-            for i in range(len(line_fnames)):
-                fixed.append(fixed_og)
-                p_fix.append(p_fix_og)
+                fixed_og = fixed
+                p_fix_og = p_fix
+                
+                fixed = []
+                p_fix = []
+                for i in range(len(line_fnames)):
+                    fixed.append(fixed_og)
+                    p_fix.append(p_fix_og)
         
-        elif fixed is None:
+        else:
             fixed = np.full( len(line_fnames), None )
             p_fix = np.full( len(line_fnames), None )    
             
