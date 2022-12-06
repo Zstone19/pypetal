@@ -650,8 +650,8 @@ def run_pipeline(output_dir, arg2,
                             javelin_params['p_fix'][i][1] = np.log(sig_cont)
                             
                         else:
-                            javelin_params['fixed'][i] = np.ones( ( len(line_fnames), 5 ) )
-                            javelin_params['p_fix'][i] = np.zeros( ( len(line_fnames), 5 ) )
+                            javelin_params['fixed'][i] = np.ones(5)
+                            javelin_params['p_fix'][i] = np.zeros(5)
 
                             javelin_params['fixed'][i][0] = 0
                             javelin_params['fixed'][i][1] = 0
