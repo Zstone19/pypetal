@@ -759,14 +759,14 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         n=3
         jitter_vals = np.exp(samples[:, 2])
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals), np.log10(jitter_vals) )).T
-        labels = [r'$\log_{10}\ (\sigma_{\rm DRW}$ /' + str(x.unit) + '$)$', 
-                  r'$\log_{10}\ (\tau_{\rm DRW}$ /' + str(unit) + '$)$', 
-                  r'$\log_{10}\ (\sigma_n$ /' + str(unit) + '$)$']
+        labels = [r'$\log_{10}\ (\sigma_{\rm DRW})$', 
+                  r'$\log_{10}\ (\tau_{\rm DRW})$', 
+                  r'$\log_{10}\ (\sigma_n)$']
     else:
         n=2
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals) )).T
-        labels = [r'$\log_{10}\ (\sigma_{\rm DRW}$' + str(x.unit) + '$)$', 
-                  r'$\log_{10}\ (\tau_{\rm DRW}$ /' + str(unit) + '$)$']
+        labels = [r'$\log_{10}\ (\sigma_{\rm DRW})$', 
+                  r'$\log_{10}\ (\tau_{\rm DRW})$']
 
 
     #This is an array of the following: [[tau, sig, jit], [tau, sig, jit], ..., [tau, sig, jit]]
@@ -864,7 +864,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         ax1.plot(t-x[0].value, mu, color='orange', zorder=-1)
     ax1.fill_between(t-x[0].value, mu+std, mu-std, color='orange', alpha=.3)
 
-    ax1.set_xlabel('Time [days]', fontsize=20)
+    ax1.set_xlabel('Time [' + str(x.unit) + ']', fontsize=20)
     ax1.set_ylabel(unit_label, fontsize=20)
     ax1.set_title(target_label, fontsize=21)
 
@@ -952,8 +952,8 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     ax2.axvspan(fmax.value, np.max(fLS.value), color='red', alpha=0.2)
 
 
-    ax2.set_xlabel(r'Frequency [days$^{-1}$]', fontsize=18)
-    ax2.set_ylabel(r'Power [(mag)$^2$ (days)]', fontsize=18)
+    ax2.set_xlabel(r'Frequency [' + str(x.unit) + '$^{-1}$]', fontsize=18)
+    ax2.set_ylabel(r'Power', fontsize=18)
 
     ax2.set_ylim( np.min(powerLS.value) )
     ax2.set_xlim(np.min(fLS.value), np.max(fLS.value))
