@@ -285,17 +285,6 @@ def run_pipeline(output_dir, arg2,
             The name of the light curve.
             
             
-        If ``use_weights=True``, the following outputs will be added:
-        
-        * weighted_CCCD : list of floats
-            The weighted CCCD.
-            
-        * weighted_CCPD : list of floats
-            The weighted CCPD.
-            
-    .. note:: The weighted distributions are ouptut as the samples that would be required to create the weighted histogram. In simpler terms, the original sample is downsampled in each bin to match that of the weighted distribution.
-
-
 
     pyZDCF: 'pyzdcf_res'
     
