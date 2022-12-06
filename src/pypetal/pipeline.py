@@ -499,7 +499,7 @@ def run_pipeline(output_dir, arg2,
         fixed = None
         p_fix = None
         
-    if not together:
+    if not javelin_together:
         if len(fixed) < len(line_fnames):
         
             fixed_og = fixed
