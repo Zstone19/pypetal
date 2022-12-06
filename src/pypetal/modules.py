@@ -383,7 +383,6 @@ nbin: {}
                                     res['CCCD_lags'], res['CCPD_lags'],
                                     nbin=nbin, time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                     lc_names=[line_names[0], line_names[i+1]],
-                                    plot_weights=False,
                                     fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.pdf', 
                                     show=plot)
 
@@ -589,8 +588,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
         'nbin': 50,
         'metric': 'med',
         'together': False,
-        'rm_type': 'spec',
-        'use_weights': False
+        'rm_type': 'spec'
     }
     
     
@@ -611,7 +609,6 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     metric = params['metric']
     together = params['together']
     rm_type = params['rm_type']
-    use_weights = params['use_weights']
     
     #--------------------------------------------------
     #Account for parameters if javelin['together'] = False
@@ -659,11 +656,10 @@ output_logp: {}
 nbin: {}
 metric: {}
 together: {}
-use_weights: {}
 --------------------
         """.format( rm_type, lagtobaseline, laglimit, not (fixed is None), not (fixed is None),
                     subtract_mean, nwalkers, nburn, nchain, threads, output_chains,
-                    output_burn, output_logp, nbin, metric, together, use_weights )
+                    output_burn, output_logp, nbin, metric, together )
         
         print(txt_str)
     
@@ -681,7 +677,7 @@ use_weights: {}
         #Plot histograms
         fig, ax = plotting.plot_javelin_hist( res, fixed=fixed, nbin=nbin,
                                              time_unit=time_unit,
-                                             plot_weights=use_weights, remove_fixed=False,
+                                            remove_fixed=False,
                                              fname= output_dir + 'javelin/javelin_histogram.pdf' )
         
         if plot:
@@ -695,7 +691,7 @@ use_weights: {}
         if (fixed is None) | (fixed is np.ones( 2 + 3*len(line_fnames) )):
                     
             #Corner plot
-            fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
+            fig, ax = plotting.javelin_corner(res,
                                             fname= output_dir + 'javelin/javelin_corner.pdf' )
                 
                 
@@ -711,7 +707,6 @@ use_weights: {}
         
         bestfit_model = utils.javelin_pred_lc( res['rmap_model'], 
                                             res['tot_dat'].jlist[0], res['tot_dat'].jlist[1:],
-                                            nbin=nbin, prob_weight=use_weights,
                                             metric=metric)
         
         res['bestfit_model'] = bestfit_model
@@ -767,7 +762,7 @@ use_weights: {}
             #Plot histograms
             fig, ax = plotting.plot_javelin_hist( res, fixed=fixed[i], nbin=nbin,
                                                   time_unit=time_unit,
-                                                  plot_weights=use_weights, remove_fixed=False,
+                                                  remove_fixed=False,
                                                   fname= output_dir + line_names[i+1] + r'/javelin/javelin_histogram.pdf' )
             
             if plot:
@@ -781,7 +776,7 @@ use_weights: {}
             
             #Corner plot
             if (fixed[i] is None) | (fixed[i] is np.ones( 2 + 3*len(line_fnames) )):
-                fig, ax = plotting.javelin_corner(res, plot_weights=use_weights, 
+                fig, ax = plotting.javelin_corner(res,
                                                 fname= output_dir + line_names[i+1] + '/javelin/javelin_corner.pdf' )
                     
                 if plot:
@@ -794,7 +789,6 @@ use_weights: {}
             
             bestfit_model = utils.javelin_pred_lc( res['rmap_model'], 
                                                 res['tot_dat'].jlist[0], res['tot_dat'].jlist[1:],
-                                                nbin=nbin, prob_weight=use_weights,
                                                 metric=metric)
             
             

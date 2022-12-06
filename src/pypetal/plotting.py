@@ -36,7 +36,7 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
                        ccf_lags, ccf,
                        cccd_lags, ccpd_lags,
                        nbin=50, time_unit='d', lc_unit=['mJy', 'mJy'], lc_names=['', ''],
-                       plot_weights=False, fname=None, show=False):
+                       fname=None, show=False):
     
     """Plot the results of using pyCCF on two light curves.
     
@@ -84,11 +84,7 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
         
     lc_names : list, optional
         The names of the light curves to use for the plot. Default is ['', ''].
-    
-    plot_weights : bool, optional
-        If ``True``, will use the weights described in Grier et al. (2017) to weight the 
-        CCPD/CCCD histograms and plot them alongside the original histograms. Default is ``False``.
-        
+            
     fname : str, optional
         If not ``None``, will save the plot to the given filename. Default is ``None``.
         
@@ -163,30 +159,9 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     ymax = ymin + (ymax - ymin)*1.1
     ax4.set_ylim(ymin, ymax)
 
-    res_txt = err2str(cent_med, cent_hi-cent_med, cent_med-cent_lo, dec=2) + ' ' + lag_unit
+    res_txt = r'$' + err2str(cent_med, cent_hi-cent_med, cent_med-cent_lo, dec=2) + r'$ ' + lag_unit
     ax4.text(.05, .8, res_txt, transform=ax4.transAxes, fontsize=14)
     
-    if plot_weights:
-        bin_cents = np.zeros( len(bin_edges)-1 )
-        for i in range(len(bin_cents)):
-            bin_cents[i] = (bin_edges[i] + bin_edges[i+1])/2
-        
-        prob_weights, _ = utils.prob_tau(x1, x2, cccd_lags, lagvals=bin_cents)
-    
-        ax4.fill_between( bin_cents, np.zeros(len(bin_cents)),
-                          bin_vals*prob_weights, step='mid', color='r', alpha=.8 )
-        ax4.plot( bin_cents, bin_vals*prob_weights, ds='steps-mid', c='k' )
-        
-        weighted_lags = utils.make_mc_from_weights(x1, x2, cccd_lags, bin_cents)
-        
-
-        weighted_med = np.median( weighted_lags )
-        weighted_hi = np.percentile( weighted_lags, 84 )
-        weighted_lo = np.percentile( weighted_lags, 16 )
-        
-        res_txt = err2str(weighted_med, weighted_hi-weighted_med, weighted_med-weighted_lo, dec=2) + ' ' + lag_unit
-        ax4.text(.05, .6, res_txt, transform=ax4.transAxes, fontsize=14, color='r')
-
     #----------------------------
     #Plot CCPD
     bin_vals, _, _ = ax5.hist( ccpd_lags, bins=bin_edges, range=(min_lag, max_lag), density=False )
@@ -197,26 +172,9 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     ax5.set_ylim(ymin, ymax)
 
 
-    res_txt = err2str( peak_med, peak_hi-peak_med, peak_med-peak_lo, dec=2 ) + ' ' + lag_unit
+    res_txt = r'$' + err2str( peak_med, peak_hi-peak_med, peak_med-peak_lo, dec=2 ) + r'$ ' + lag_unit
     ax5.text(.05, .8, res_txt, transform=ax5.transAxes, fontsize=14)
     ax5.set_xlabel('Lag [' + str(lag_unit) + ']', fontsize=19)
-    
-    
-    if plot_weights:
-        prob_weights, _ = utils.prob_tau(x1, x2, ccpd_lags, lagvals=bin_cents)
-    
-        ax5.fill_between( bin_cents, np.zeros(len(bin_cents)),
-                          bin_vals*prob_weights, step='mid', color='r', alpha=.8 )
-        ax5.plot( bin_cents, bin_vals*prob_weights, ds='steps-mid', c='k' )
-        
-        weighted_lags = utils.make_mc_from_weights(x1, x2, ccpd_lags, bin_cents)
-        
-        weighted_med = np.median( weighted_lags )
-        weighted_hi = np.percentile( weighted_lags, 84 )
-        weighted_lo = np.percentile( weighted_lags, 16 )
-        
-        res_txt = err2str(weighted_med, weighted_hi-weighted_med, weighted_med-weighted_lo, dec=2) + ' ' + lag_unit
-        ax5.text(.05, .6, transform=ax5.transAxes, fontsize=14, color='r')
 
 
     #Add ylabels
@@ -478,7 +436,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
 
 def plot_javelin_hist(res, fixed=None, nbin=50, 
                       time_unit='d',
-                      plot_weights=False, remove_fixed=True, fname=None):
+                      remove_fixed=True, fname=None):
 
 
     """Plot the histograms of the posteriors for the JAVELIN fit parameters.
@@ -498,10 +456,6 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     time_unit : str, optional
         The unit of time for the light curves. Default is 'd'.
         
-    plot_weights : bool, optional
-        If ``True``, will use the weights described in Grier et al. (2017) to weight the 
-        time lag histograms and plot them alongside the original histograms. Default is ``False``.
-
     remove_fixed : bool, optional
         If ``True``, will remove the fixed parameters from the plot. Default is ``True``.
         
@@ -556,24 +510,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
             vals = res['tophat_params'][ (i-1)*Ncol + j ]
             x2 = res['tot_dat'].jlist[i]
              
-            if plot_weights:
-                if j == 0: 
-                    
-                    bin_vals, bin_edges, im1 = ax[i,0].hist( vals, bins=nbin )
-                    bins = np.zeros(len(bin_edges)-1)
-                    for k in range(len(bins)):
-                        bins[k] = (bin_edges[k] + bin_edges[k+1])/2
-                        
-                    prob_weights, _ = utils.prob_tau(x1, x2, lagvals=bins)
-                    im2 = ax[i,j].fill_between( bins, np.zeros(len(bins)), prob_weights*bin_vals, 
-                                            step='mid', color='r', alpha=.7 )
-                    ax[i,j].plot( bins, prob_weights*bin_vals, color='k', ds='steps-mid' )
-
-                else:
-                    ax[i,j].hist( vals, bins=nbin )
-
-            else:
-                ax[i,j].hist( vals, bins=nbin )
+            ax[i,j].hist( vals, bins=nbin )
 
 
     ax[0,0].set_xlabel(r'$\log_{10}(\sigma_{\rm DRW})$', fontsize=19)
@@ -607,9 +544,6 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
                     ax[i,j].clear()
                     ax[i,j].axis('off')
 
-    if plot_weights:
-        plt.figlegend( [im1, im2], ['Original', 'Weighted'], loc=(.81, .88), fontsize=16 )
-
     plt.subplots_adjust( wspace=.25, hspace=.25 )
     
     if fname is not None:
@@ -620,7 +554,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     return fig, ax
 
 
-def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
+def javelin_corner(res, nbin=20, fname=None):
     
     """Create a corner plot for the JAVELIN parameter results.
     
@@ -634,11 +568,7 @@ def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
         
     nbins : int, optional
         The number of bins to use for the histograms. Default is 20.
-        
-    plot_weights : bool, optional
-        If ``True``, will use the weights described in Grier et al. (2017) to weight the 
-        time lag histograms and plot them alongside the original histograms. Default is ``False``.    
-    
+            
     fname : str, optional
         If not ``None``, will save the plot to the given filename. Default is ``None``.
 
@@ -673,27 +603,7 @@ def javelin_corner(res, nbin=20, plot_weights=False, fname=None):
                 labels=labels, show_titles=False, bins=nbin,
                 label_kwargs={'fontsize': 20} )
     
-    ax = np.array(fig.axes).reshape( (2 + len(res['tophat_params']), 2 + len(res['tophat_params']) ) )
-    
-    if plot_weights:        
-        corner_range = [[x.min(), x.max()] for x in corner_dat.T]
-
-        #For each lag param, make another hist for the prob weighted version
-        for i in range(res['tot_dat'].nlc - 1):
-            vals = res['tophat_params'][3*i] 
-            bin_vals, _ = np.histogram(vals, bins=nbin)
-                       
-            mc_vals = utils.make_mc_from_weights(res['tot_dat'].jlist[0], 
-                                                 res['tot_dat'].jlist[i+1], 
-                                                 bin_vals, 20)
-
-            n_bins_1d = int(max(1, np.round(20)))
-            bins_1d = np.linspace(min(corner_range[2 + 3*i]), max(corner_range[2 + 3*i]), n_bins_1d + 1)     
-            
-            #t hist will be on the diagonal            
-            for j in range(1,  res['tot_dat'].nlc ):
-                ax[3*j - 1, 3*j - 1].hist( mc_vals, bins=bins_1d, color='r', alpha=.5 )
-                
+    ax = np.array(fig.axes).reshape( (2 + len(res['tophat_params']), 2 + len(res['tophat_params']) ) )                
             
     if fname is not None:
         plt.savefig( fname, dpi=200, bbox_inches='tight' )

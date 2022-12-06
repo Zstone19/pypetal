@@ -532,140 +532,6 @@ def get_pyccf_lags(fname1, fname2,
 ############################################################################################################
 ############################################## JAVELIN #####################################################
 ############################################################################################################
-    
-    
-#Get the probability weighting function from Grier et al. (2017)
-def prob_tau(x1, x2, laglim=None, lagvals=None, Nlag=1000):
-    
-    """Creates the probability weighting function from Grier et al. (2017) for a given distribution and times for
-    two light curves. Can use either of the three optional inputs for the lags to use.
-
-
-    Parameters
-    ----------
-
-    laglim : (array_like, None), optional
-        If not ``None``, the lags used will be linearly spaced between the bounds supplied, with Nlags number
-        of lags. If ``None``, the lags used will be linearly spaced between [-baseline, baseline], where baseline
-        is the length of the baseline. Default is ``None``. 
-        
-    lagvals : (array_like, None), optional
-        If not ``None`` will use the lags supplied. If ``None``, will use the ``laglim`` argument.
-        Default is ``None``.
-        
-    Nlag : int, optional
-        The number of lags to use if ``laglim`` is not ``None``. Default is 1000. 
-    
-    
-    
-    Returns
-    --------
-    
-    probs : array_like
-        The weighting function
-        
-    lags : array_like
-        The lags used
-        
-    """
-    
-    sort_ind = np.argsort(x1)
-    x1 = x1[sort_ind]
-    
-    sort_ind = np.argsort(x2)
-    x2 = x2[sort_ind]
-    
-    baseline = np.max([ x1[-1]-x1[0], x2[-1]-x2[0] ])
-    Nlag = int(Nlag)
-    
-    if (laglim is None) & (lagvals is None):
-        laglim = [-baseline, baseline]
-        lags = np.linspace(laglim[0], laglim[1], Nlag)
-    
-    elif (lagvals is None) & (laglim is not None):
-        lags = np.linspace(laglim[0], laglim[1], Nlag)
-    
-    else:
-        lags = lagvals
-    
-    
-    nvals = np.zeros_like(lags)
-    if len(x1) < len(x2):
-        x_move = x1
-        x_stay = x2
-    else:
-        x_move = x2
-        x_stay = x1
-    
-    
-    
-    low_lim = np.max([x_move[0], x_stay[0]])
-    up_lim = np.min([x_move[-1], x_stay[-1]])
-    ind1 = np.argwhere( (x_move >= low_lim) & (x_move <= up_lim) ).T[0]
-    ind2 = np.argwhere( (x_stay >= low_lim) & (x_stay <= up_lim) ).T[0]
-    N0 = len(ind1) + len(ind2)
-    
-    
-    for i, tau in enumerate(lags):        
-        low_lim = np.max([x_stay[0], x_move[0]+tau])
-        up_lim = np.min([x_stay[-1], x_move[-1]+tau])
-        
-        ind1 = np.argwhere( (x_stay <= up_lim) & (x_stay >= low_lim) ).T[0]
-        ind2 = np.argwhere( (x_move+tau <= up_lim) & (x_move+tau >= low_lim) ).T[0]
-
-        nvals[i] = len(ind1) + len(ind2)
-                    
-    probs = (nvals / N0)**2
-    
-    return probs, lags
-
-
-def make_mc_from_weights(x1, x2, vals, bins):
-    
-    """Make a sample of Monte Carlo simulated values from a previously ran set of 
-    MC simulations, using the probability weighting from Grier et al. (2017) on the original distribution. 
-
-
-
-    Parameters
-    ----------
-
-    x1 : list of floats
-        List of times for the first light curve.
-        
-    x2 : list of floats
-        List of times for the second light curve.
-        
-    vals : list of floats
-        The Monte Carlo simulated values for the parameter of interest.
-        
-    bins : int
-        The number of bins to use for the probability weighting function.
-
-
-
-    Returns:
-    --------
-
-    mc_vals : list of floats
-        The Monte Carlo simulated values that would produce the weighted distribution.
-        
-    """
-    
-    bin_vals, bin_edges = np.histogram( vals, bins=bins )
-    bin_cents = np.zeros(len(bin_edges)-1)
-    for j in range(len(bin_cents)):
-        bin_cents[j] = (bin_edges[j] + bin_edges[j+1])/2
-        
-    prob_weights, _ = prob_tau(x1, x2, lagvals=bin_cents)
-    adjusted_vals = np.array( bin_vals * prob_weights, dtype=int)
-    
-    mc_vals = []
-    for j in range(len(bin_cents)):
-        mc_vals.append( np.full( adjusted_vals[j], bin_cents[j] ) )
-    mc_vals = np.concatenate( mc_vals )
-
-    return mc_vals    
 
 
 def get_javelin_filenames(output_chain, output_burn, output_logp, prefix, output_dir=None):
@@ -918,7 +784,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
     
     
 from scipy.stats import binned_statistic   
-def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, prob_weight=False, metric='med'):
+def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, metric='med'):
     
     """Predict light curve(s) from a JAVELIN RM fit object.
 
@@ -935,13 +801,6 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, prob_weight=False, metric=
     t_lines : array_like
         The time array for the line light curve(s).
 
-    nbin : int, optional
-        The number of bins to use if weighting the parameter distributions. If ``None``,
-        defaults to 50. Default is ``None``.
-
-    prob_weight : bool, optional
-        If ``True``, will weight the parameter distributions. Default is ``False``.
-        
     metric : str, optional
         The metric to use to get the bestfit parameter from the parameter distributions.
         Can be either 'mean' or 'med'. Default is 'med'.
@@ -954,11 +813,6 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, prob_weight=False, metric=
         The RM model using the best fit parameters to predict the light curve(s).
     
     """
-    
-    
-    
-    if (prob_weight) & (nbin is None):
-        raise Exception('Must specify number of bins when using weights')    
     
     tau = rmod.flatchain[:,1]
     sigma = rmod.flatchain[:,0]
@@ -983,13 +837,7 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, prob_weight=False, metric=
             
             
             if j == 0:
-                
-                if prob_weight:
-                    mc_vals = make_mc_from_weights(t_cont, t_lines[i], 
-                                                   tophat_params[3*i + j, :], nbin)                
-                else:
-                    mc_vals = tophat_params[3*i + j, :]
-                    
+                mc_vals = tophat_params[3*i + j, :]               
                 tophat_best[ 3*i + j ] = func(mc_vals)
                 
             else:
