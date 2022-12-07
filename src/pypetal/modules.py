@@ -45,7 +45,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     #--------------------------------------------------
     #Read kwargs
     
-    jitter, nsig, nwalkers, nburn, nchain, clip, \
+    jitter, nsig, nwalker, nburn, nchain, clip, \
         reject_data, use_for_javelin = defaults.set_drw_rej(kwargs, 
                                                             np.hstack([ [cont_fname], line_fnames ])
                                                             )
@@ -78,7 +78,7 @@ clip: {}
 reject_data: {}
 use_for_javelin: {}
 ------------------------
-        """.format( jitter, nsig, nwalkers, nburn, 
+        """.format( jitter, nsig, nwalker, nburn, 
                     nchain, clip_str, reject_data, use_for_javelin)
         
         print(txt_str)
@@ -98,7 +98,7 @@ use_for_javelin: {}
         x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
 
         res = utils.drw_flag( x*time_unit, y*lc_unit[0], yerr*lc_unit[0], 
-                                    nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
+                                    nwalkers=nwalker, nburn=nburn, nsamp=nchain,
                                     nsig=nsig, jitter=jitter, clip=clip[0], 
                                     target=line_names[0], 
                                     fname=output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.pdf', 
@@ -166,7 +166,7 @@ use_for_javelin: {}
             x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
             
             res = utils.drw_flag( x*time_unit, y*lc_unit[i+1], yerr*lc_unit[i+1], 
-                                        nwalkers=nwalkers, nburn=nburn, nsamp=nchain,
+                                        nwalkers=nwalker, nburn=nburn, nsamp=nchain,
                                         nsig=nsig, jitter=jitter, clip=clip[i+1],
                                         target=line_names[i+1],
                                         fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', 

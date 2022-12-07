@@ -108,7 +108,7 @@ def set_drw_rej(input_args, fnames):
     
     jitter = params['jitter']
     nsig = params['nsig']
-    nwalkers = params['nwalkers']
+    nwalker = params['nwalker']
     nburn = params['nburn']
     nchain = params['nchain']
     clip = params['clip']
@@ -125,7 +125,7 @@ def set_drw_rej(input_args, fnames):
         raise Exception('Cannot use continuum for Javelin without fitting it to a DRW first')
     
     
-    return jitter, nsig, nwalkers, nburn, nchain, clip, \
+    return jitter, nsig, nwalker, nburn, nchain, clip, \
         reject_data, use_for_javelin
 
 
