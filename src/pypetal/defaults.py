@@ -110,10 +110,10 @@ def set_drw_rej(input_args, fnames):
     use_for_javelin = params['use_for_javelin']
     
     if isinstance(clip, bool):
-        clip = np.full( len(line_fnames) + 1, clip)
+        clip = np.full( len(fnames), clip)
         
     if isinstance(reject_data, bool):
-        reject_data = np.full( len(line_fnames) + 1, reject_data)
+        reject_data = np.full( len(fnames), reject_data)
         
     if (use_for_javelin) & (not reject_data[0]):
         raise Exception('Cannot use continuum for Javelin without fitting it to a DRW first')
