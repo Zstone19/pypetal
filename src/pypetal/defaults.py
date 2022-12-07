@@ -1,5 +1,10 @@
+import os
+
 import numpy as np
 from astropy.table import Table
+
+
+
 
 def set_general(input_args, fnames):
     
