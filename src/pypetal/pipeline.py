@@ -1,5 +1,6 @@
 import pypetal.modules as modules
-from pypetal.petalio import write_data
+from pypetal.petalio import write_data, make_directories
+import pypetal.defaults as defaults
 
 import os
 
@@ -406,47 +407,15 @@ def run_pipeline(output_dir, arg2,
     
     
     #Read in general kwargs
-    general_kwargs = kwargs
-    default_kwargs = {
-        'verbose': False,
-        'plot': False,
-        'time_unit': 'd',
-        'lc_unit': 'Arbitrary Units',
-        'file_fmt': 'csv',
-        'lag_bounds': 'baseline'
-    }
-    general_kwargs = { **default_kwargs, **general_kwargs }
+    general_kwargs = defaults.set_general(kwargs, fnames)
+
+    #Get "reject_data" and "together"    
+    _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)
+    _, fixed, p_fix, _, _, _, _, _, _, _, _, _, _, together, _ = defaults.set_javelin(javelin_params, fnames)   
     
-    verbose = general_kwargs['verbose']
-    plot = general_kwargs['plot']
-    time_unit = general_kwargs['time_unit']
-    lc_unit = general_kwargs['lc_unit']
-    file_fmt = general_kwargs['file_fmt']
-    lag_bounds = general_kwargs['lag_bounds']
-    
-    if isinstance(lc_unit, str):
-        lc_unit = list( np.full( len(fnames), lc_unit ) )
-        general_kwargs['lc_unit'] = lc_unit
-    
-    
-    #Read in DRW rejection kwargs
-    default_kwargs = {
-        'jitter' : True,
-        'nsig' : 1,
-        'nwalkers': 100,
-        'nburn': 300,
-        'nchain': 1000,
-        'clip': np.full( len(fnames), True),
-        'reject_data': np.full( len(fnames), True),
-        'use_for_javelin': False
-    }
-    drw_kwargs = { **default_kwargs, **drw_rej_params }
-    
-    if isinstance(drw_kwargs['reject_data'], bool):
-        drw_kwargs['reject_data'] = np.full( len(fnames), drw_kwargs['reject_data'] )
-    
-    
-    
+    javelin_params['fixed'] = fixed
+    javelin_params['p_fix'] = p_fix
+
     
     
     #Name lines if unnamed
@@ -462,86 +431,11 @@ def run_pipeline(output_dir, arg2,
         assert input_dir == os.path.dirname( os.path.realpath(line_fnames[i]) )        
     
     
-    if 'together' in javelin_params:
-        javelin_together = javelin_params['together']
-    else:
-        javelin_together = False
-        
-        
-    if 'rm_type' in javelin_params:
-        rm_type = javelin_params['rm_type']
-    else:
-        rm_type = 'spec'        
-        
-    if (rm_type == 'phot') & (javelin_together == True):
-        print('ERROR: JAVELIN cannot do phtotometric RM with more than two lines.')
-        print('Setting together=False')
-        javelin_together = False
-        javelin_params['together'] = False
-        
-        
-    #Instantiate fixed and p_fix
-    if 'fixed' in javelin_params:
-        fixed = javelin_params['fixed']
-        p_fix = fixed['p_fix']
-    else:
-        fixed = None
-        p_fix = None
-        
-    if not javelin_together:
-        
-        if fixed is not None:
-            if len(fixed) < len(line_fnames):
-            
-                fixed_og = fixed
-                p_fix_og = p_fix
-                
-                fixed = []
-                p_fix = []
-                for i in range(len(line_fnames)):
-                    fixed.append(fixed_og)
-                    p_fix.append(p_fix_og)
-        
-        else:
-            fixed = np.full( len(line_fnames), None )
-            p_fix = np.full( len(line_fnames), None )    
-            
-        assert len(fixed) == len(line_fnames)
-        
-    else:
-        if fixed is not None:
-            assert len(fixed) == 2 + 3*len(line_fnames)
-            
-    javelin_params['fixed'] = fixed
-    javelin_params['p_fix'] = p_fix
-        
-            
-        
     
-    
-    
-    #Create subdirectories for each line and javelin
-    for i in range(len(fnames)):
-        os.makedirs( output_dir + line_names[i], exist_ok=True )
-        
-        if run_drw_rej:
-            os.makedirs( output_dir + line_names[i] + '/drw_rej', exist_ok=True )
-        
-    for i in range(len(line_fnames)):
-        if run_pyccf:
-            os.makedirs( output_dir + line_names[i+1] + '/pyccf', exist_ok=True )
-        if run_pyzdcf:
-            os.makedirs( output_dir + line_names[i+1] + '/pyzdcf', exist_ok=True )
-        
-        if run_javelin:
-            if javelin_together:
-                os.makedirs( output_dir + 'javelin/', exist_ok=True )
-            else:
-                os.makedirs( output_dir + line_names[i+1] + '/javelin', exist_ok=True )
-                
-    #Make subdirectories for light curves
-    os.makedirs( output_dir + 'light_curves/', exist_ok=True )
-        
+    #Create subdirectories for each line and module
+    make_directories(output_dir, fnames, line_names, 
+                     run_drw_rej, run_pyccf, run_pyzdcf, run_javelin,
+                     reject_data, together)
         
     if file_fmt != 'csv':
         #Make temp directory to store csv files
@@ -604,60 +498,53 @@ def run_pipeline(output_dir, arg2,
                             
                 
         #If rejecting any data, make the new files the ones without rejected data
-        if np.any( drw_kwargs['reject_data'] ):
+        if np.any( reject_data ):
             cont_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
             
             for i in range(len(line_fnames)):
                 line_fnames[i] = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'            
-
-        
-        if 'use_for_javelin' in drw_rej_params:
             
-            if drw_rej_params['use_for_javelin']:
-                
-                if javelin_together:                
-                    tau_cont = drw_rej_res['taus'][0]
-                    sig_cont = drw_rej_res['sigmas'][0]
-                
-                
-                    if fixed is not None:
-                        javelin_params['fixed'][0] = 0
-                        javelin_params['fixed'][1] = 0
-                        
-                        javelin_params['p_fix'][0] = np.log(sig_cont)
-                        javelin_params['p_fix'][1] = np.log(tau_cont)
-                    else:                        
-                        javelin_params['fixed'] = np.ones( 2 + 3*len(line_fnames) )
-                        javelin_params['p_fix'] = np.zeros( 2 + 3*len(line_fnames) )
+            
+        if use_for_javelin:            
+            tau_cont = drw_rej_res['taus'][0]
+            sig_cont = drw_rej_res['sigmas'][0]
+            
+            if together:                
+            
+                if fixed is not None:
+                    javelin_params['fixed'][0] = 0
+                    javelin_params['fixed'][1] = 0
                     
-                        javelin_params['fixed'][0] = 0
-                        javelin_params['fixed'][1] = 0
-                        
-                        javelin_params['p_fix'][0] = np.log(sig_cont)
-                        javelin_params['p_fix'][1] = np.log(tau_cont)                                  
-                        
-                else:
-                    tau_cont = drw_rej_res['taus'][0]
-                    sig_cont = drw_rej_res['sigmas'][0]
+                    javelin_params['p_fix'][0] = np.log(sig_cont)
+                    javelin_params['p_fix'][1] = np.log(tau_cont)
+                else:                        
+                    javelin_params['fixed'] = np.ones( 2 + 3*len(line_fnames) )
+                    javelin_params['p_fix'] = np.zeros( 2 + 3*len(line_fnames) )
+                
+                    javelin_params['fixed'][0] = 0
+                    javelin_params['fixed'][1] = 0
                     
+                    javelin_params['p_fix'][0] = np.log(sig_cont)
+                    javelin_params['p_fix'][1] = np.log(tau_cont)                                  
+                    
+            else:
+                for i in range(len(line_fnames)):
+                    if fixed[i] is not None:
+                        javelin_params['fixed'][i][0] = 0
+                        javelin_params['fixed'][i][1] = 0
                         
-                    for i in range(len(line_fnames)):
-                        if fixed[i] is not None:
-                            javelin_params['fixed'][i][0] = 0
-                            javelin_params['fixed'][i][1] = 0
-                            
-                            javelin_params['p_fix'][i][0] = np.log(tau_cont)
-                            javelin_params['p_fix'][i][1] = np.log(sig_cont)
-                            
-                        else:
-                            javelin_params['fixed'][i] = np.ones(5)
-                            javelin_params['p_fix'][i] = np.zeros(5)
+                        javelin_params['p_fix'][i][0] = np.log(tau_cont)
+                        javelin_params['p_fix'][i][1] = np.log(sig_cont)
+                        
+                    else:
+                        javelin_params['fixed'][i] = np.ones(5)
+                        javelin_params['p_fix'][i] = np.zeros(5)
 
-                            javelin_params['fixed'][i][0] = 0
-                            javelin_params['fixed'][i][1] = 0
-                            
-                            javelin_params['p_fix'][i][0] = np.log(sig_cont)
-                            javelin_params['p_fix'][i][1] = np.log(tau_cont)
+                        javelin_params['fixed'][i][0] = 0
+                        javelin_params['fixed'][i][1] = 0
+                        
+                        javelin_params['p_fix'][i][0] = np.log(sig_cont)
+                        javelin_params['p_fix'][i][1] = np.log(tau_cont)
                             
     else:
         
