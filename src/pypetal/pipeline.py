@@ -570,7 +570,7 @@ def run_pipeline(output_dir, arg2,
         javelin_res = modules.javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, javelin_params)
     
 
-    if file_fmt != 'csv':
+    if general_kwargs['file_fmt'] != 'csv':
         import shutil
         shutil.rmtree(input_dir)
 
