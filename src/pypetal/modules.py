@@ -503,8 +503,6 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     else:
         if len(laglimit) > 1:
 
-            print(laglimit)
-
             baselines = []
             for i in range(len(laglimit)):
                 baseline = np.max([ np.abs(laglimit[i][0]), np.abs(laglimit[i][1]) ])

@@ -70,7 +70,7 @@ def set_general(input_args, fnames):
     
     for i in range(len(fnames)-1):
         
-        if (lag_bounds is None) | (lag_bounds == 'baseline'):
+        if (lag_bounds[i] is None) | (lag_bounds[i] == 'baseline'):
             lag_bounds[i] = [-baselines[i], baselines[i]]
 
             
