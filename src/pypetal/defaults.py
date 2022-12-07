@@ -95,12 +95,12 @@ def set_drw_rej(input_args, fnames):
     
     default_kwargs = {
         'jitter' : True,
-        'nsig' : 1,
+        'nsig' : 3,
         'nwalker': 100,
         'nburn': 300,
         'nchain': 1000,
         'clip': np.full( len(fnames), True),
-        'reject_data': np.full( len(fnames), True),
+        'reject_data': np.hstack([ [True], np.full( len(fnames)-1, False) ], dtype=bool),
         'use_for_javelin': False
     }
     
@@ -135,10 +135,10 @@ def set_pyccf(input_args, fnames):
     
     default_kwargs = {
         'interp': 2 + 1e-10,
-        'nsim': 1000,
+        'nsim': 3000,
         'mcmode': 0,
-        'sigmode': .2,
-        'thres': .8,
+        'sigmode': 0.2,
+        'thres': 0.8,
         'nbin': 50        
     }
     
@@ -158,7 +158,7 @@ def set_pyccf(input_args, fnames):
 def set_pyzdcf(input_args, fnames):
     
     default_kwargs = {
-        'nsim': 500,
+        'nsim': 1000,
         'minpts': 0,
         'uniform_sampling': False,
         'omit_zero_lags': True,
@@ -189,7 +189,7 @@ def set_pyzdcf(input_args, fnames):
 def set_javelin(input_args, fnames):
     
     default_kwargs = {
-        'lagtobaseline': .3,
+        'lagtobaseline': 0.3,
         'fixed': None,
         'p_fix': None,
         'subtract_mean': True,
