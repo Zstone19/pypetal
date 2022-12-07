@@ -437,7 +437,7 @@ def run_pipeline(output_dir, arg2,
                      run_drw_rej, run_pyccf, run_pyzdcf, run_javelin,
                      reject_data, together)
         
-    if file_fmt != 'csv':
+    if general_kwargs['file_fmt'] != 'csv':
         #Make temp directory to store csv files
         os.makedirs( output_dir + 'temp/', exist_ok=True )
         input_dir = output_dir + 'temp/'
