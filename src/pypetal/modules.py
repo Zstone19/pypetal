@@ -502,7 +502,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
         
         
     else:
-        if laglimit > 1:
+        if len(laglimit) > 1:
 
             baselines = []
             for i in range(len(laglimit)):
