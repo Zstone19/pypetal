@@ -7,7 +7,7 @@ import palettable
 
 import corner
 import pypetal.utils as utils
-from pypetal.formatting import err2str
+from pypetal.petalio import err2str
 
 import matplotlib as mpl
 

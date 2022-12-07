@@ -7,6 +7,38 @@ from astropy.io import fits
 
 
 
+def make_directories(output_dir, fnames, line_names,
+                     run_drw_rej, run_pyccf, run_pyzdcf,
+                     run_javelin, reject_data, together):
+    
+    #Create subdirectories for each line and javelin
+    for i in range(len(fnames)):
+        os.makedirs( output_dir + line_names[i], exist_ok=True )
+        
+        if (run_drw_rej) & (reject_data[i]):
+            os.makedirs( output_dir + line_names[i] + '/drw_rej', exist_ok=True )
+        
+    for i in range(len(line_fnames)):
+        if run_pyccf:
+            os.makedirs( output_dir + line_names[i+1] + '/pyccf', exist_ok=True )
+        if run_pyzdcf:
+            os.makedirs( output_dir + line_names[i+1] + '/pyzdcf', exist_ok=True )
+        
+        if run_javelin:
+            if together:
+                os.makedirs( output_dir + 'javelin/', exist_ok=True )
+            else:
+                os.makedirs( output_dir + line_names[i+1] + '/javelin', exist_ok=True )
+                
+    #Make subdirectories for light curves
+    os.makedirs( output_dir + 'light_curves/', exist_ok=True )
+    
+    return
+
+
+
+
+
 
 def str2unit(x):
 

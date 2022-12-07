@@ -1,5 +1,5 @@
 import pypetal.modules as modules
-from pypetal.formatting import write_data
+from pypetal.petalio import write_data
 
 import os
 

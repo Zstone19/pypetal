@@ -1,6 +1,6 @@
 import pypetal.utils as utils
 import pypetal.plotting as plotting
-from pypetal.formatting import write_data
+from pypetal.petalio import write_data
 
 import os
 import shutil
@@ -325,12 +325,6 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     #Run pyCCF for each line
     
     if verbose:
-        
-        if interp is None:
-            interp_str = 'mean/2'
-        else:
-            interp_str = interp
-            
             
         if len(lag_bounds) > 2:
             lag_bounds_str = 'array'
@@ -348,7 +342,7 @@ sigmode: {}
 thres: {}
 nbin: {}
 -----------------
-        """.format( lag_bounds_str, interp_str, nsim,
+        """.format( lag_bounds_str, interp, nsim,
                     mcmode, sigmode, thres, nbin)
         
         print(txt_str)
