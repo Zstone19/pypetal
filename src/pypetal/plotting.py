@@ -548,8 +548,6 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     
     if fname is not None:
         plt.savefig( fname, dpi=200, bbox_inches='tight' )
-
-    plt.show()
     
     return fig, ax
 
@@ -713,8 +711,6 @@ def plot_javelin_bestfit(res, bestfit_model, time_unit='d', lc_unit='mag', fname
     
     if fname is not None:
         plt.savefig( fname, dpi=200, bbox_inches='tight' )
-        
-    plt.show()
     
     return fig, ax
 
