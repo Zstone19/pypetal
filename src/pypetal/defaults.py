@@ -12,7 +12,8 @@ def set_general(input_args, fnames):
         'time_unit': 'd',
         'lc_unit': 'Arbitrary Units',
         'file_fmt': 'csv',
-        'lag_bounds': 'baseline'
+        'lag_bounds': 'baseline',
+        'threads': 1
     }
     
     params = { **default_kwargs, **input_args }
@@ -23,6 +24,7 @@ def set_general(input_args, fnames):
     lc_unit = params['lc_unit']
     file_fmt = params['file_fmt']
     lag_bounds = params['lag_bounds']
+    threads = params['threads']
     
     if isinstance(lc_unit, str):
         lc_unit = list( np.full( len(fnames), lc_unit ) )
@@ -79,7 +81,8 @@ def set_general(input_args, fnames):
         'time_unit': time_unit,
         'lc_unit': lc_unit,
         'file_fmt': file_fmt,
-        'lag_bounds': lag_bounds
+        'lag_bounds': lag_bounds,
+        'threads': threads
     }
             
     return output

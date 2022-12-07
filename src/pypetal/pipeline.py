@@ -383,7 +383,7 @@ def run_pipeline(output_dir, arg2,
             fnames.append( output_dir + 'input_lcs/' + name + '.dat' )
             
         fnames = np.array(fnames)
-        file_fmt = 'csv'
+        kwargs['file_fmt'] = 'csv'
     else:
         fnames = arg2
         
