@@ -14,16 +14,15 @@ def set_general(input_args, fnames):
     
     params = { **default_kwargs, **input_args }
 
-    verbose = general_kwargs['verbose']
-    plot = general_kwargs['plot']
-    time_unit = general_kwargs['time_unit']
-    lc_unit = general_kwargs['lc_unit']
-    file_fmt = general_kwargs['file_fmt']
-    lag_bounds = general_kwargs['lag_bounds']
+    verbose = params['verbose']
+    plot = params['plot']
+    time_unit = params['time_unit']
+    lc_unit = params['lc_unit']
+    file_fmt = params['file_fmt']
+    lag_bounds = params['lag_bounds']
     
     if isinstance(lc_unit, str):
         lc_unit = list( np.full( len(fnames), lc_unit ) )
-        general_kwargs['lc_unit'] = lc_unit
         
      
      
