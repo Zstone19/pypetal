@@ -506,7 +506,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
 
             baselines = []
             for i in range(len(laglimit)):
-                baseline = np.max([ np.abs(laglimit[0]), np.abs(laglimit[1]) ])
+                baseline = np.max([ np.abs(laglimit[i][0]), np.abs(laglimit[i][1]) ])
                 baselines.append(baseline)
                 
             max_lag = np.max(baselines)
