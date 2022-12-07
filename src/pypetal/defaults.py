@@ -220,7 +220,7 @@ def set_javelin(input_args, fnames):
     
     
     
-    if (rm_type == 'phot') & (javelin_together):
+    if (rm_type == 'phot') & (together):
         print('ERROR: JAVELIN cannot do phtotometric RM with more than two lines.')
         print('Setting together=False')
         together = False    
