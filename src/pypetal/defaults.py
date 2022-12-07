@@ -53,7 +53,7 @@ def set_general(input_args, fnames):
         except:
             dat = Table.read(fnames[i], format='ascii')
             
-        colnames = dat.colnames()        
+        colnames = dat.colnames       
         x = np.array( dat[colnames[0]] )
 
         xvals_tot.append(x)
