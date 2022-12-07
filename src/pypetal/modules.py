@@ -502,6 +502,13 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
 
     #--------------------------------------------------
     
+    if ( not isinstance(laglimit, str) ) & ( laglimit is not None ):
+        if len(laglimit) > 2:
+            laglimit_str = 'array'
+    else:
+        laglimit_str = laglimit
+    
+    
     if verbose:
         txt_str = """
 Running JAVELIN
@@ -523,7 +530,7 @@ nbin: {}
 metric: {}
 together: {}
 --------------------
-        """.format( rm_type, lagtobaseline, laglimit, not (fixed is None), not (fixed is None),
+        """.format( rm_type, lagtobaseline, laglimit_str, not (fixed is None), not (fixed is None),
                     subtract_mean, nwalkers, nburn, nchain, threads, output_chains,
                     output_burn, output_logp, nbin, metric, together )
         
