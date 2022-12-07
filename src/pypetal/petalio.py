@@ -20,7 +20,7 @@ def make_directories(output_dir, fnames, line_names,
         if (run_drw_rej) & (reject_data[i]):
             os.makedirs( output_dir + line_names[i] + '/drw_rej', exist_ok=True )
         
-    for i in range(len(line_fnames)):
+    for i in range(len(fnames)-1):
         if run_pyccf:
             os.makedirs( output_dir + line_names[i+1] + '/pyccf', exist_ok=True )
         if run_pyzdcf:
