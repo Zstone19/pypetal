@@ -93,8 +93,8 @@ def set_drw_rej(input_args, fnames):
         'nwalkers': 100,
         'nburn': 300,
         'nchain': 1000,
-        'clip': np.full( len(line_fnames) + 1, True),
-        'reject_data': np.full( len(line_fnames) + 1, True),
+        'clip': np.full( len(fnames), True),
+        'reject_data': np.full( len(fnames), True),
         'use_for_javelin': False
     }
     
