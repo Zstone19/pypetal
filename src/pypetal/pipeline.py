@@ -480,7 +480,7 @@ def run_pipeline(output_dir, arg2,
 
     if run_drw_rej:
         
-        if np.any( drw_kwargs['reject_data'] ):
+        if np.any( reject_data ):
             os.makedirs( output_dir + 'rejected_lcs/', exist_ok=True )
         
         drw_rej_res = modules.drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params ) 
