@@ -45,6 +45,7 @@ def set_general(input_args, fnames):
             
             
             
+    xvals_tot = []
     baselines = []
     for i in range(len(fnames)):
         
@@ -53,17 +54,20 @@ def set_general(input_args, fnames):
         except:
             dat = Table.read(fnames[i], format='ascii')
             
-        colnames = dat.colnames()
-        
+        colnames = dat.colnames()        
         x = np.array( dat[colnames[0]] )
-        baselines.append( x.max() - x.min() )
 
-    baseline = np.max(baselines)        
+        xvals_tot.append(x)
+        
+    for i in range(len(fnames)-1):
+        baseline = np.max([ xvals_tot[0].max(), xvals_tot[i+1].max() ]) - np.min([ xvals_tot[0].min(), xvals_tot[i+1].min() ])
+        baselines.append(baseline)    
+    
     
     for i in range(len(fnames)-1):
         
         if (lag_bounds is None) | (lag_bounds == 'baseline'):
-            lag_bounds[i] = [-baseline, baseline]
+            lag_bounds[i] = [-baselines[i], baselines[i]]
 
             
     #Return dict so it can be passed to other functions

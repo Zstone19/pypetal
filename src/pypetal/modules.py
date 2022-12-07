@@ -1,6 +1,7 @@
 import pypetal.utils as utils
 import pypetal.plotting as plotting
 from pypetal.petalio import write_data
+import pypetal.defaults as defaults
 
 import os
 import shutil
@@ -42,37 +43,11 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     #--------------------------------------------------
     #Read kwargs
     
-    default_kwargs = {
-        'jitter' : True,
-        'nsig' : 1,
-        'nwalkers': 100,
-        'nburn': 300,
-        'nchain': 1000,
-        'clip': np.full( len(line_fnames) + 1, True),
-        'reject_data': np.full( len(line_fnames) + 1, True),
-        'use_for_javelin': False
-    }
-    
-    params = { **default_kwargs, **kwargs }
-    
-    jitter = params['jitter']
-    nsig = params['nsig']
-    nwalkers = params['nwalkers']
-    nburn = params['nburn']
-    nchain = params['nchain']
-    clip = params['clip']
-    reject_data = params['reject_data']
-    use_for_javelin = params['use_for_javelin']
+    jitter, nsig, nwalkers, nburn, nchain, clip, \
+        reject_data, use_for_javelin = defaults.set_drw_rej(kwargs, 
+                                                            np.hstack([ [cont_fname], line_fnames ])
+                                                            )
             
-    if type(clip) is bool:
-        clip = np.full( len(line_fnames) + 1, clip)
-        
-    if type(reject_data) is bool:
-        reject_data = np.full( len(line_fnames) + 1, reject_data )
-        
-    if (use_for_javelin) & (reject_data[0] is False):
-        raise Exception('Cannot use continuum for Javelin without fitting it to a DRW first')
-        
     #--------------------------------------------------
     #Get units
     
@@ -290,35 +265,9 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
     
     #--------------------------------------------------
     #Read kwargs
-    
-    default_kwargs = {
-        'interp': 2 + 1e-10,
-        'nsim': 1000,
-        'mcmode': 0,
-        'sigmode': .2,
-        'thres': .8,
-        'nbin': 50        
-    }
-        
-    params = { **default_kwargs, **kwargs }
-    
-    interp = params['interp']
-    nsim = params['nsim']
-    mcmode = params['mcmode']
-    sigmode = params['sigmode']
-    thres = params['thres']
-    nbin = params['nbin']
-
-    
-    if lag_bounds is 'baseline':
-        lag_bounds = np.full( len(line_fnames), None)
-        
-    if len(lag_bounds) != len(line_fnames):    
-        lag_bounds_og = lag_bounds
-        lag_bounds = []
-        
-        for i in range(len(line_fnames)):
-            lag_bounds.append( lag_bounds_og )
+    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf(kwargs, 
+                                                                    np.hstack([ [cont_fname], line_fnames ])
+                                                                    )
 
     
     #-------------------------------------------
@@ -409,47 +358,11 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
         
     #--------------------------------------------------
     #Read kwargs
-    
-    default_kwargs = {
-        'nsim': 500,
-        'minpts': 0,
-        'uniform_sampling': False,
-        'omit_zero_lags': True,
-        'sparse': 'auto',
-        'prefix': 'zdcf',
-        'run_plike': False,
-        'plike_dir': None,
-    }
-        
-    params = { **default_kwargs, **kwargs }
-    
-    nsim = params['nsim']
-    minpts = params['minpts']
-    uniform_sampling = params['uniform_sampling']
-    omit_zero_lags = params['omit_zero_lags']
-    sparse = params['sparse']
-    prefix = params['prefix']
-    run_plike = params['run_plike']
-    plike_dir = params['plike_dir']
-        
-    if (lag_bounds == 'baseline') or (lag_bounds is None):
-        lag_bounds = np.full( len(line_fnames), 'baseline' )
-        
-
-    len_lag_bounds = len(lag_bounds)
-    if len_lag_bounds == 2:
-        if not ( ( type(lag_bounds[0]) is type([]) ) or ( lag_bounds[0] == 'baseline' ) ):
-            len_lag_bounds = 1
-        else:
-            len_lag_bounds = 2
-
-    if len_lag_bounds != len(line_fnames):
-        
-        lag_bounds_og = lag_bounds
-        lag_bounds = []
-
-        for i in range(len(line_fnames)):
-            lag_bounds.append(lag_bounds_og)
+            
+    nsim, minpts, uniform_sampling, omit_zero_lags, \
+        sparse, prefix, run_plike, plike_dir = defaults.set_pyzdcf(kwargs, 
+                                                                   np.hstack([ [cont_fname], line_fnames ])
+                                                                   )
         
     #-------------------------------------------
     if (run_plike) & (plike_dir is None):
@@ -566,67 +479,36 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
                 
     #--------------------------------------------------
     #Read kwargs
-        
-    default_kwargs = {
-        'lagtobaseline': .3,
-        'fixed': None,
-        'p_fix': None,
-        'subtract_mean': True,
-        'nwalker': 100,
-        'nburn': 100,
-        'nchain': 100,
-        'threads': 1,
-        'output_chains': True,
-        'output_burn': True,
-        'output_logp': True,
-        'nbin': 50,
-        'metric': 'med',
-        'together': False,
-        'rm_type': 'spec'
-    }
     
-    
-    params = { **default_kwargs, **kwargs }
-    
-    lagtobaseline = params['lagtobaseline']
-    fixed = params['fixed']
-    p_fix = params['p_fix']
-    subtract_mean = params['subtract_mean']
-    nwalkers = params['nwalker']
-    nburn = params['nburn']
-    nchain = params['nchain']
-    threads = params['threads']
-    output_chains = params['output_chains']
-    output_burn = params['output_burn']
-    output_logp = params['output_logp']
-    nbin = params['nbin']
-    metric = params['metric']
-    together = params['together']
-    rm_type = params['rm_type']
+    lagtobaseline, fixed, p_fix, subtract_mean, \
+        nwalkers, nburn, nchain, threads, output_chains, \
+            output_burn, output_logp, nbin, metric, \
+                together, rm_type = defaults.set_javelin( kwargs,
+                                                         np.hstack([ [cont_fname], line_fnames ])
+                                                         )
     
     #--------------------------------------------------
     #Account for parameters if javelin['together'] = False
     if not together:
           
         if ( type(laglimit) is str ) | ( laglimit is None ):
-            laglimit = np.full( len(line_fnames), laglimit )
+            laglimit = np.full( len(line_fnames), laglimit )            
             
         if ( len(line_fnames) == 1 ) & ( laglimit is not None ):
-            laglimit = [laglimit]
-    
-        if fixed is None:
-            fixed = np.full( len(line_fnames), fixed )
-            p_fix = np.full( len(line_fnames), p_fix )
-    
-        if ( len(fixed) < len(line_fnames) ) or ( len(fixed) == 5 ):
-            fixed_og = fixed
-            p_fix_og = p_fix
-            
-            fixed = []
-            p_fix = []
-            for i in range(len(line_fnames)):
-                fixed.append( fixed_og )
-                p_fix.append( p_fix_og )
+            laglimit = [laglimit]    
+        
+        
+    else:
+        if laglimit > 1:
+
+            baselines = []
+            for i in range(len(laglimit)):
+                baseline = np.max([ np.abs(laglimit[0]), np.abs(laglimit[1]) ])
+                baselines.append(baseline)
+                
+            max_lag = np.max(baselines)
+            laglimit = [-max_lag, max_lag]
+        
 
     #--------------------------------------------------
     
