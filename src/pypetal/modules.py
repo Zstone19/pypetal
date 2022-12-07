@@ -469,7 +469,6 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     
     if line_fnames is str:
         line_fnames = [line_fnames]    
-        line_names = [line_names]
         
     #--------------------------------------------------
     #Read general kwargs
@@ -503,6 +502,8 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
         
     else:
         if len(laglimit) > 1:
+
+            print(laglimit)
 
             baselines = []
             for i in range(len(laglimit)):
