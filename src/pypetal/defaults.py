@@ -96,7 +96,7 @@ def set_drw_rej(input_args, fnames):
     default_kwargs = {
         'jitter' : True,
         'nsig' : 1,
-        'nwalkers': 100,
+        'nwalker': 100,
         'nburn': 300,
         'nchain': 1000,
         'clip': np.full( len(fnames), True),
