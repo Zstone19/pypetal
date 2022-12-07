@@ -303,7 +303,7 @@ nbin: {}
     pyccf_func = partial( utils.get_pyccf_lags, interp=interp, nsim=nsim, mcmode=mcmode,
                           sigmode=sigmode, thres=thres)
     
-    args = [ [x for x in line_fnames], [x for x in lag_bounds] ]
+    args = list( zip([x for x in line_fnames], [x for x in lag_bounds]) )
     
     pool = mp.Pool(threads)
     res_tot = pool.starmap( pyccf_func, args )
