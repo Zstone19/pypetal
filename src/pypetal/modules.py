@@ -334,9 +334,7 @@ nbin: {}
                                     lc_names=[line_names[0], line_names[i+1]],
                                     fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.pdf', 
                                     show=plot)
-
     
-        res_tot.append(res)
     
     return res_tot 
 
