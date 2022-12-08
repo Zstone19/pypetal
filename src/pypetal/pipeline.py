@@ -579,7 +579,7 @@ def run_pipeline(output_dir, arg2,
         javelin_res = modules.javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, javelin_params)
     
     if run_weighting:
-        weighting.run_weighting(cont_fname, line_fnames, output_dir, line_names, 
+        weighting_res = weighting.run_weighting(cont_fname, line_fnames, output_dir, line_names, 
                                 run_pyccf, run_javelin,
                                 pyccf_res, javelin_res,
                                 pyccf_params, javelin_params,
