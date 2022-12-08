@@ -109,7 +109,7 @@ use_for_javelin: {}
     arg6 = []
     arg7 = np.full(len(fnames), plot)
     
-    for i in range(len_fnames):
+    for i in range(len(fnames)):
         if reject_data[i]:
             x, y, yerr = np.loadtxt( fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
     
