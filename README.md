@@ -1,7 +1,7 @@
 pyPETaL: A Pipeline for Estimating AGN Time Lags
 =================================================
 
-[![Documentation Status](https://readthedocs.org/projects/petl1/badge/?version=latest)](https://petl1.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/pypetal/badge/?version=latest)](https://pypetal.readthedocs.io/en/latest/?badge=latest)
 
 Installation
 ------------
