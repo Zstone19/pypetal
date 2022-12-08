@@ -440,7 +440,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
         arg3.append(dy1)
         arg4.append(t2)
         arg5.append(y2)
-        arg6 = np.append(dy2)  
+        arg6.append(dy2)  
         
     args = list( zip(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) )
 
