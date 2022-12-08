@@ -61,6 +61,9 @@ def set_general(input_args, fnames):
         colnames = dat.colnames       
         x = np.array( dat[colnames[0]] )
 
+        sort_ind = np.argsort(x)
+        x = x[sort_ind]
+
         xvals_tot.append(x)
         
     for i in range(len(fnames)-1):
