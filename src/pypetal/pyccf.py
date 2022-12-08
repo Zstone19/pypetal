@@ -180,7 +180,7 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
 
 
 
-def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, imode=0, sigmode = 0.2, threads=1):
+def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, imode=0, sigmode = 0.2):
     '''
     Calculate peak time lag and centroid based on the cross-correlation 
     function for unevenly sampling data.
@@ -287,7 +287,8 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
 
 def xcor_mc_loop(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
                  thres=0.8, siglevel=0.95, 
-                 imode=0, mcmode=0, sigmode = 0.2):
+                 imode=0, mcmode=0, sigmode=0.2,
+                 threads=1):
 
     if mcmode!=2:
         # RSS resample light curve 1
@@ -373,7 +374,7 @@ def xcor_mc_loop(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
 
 
 
-def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, imode=0, nsim=2048, mcmode=0, sigmode = 0.2):
+def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, imode=0, nsim=2048, mcmode=0, sigmode=0.2, threads=1):
     '''
     Calculate the uncertainty for the cross-correlation peak.
     

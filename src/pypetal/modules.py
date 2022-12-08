@@ -304,7 +304,8 @@ nbin: {}
     for i in range(len(line_fnames)):
         res = utils.get_pyccf_lags( cont_fname, line_fnames[i], lag_bounds[i],
                                    interp=interp, nsim=nsim, 
-                                   mcmode=mcmode, sigmode=sigmode, thres=thres)
+                                   mcmode=mcmode, sigmode=sigmode, thres=thres,
+                                   threads=threads)
 
         #Write CCF to file
         dat_fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.dat'

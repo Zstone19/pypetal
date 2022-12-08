@@ -364,7 +364,8 @@ def get_zdcf_ml_lag(fname1, fname2, temp_dir, plike_dir, lag_bounds, sep=','):
     
 def get_pyccf_lags(fname1, fname2, 
                    lag_bounds=None, interp=None,
-                   nsim=1000, mcmode=0, sigmode=.2, thres=.8):
+                   nsim=1000, mcmode=0, sigmode=.2, thres=.8,
+                   threads=1):
     
     """Obtain time lags from the correlation between two light curves using the pyCCF algorithm: https://ui.adsabs.harvard.edu/abs/2018ascl.soft05032S/abstract.
     In short, pyCCF creates the Interpolated Cross-Correlation Function (ICCF) between two light curves, 
@@ -500,7 +501,7 @@ def get_pyccf_lags(fname1, fname2,
             pvals = pyccf.xcor_mc(x1, y1, np.abs(yerr1), x2, y2, 
                                 np.abs(yerr2), lag_bounds[0], lag_bounds[1], interp, 
                                 nsim=nsim, mcmode=mcmode, sigmode=sigmode,
-                                thres=thres)
+                                thres=thres, threads=threads)
 
     ccf = ccf_pack[0]
     ccf_lags = ccf_pack[1]
