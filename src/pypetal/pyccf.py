@@ -451,13 +451,13 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
     
     nsuccess_peak = len( np.argwhere( success_peak ).T[0] )
-    nfail_peak = len( np.argwhere( not success_peak ).T[0] )
+    nfail_peak = len( np.argwhere( success_peak == False ).T[0] )
 
     nsuccess_centroid = len( np.argwhere( success_centroid ).T[0] )
-    nfail_centroid = len( np.argwhere( not success_centroid ).T[0] )
+    nfail_centroid = len( np.argwhere( success_centroid == False ).T[0] )
     
     nsuccess_rvals = len( np.argwhere( success_rval ).T[0] )
-    nfail_rvals = len( np.argwhere( not success_rval ).T[0] )
+    nfail_rvals = len( np.argwhere( success_rval == False ).T[0] )
     
 
     
