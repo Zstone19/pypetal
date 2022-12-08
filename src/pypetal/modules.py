@@ -344,7 +344,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
         
     
     pool = mp.Pool(threads)
-    pyzdcf_func = partial( utiils.get_zdcf, num_MC=nsim, minpts=minpts, 
+    pyzdcf_func = partial( utils.get_zdcf, num_MC=nsim, minpts=minpts, 
                            uniform_sampling=uniform_sampling, omit_zero_lags=omit_zero_lags,
                            sparse=sparse, sep=',', verbose=verbose)
     
