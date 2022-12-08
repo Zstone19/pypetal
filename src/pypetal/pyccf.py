@@ -286,6 +286,7 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
 
 
 def xcor_mc_loop(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
+                 numt1, numt2,
                  thres=0.8, siglevel=0.95, 
                  imode=0, mcmode=0, sigmode=0.2,
                  threads=1):
@@ -432,7 +433,9 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
     arg6 = []
     arg7 = np.full(nsim, tlagmin)
     arg8 = np.full(nsim, tlagmax)
-    arg9 = np.full(nsim, tunit)  
+    arg9 = np.full(nsim, tunit) 
+    arg10 = np.full(nsim, numt1)
+    arg11 = np.full(nsim, numt2)
     
     for i in range(nsim):
         arg1.append(t1)
@@ -442,9 +445,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
         arg5.append(y2)
         arg6.append(dy2)  
         
-    args = list( zip(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) )
-
-
+    args = list( zip(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) )
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = pool.starmap( pyccf_func, args ).T
     
     nsuccess_peak = len( np.argwhere( success_peak ).T[0] )
