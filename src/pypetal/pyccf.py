@@ -446,7 +446,9 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
         arg6.append(dy2)  
         
     args = list( zip(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) )
-    tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = pool.starmap( pyccf_func, args ).T
+    res = pool.starmap( pyccf_func, args )
+    
+    tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
     
     nsuccess_peak = len( np.argwhere( success_peak ).T[0] )
     nfail_peak = len( np.argwhere( not success_peak ).T[0] )
