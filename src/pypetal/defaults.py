@@ -100,7 +100,7 @@ def set_drw_rej(input_args, fnames):
         'nburn': 300,
         'nchain': 1000,
         'clip': np.full( len(fnames), True),
-        'reject_data': np.hstack([ [True], np.full( len(fnames)-1, False) ], dtype=bool),
+        'reject_data': np.hstack([ [True], np.full( len(fnames)-1, False) ]),
         'use_for_javelin': False
     }
     
