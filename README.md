@@ -23,7 +23,7 @@ Or, if you want to install the latest development version:
 ```
 
 
-__NOTE:__ The user may need to install ``NumPy`` before installing pyPetal through ``pip`` or ``setup.py``. This is because ``JAVELIN`` requires ``NumPy`` to be installed for installation. This can be done with:
+__NOTE:__ The user may need to install ``NumPy`` before installing pyPetal through ``pip`` or ``setup.py``. This is because ``JAVELIN`` requires ``NumPy`` in order to be installed. This can be done with:
 ```
     pip install numpy
 ```
