@@ -403,7 +403,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
             plike_tot.append( plike_dict )  
             
         plotting.plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
-                                     dcf_df, plike_dict,
+                                     res_tot[i], plike_dict,
                                      time_unit=time_unit, lc_unit=[lc_unit[0], lc_unit[i+1]],
                                      lc_names=[line_names[0], line_names[i+1]],
                                      fname=output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_zdcf.pdf', 
