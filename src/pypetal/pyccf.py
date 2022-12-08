@@ -419,16 +419,33 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
         raise Exception("The light curve should contain at least 2 data points!!!")
     
     pool = mp.Pool(threads)
-    pyccf_func = partial( xcor_mc_loop, t1=t1, y1=y1, dy1=dy1, 
-                         t2=t2, y2=y2, dy2=dy2,
-                         tlagmin=tlagmin, tlagmax=tlagmax, tunit=tunit,
-                         numt1=numt1, numt2=numt2,
+    pyccf_func = partial( numt1=numt1, numt2=numt2,
                          thres=thres, siglevel=siglevel, imode=imode,
-                         mcmode=mcmode)
+                         mcmode=mcmode, sigmode=sigmode)
 
+
+    arg1 = []
+    arg2 = []
+    arg3 = []
+    arg4 = []
+    arg5 = []
+    arg6 = []
+    arg7 = np.full(nsim, tlagmin)
+    arg8 = np.full(nsim, tlagmax)
+    arg9 = np.full(nsim, tunit)  
     
-    arg = np.full(nsim, sigmode)
-    tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = pool.map( pyccf_func, arg ).T
+    for i in range(nsim):
+        arg1.append(t1)
+        arg2.append(y1)
+        arg3.append(dy1)
+        arg4.append(t2)
+        arg5.append(y2)
+        arg6 = np.append(dy2)  
+        
+    args = list( zip(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) )
+
+
+    tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = pool.starmap( pyccf_func, args ).T
     
     nsuccess_peak = len( np.argwhere( success_peak ).T[0] )
     nfail_peak = len( np.argwhere( not success_peak ).T[0] )
