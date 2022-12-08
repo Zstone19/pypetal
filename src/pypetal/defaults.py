@@ -34,18 +34,22 @@ def set_general(input_args, fnames):
      
     len_lag_bounds = len(lag_bounds)
     if len_lag_bounds == 2:
-        if not ( ( type(lag_bounds[0]) is type([]) ) or ( lag_bounds[0] == 'baseline' ) ):
+        if not ( isinstance(lag_bounds[0], list) or ( lag_bounds[0] == 'baseline' ) ):
             len_lag_bounds = 1
         else:
             len_lag_bounds = 2
 
-    if len_lag_bounds != len(fnames)-1:
+
+    if len_lag_bounds != len(filenames)-1:
         
         lag_bounds_og = lag_bounds
         lag_bounds = []
 
         for i in range(len(fnames)-1):
             lag_bounds.append(lag_bounds_og)
+            
+    if (len(filenames) == 2) and ( not isinstance(lag_bounds[0], list) ):
+        lag_bounds = [lag_bounds]
             
             
             
