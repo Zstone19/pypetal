@@ -285,11 +285,10 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
 
 
 
-def xcor_mc_loop(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
+def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
                  numt1, numt2,
                  thres=0.8, siglevel=0.95, 
-                 imode=0, mcmode=0, sigmode=0.2,
-                 threads=1):
+                 imode=0, sigmode=0.2):
 
     if mcmode!=2:
         # RSS resample light curve 1
@@ -421,32 +420,15 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
     
     pool = mp.Pool(threads)
     pyccf_func = partial( xcor_mc_loop,
-                         thres=thres, siglevel=siglevel, imode=imode,
-                         mcmode=mcmode, sigmode=sigmode)
+                         t1=t1, y1=y1, dy1=dy1, t2=t2, y2=y2, dy2=dy2,
+                         tlagmin=tlagmin, tlagmax=tlagmax, tunit=tunit,
+                         numt1=numt1, numt2=numt2,
+                         thres=thres, siglevel=siglevel, 
+                         imode=imode, sigmode=sigmode)
 
 
-    arg1 = []
-    arg2 = []
-    arg3 = []
-    arg4 = []
-    arg5 = []
-    arg6 = []
-    arg7 = np.full(nsim, tlagmin)
-    arg8 = np.full(nsim, tlagmax)
-    arg9 = np.full(nsim, tunit) 
-    arg10 = np.full(nsim, numt1)
-    arg11 = np.full(nsim, numt2)
-    
-    for i in range(nsim):
-        arg1.append(t1)
-        arg2.append(y1)
-        arg3.append(dy1)
-        arg4.append(t2)
-        arg5.append(y2)
-        arg6.append(dy2)  
-        
-    args = list( zip(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) )
-    res = pool.starmap( pyccf_func, args )
+    arg = np.full(nsim, mcmode)
+    res = pool.map( pyccf_func, arg )
     
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
     
