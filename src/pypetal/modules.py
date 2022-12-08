@@ -443,6 +443,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']   
     laglimit = general_kwargs['lag_bounds']
+    threads = general_kwargs['threads']
                 
     #--------------------------------------------------
     #Read kwargs
@@ -487,7 +488,6 @@ subtract_mean: {}
 nwalker: {}
 nburn: {}
 nchain: {}
-threads: {}
 output_chains: {}
 output_burn: {}
 output_logp: {}
@@ -496,7 +496,7 @@ metric: {}
 together: {}
 --------------------
         """.format( rm_type, lagtobaseline, laglimit_str, not (fixed is None), not (fixed is None),
-                    subtract_mean, nwalkers, nburn, nchain, threads, output_chains,
+                    subtract_mean, nwalkers, nburn, nchain, output_chains,
                     output_burn, output_logp, nbin, metric, together )
         
         print(txt_str)
