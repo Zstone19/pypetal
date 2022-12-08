@@ -104,8 +104,8 @@ use_for_javelin: {}
     arg1 = []
     arg2 = []
     arg3 = []
-    arg4 = []
-    arg5 = line_names
+    arg4 = line_names
+    arg5 = []
     
     for i in range(len(fnames)):
         if reject_data[i]:
@@ -114,10 +114,10 @@ use_for_javelin: {}
             arg1.append( x*time_unit )
             arg2.append( y*lc_unit[i] )
             arg3.append( yerr*lc_unit[i] )
-            arg4.append( output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_drw_fit.pdf' )
+            arg5.append( output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_drw_fit.pdf' )
        
        
-    args = list(zip([arg1, arg2, arg3, arg4, arg5]))
+    args = list(zip(arg1, arg2, arg3, arg4, arg5))
     res_tot = pool.starmap(drw_rej_func, args)
                         
     masks_tot = []
