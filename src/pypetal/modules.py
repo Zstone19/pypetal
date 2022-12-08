@@ -300,7 +300,7 @@ nbin: {}
         print(txt_str)
      
      
-    
+    res_tot = []
     for i in range(len(line_fnames)):
         res = utils.get_pyccf_lags( cont_fname, line_fnames[i], lag_bounds[i],
                                    interp=interp, nsim=nsim, 
