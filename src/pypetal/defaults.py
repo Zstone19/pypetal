@@ -40,7 +40,7 @@ def set_general(input_args, fnames):
             len_lag_bounds = 2
 
 
-    if len_lag_bounds != len(filenames)-1:
+    if len_lag_bounds != len(fnames)-1:
         
         lag_bounds_og = lag_bounds
         lag_bounds = []
@@ -48,7 +48,7 @@ def set_general(input_args, fnames):
         for i in range(len(fnames)-1):
             lag_bounds.append(lag_bounds_og)
             
-    if (len(filenames) == 2) and ( not isinstance(lag_bounds[0], list) ):
+    if (len(fnames) == 2) and ( not isinstance(lag_bounds[0], list) ):
         lag_bounds = [lag_bounds]
             
             
