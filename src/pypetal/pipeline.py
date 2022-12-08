@@ -511,7 +511,7 @@ def run_pipeline(output_dir, arg2,
             cont_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
             
             for i in range(len(line_fnames)):
-                line_fnames[i] = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'            
+                line_fnames[i] = output_dir + 'rejected_lcs/' + line_names[i+1] + '_data.dat'            
             
             
         if use_for_javelin:            
