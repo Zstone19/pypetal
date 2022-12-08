@@ -41,6 +41,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
+    threads = general_kwargs['threads']
         
     #--------------------------------------------------
     #Read kwargs
@@ -91,86 +92,42 @@ use_for_javelin: {}
         jitters = []
     
     rejecting = np.any(reject_data)
-    
-    #Do continuum
-    
-    if reject_data[0]:
-        x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
-
-        res = utils.drw_flag( x*time_unit, y*lc_unit[0], yerr*lc_unit[0], 
-                                    nwalkers=nwalker, nburn=nburn, nsamp=nchain,
-                                    nsig=nsig, jitter=jitter, clip=clip[0], 
-                                    target=line_names[0], 
-                                    fname=output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.pdf', 
-                                    plot=plot)
-        
-        cont_mask = res['mask']
-        
-        sigmas.append( np.median(res['sigma']) )
-        taus.append( np.median(res['tau']) )
-        
-        if jitter:
-            jitters.append( np.median(res['jitter']) )
-            
-            
-            
-        #Write mask
-        dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_mask.dat'
-        write_data( cont_mask, dat_fname )
-            
-        #Write LC fit
-        dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_drw_fit.dat'
-        header = '#time,light curve,error'
-        write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )    
-        
-        #Write the MCMC chains
-        dat_fname = output_dir + line_names[0] + '/drw_rej/' + line_names[0] + '_chain.dat'
-        
-        if jitter:
-            header = '#sigma,tau,jitter'
-            write_data( [ res['sigma'], res['tau'], res['jitter'] ], dat_fname, header )
-        else:
-            header = '#sigma,tau'
-            write_data( [ res['sigma'], res['tau'] ], dat_fname, header )
-    
-    
-        x_new = x[~cont_mask]
-        y_new = y[~cont_mask]
-        yerr_new = yerr[~cont_mask]
-        
-        dat_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
-        write_data([x_new, y_new, yerr_new], dat_fname)
-        
-    else:
-        x, y, yerr = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
-        
-        cont_mask = np.full( len(x), False )
-        taus.append(None)
-        sigmas.apend(None)
-        
-        if jitter:
-            jitters.append(None)
-        
-        if rejecting:
-            dat_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
-            write_data([x, y, yerr], dat_fname)
+    fnames = np.hstack([ [cont_fname], line_fnames ])
  
-            
-        
-            
-    line_masks = []
+ 
+    pool = mp.Pool(threads)
+    drw_rej_func = partial( utils.drw_flag, nwalkers=nwalker, nburn=nburn, nsamp=nchain,
+                            nsig=nsig, jitter=jitter, plot=plot)
+       
+       
+       
+    arg1 = []
+    arg2 = []
+    arg3 = []
+    arg4 = clip
+    arg5 = line_names
+    arg6 = []
+    arg7 = np.full(len(fnames), plot)
     
-    for i in range(len(line_fnames)):
+    for i in range(len_fnames):
+        if reject_data[i]:
+            x, y, yerr = np.loadtxt( fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
+    
+            arg1.append( x*time_unit )
+            arg2.append( y*lc_unit[i] )
+            arg3.append( yerr*lc_unit[i] )
+            arg6.append( output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_drw_fit.pdf' )
+       
+       
+    args = list(zip([arg1, arg2, arg3, arg4, arg5, arg6, arg7]))
+    res_tot = pool.starmap(drw_rej_func, args)
+                        
+    masks_tot = []
+    n = 0
+    for i in range(len(fnames)):
         
-        if reject_data[i+1]:
-            x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
-            
-            res = utils.drw_flag( x*time_unit, y*lc_unit[i+1], yerr*lc_unit[i+1], 
-                                        nwalkers=nwalker, nburn=nburn, nsamp=nchain,
-                                        nsig=nsig, jitter=jitter, clip=clip[i+1],
-                                        target=line_names[i+1],
-                                        fname=output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.pdf', 
-                                        plot=plot)
+        if reject_data[i]:            
+            res = res_tot[n]
             
             sigmas.append( np.median(res['sigma']) )
             taus.append( np.median(res['tau']) )
@@ -178,19 +135,19 @@ use_for_javelin: {}
             if jitter:
                 jitters.append( np.median(res['jitter']) )
             
-            line_mask = res['mask']
+            mask = res['mask']
             
             #Write mask
-            dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_mask.dat'
-            write_data(line_mask, dat_fname)
+            dat_fname = output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_mask.dat'
+            write_data(mask, dat_fname)
                     
             #Write LC fit
-            dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_drw_fit.dat'
+            dat_fname = output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_drw_fit.dat'
             header = '#time,light curve,error'
             write_data( [ res['fit_x'], res['fit_y'], res['fit_err'] ], dat_fname, header )        
             
             #Write the MCMC chains
-            dat_fname = output_dir + line_names[i+1] + '/drw_rej/' + line_names[i+1] + '_chain.dat'
+            dat_fname = output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_chain.dat'
 
             if jitter:
                 header = '#sigma,tau,jitter'
@@ -200,15 +157,18 @@ use_for_javelin: {}
                 write_data( [ res['sigma'], res['tau'] ], dat_fname, header )        
         
 
-            x_new = x[~line_mask]
-            y_new = y[~line_mask]
-            yerr_new = yerr[~line_mask]
+            x_new = x[~mask]
+            y_new = y[~mask]
+            yerr_new = yerr[~mask]
             
-            dat_fname = output_dir + 'rejected_lcs/' + line_names[i+1] + '_data.dat'
+            dat_fname = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'
             write_data( [x_new, y_new, yerr_new], dat_fname )
+
+            
+            n += 1 
         
         else:
-            x, y, yerr = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
+            x, y, yerr = np.loadtxt( fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
             
             line_mask = np.full( len(x), False )
             taus.append(None)
@@ -218,23 +178,14 @@ use_for_javelin: {}
                 jitters.append(None)
                 
             if rejecting:
-                dat_fname = output_dir + 'rejected_lcs/' + line_names[i+1] + '_data.dat'
-                write_data([x, y, yerr], dat_fname)
-
+                dat_fname = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'
+                write_data([x, y, yerr], dat_fname)       
                 
             
-            
-            
-        line_masks.append(line_mask)
-    
-    tot_masks = []
-    tot_masks.append(cont_mask)
-    
-    for i in range(len(line_masks)):
-        tot_masks.append( line_masks[i] )
+        masks_tot.append(line_mask)
     
     output = {
-        'masks': tot_masks,
+        'masks': masks_tot,
         'reject_data': reject_data,
         'taus': taus,
         'sigmas': sigmas
