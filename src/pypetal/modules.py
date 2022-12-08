@@ -298,15 +298,18 @@ nbin: {}
                     mcmode, sigmode, thres, nbin)
         
         print(txt_str)
-        
-    
-    res_tot = []
-    for i in range(len(line_fnames)):
-        res = utils.get_pyccf_lags( cont_fname, line_fnames[i], 
-                                   lag_bounds=lag_bounds[i], 
-                                   interp=interp, nsim=nsim, mcmode=mcmode, 
-                                   sigmode=sigmode, thres=thres)
+     
+     
+     
+    args = list(zip(  np.full( len(line_fnames), cont_fname), line_fnames, lag_bounds ))    
+    pyccf_func = partial(utils.get_pyccf_lags, interp=interp, nsim=nsim, 
+                         mcmode=mcmode, sigmode=sigmode, thres=thres)
 
+    pool = mp.Pool(threads)
+    res_tot = pool.starmap( pyccf_func, args )
+    
+    for i in range(len(line_fnames)):
+        res = res_tot[i]
 
         #Write CCF to file
         dat_fname = output_dir + line_names[i+1] + r'/pyccf/' + line_names[i+1] + '_ccf.dat'
@@ -319,7 +322,7 @@ nbin: {}
         write_data( [ res['CCCD_lags'], res['CCPD_lags'] ], dat_fname, header )        
         
         
-        res['name'] = line_names[i]
+        res_tot[i]['name'] = line_names[i]
     
         x1, y1, yerr1 = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
         x2, y2, yerr2 = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
