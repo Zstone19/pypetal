@@ -14,6 +14,7 @@ def run_pipeline(output_dir, arg2,
                  run_pyccf=False, pyccf_params={},
                  run_pyzdcf=False, pyzdcf_params={},
                  run_javelin=False, javelin_params={},
+                 run_weighting=False, weighting_params={},
                  **kwargs):
     
     """ Run the pyPetal pipeline on a list of files. Individual modules can be specified, but are not run by default.
@@ -406,6 +407,12 @@ def run_pipeline(output_dir, arg2,
         line_fnames = [line_fnames]
     
     
+    if (run_weighting) & (not run_pyccf) & (not run_javelin):
+        print('ERROR: Either JAVELIN or pyCCF must be run before weighting can be done.')
+        print('Setting run_weighting=False')
+        run_weighting = False
+
+    
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
 
@@ -434,7 +441,8 @@ def run_pipeline(output_dir, arg2,
     
     #Create subdirectories for each line and module
     make_directories(output_dir, fnames, line_names, 
-                     run_drw_rej, run_pyccf, run_pyzdcf, run_javelin,
+                     run_drw_rej, run_pyccf, run_pyzdcf, 
+                     run_javelin, run_weighting,
                      reject_data, together)
         
     if general_kwargs['file_fmt'] != 'csv':
@@ -569,6 +577,9 @@ def run_pipeline(output_dir, arg2,
     if run_javelin:
         javelin_res = modules.javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, javelin_params)
     
+    if run_weighting:
+        print('')
+
 
     if general_kwargs['file_fmt'] != 'csv':
         import shutil

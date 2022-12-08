@@ -261,3 +261,22 @@ def set_javelin(input_args, fnames):
     return lagtobaseline, fixed, p_fix, subtract_mean, \
         nwalkers, nburn, nchain, threads, output_chains, \
             output_burn, output_logp, nbin, metric, together, rm_type
+            
+            
+def set_weighting(input_args):
+    
+    default_kwargs = {
+        'gap_size': 30,
+        'k': 2,
+        'width': 15,
+        'zoom': True
+    }
+    
+    params = { **default_kwargs, **input_args }
+    
+    gap_size = params['gap_size']
+    k = params['k']
+    width = params['width']
+    zoom = params['zoom']
+    
+    return gap_size, k, width, zoom
