@@ -318,7 +318,7 @@ nbin: {}
         write_data( [ res['CCCD_lags'], res['CCPD_lags'] ], dat_fname, header )        
         
         
-        res_tot['name'] = line_names[i]
+        res['name'] = line_names[i]
     
         x1, y1, yerr1 = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
         x2, y2, yerr2 = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
