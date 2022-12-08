@@ -329,14 +329,28 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
         if input_dir != os.path.dirname( os.path.realpath(line_fnames[i]) ):
             print('ERROR: All light curve files must be in the same directory')
             return {}
+            
+    
+    if verbose:
         
+        txt_str = """
+Running pyZDCF
+----------------------
+nsim: {}
+minpts: {}
+uniform_sampling: {}
+omit_zero_lags: {}
+sparse: {}
+prefix: {}
+run_plike: {}
+plike_dir
+----------------------
+        """.format( nsim, minpts, uniform_sampling, omit_zero_lags,
+                    sparse, prefix, run_plike, plike_dir)
         
-    if run_plike:
-        
-        if len(lag_bounds) > 2:
-            lag_bounds_str = 'array'
-        else:
-            lag_bounds_str = lag_bounds
+        print(txt_str)
+    
+    
     
     input_dir += r'/'
     cont_fname_short = os.path.basename(cont_fname)
@@ -346,7 +360,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     pool = mp.Pool(threads)
     pyzdcf_func = partial( utils.get_zdcf, num_MC=nsim, minpts=minpts, 
                            uniform_sampling=uniform_sampling, omit_zero_lags=omit_zero_lags,
-                           sparse=sparse, sep=',', verbose=verbose)
+                           sparse=sparse, sep=',', verbose=False)
     
     arg1 = np.full( len(line_fnames), input_dir )
     arg2 = np.full( len(line_fnames), cont_fname_short )
