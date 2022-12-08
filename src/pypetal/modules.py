@@ -343,7 +343,7 @@ omit_zero_lags: {}
 sparse: {}
 prefix: {}
 run_plike: {}
-plike_dir
+plike_dir: {}
 ----------------------
         """.format( nsim, minpts, uniform_sampling, omit_zero_lags,
                     sparse, prefix, run_plike, plike_dir)
