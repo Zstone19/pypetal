@@ -419,7 +419,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
         raise Exception("The light curve should contain at least 2 data points!!!")
     
     pool = mp.Pool(threads)
-    pyccf_func = partial( numt1=numt1, numt2=numt2,
+    pyccf_func = partial( xcor_mc_loop, numt1=numt1, numt2=numt2,
                          thres=thres, siglevel=siglevel, imode=imode,
                          mcmode=mcmode, sigmode=sigmode)
 
