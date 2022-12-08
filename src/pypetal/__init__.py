@@ -4,5 +4,6 @@ from .modules import *
 from .petalio import *
 from .plotting import *
 from .pipeline import *
-from .utils import *
 from .pyccf import *
+from .utils import *
+from .weighting import *

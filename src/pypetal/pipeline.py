@@ -1,4 +1,5 @@
 import pypetal.modules as modules
+from pypetal import weighting
 from pypetal.petalio import write_data, make_directories
 import pypetal.defaults as defaults
 
@@ -578,7 +579,11 @@ def run_pipeline(output_dir, arg2,
         javelin_res = modules.javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, javelin_params)
     
     if run_weighting:
-        print('')
+        weighting.run_weighting(cont_fname, line_fnames, output_dir, line_names, 
+                                run_pyccf, run_javelin,
+                                pyccf_res, javelin_res,
+                                pyccf_params, javelin_params,
+                                general_kwargs, weighting_params)
 
 
     if general_kwargs['file_fmt'] != 'csv':
@@ -601,6 +606,10 @@ def run_pipeline(output_dir, arg2,
     if run_pyzdcf:
         tot_res['pyzdcf_res'] = pyzdcf_res
         tot_res['plike_res'] = plike_res
+        
+    if run_weighting:
+        tot_res['weighting_res'] = weighting_res
+
 
 
     if not isinstance(arg2[0], str):
