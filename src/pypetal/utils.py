@@ -230,9 +230,9 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     return
 
 
-def get_zdcf(input_dir, fname1, fname2, out_dir, num_MC=500, minpts=0, 
+def get_zdcf(input_dir, fname1, fname2, out_dir, prefix='zdcf', num_MC=500, minpts=0, 
              uniform_sampling=False, autocf=False, omit_zero_lags=True, 
-             sparse='auto', sep=',', prefix='zdcf', verbose=False):
+             sparse='auto', sep=',', verbose=False):
     
     """
     Runs the pyZDCF algorithm to compute the Z-Transformed Discrete Correlation Function (ZDCF).

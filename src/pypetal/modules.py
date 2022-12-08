@@ -307,6 +307,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     lag_bounds = general_kwargs['lag_bounds']
+    threads = general_kwargs['threads']
         
     #--------------------------------------------------
     #Read kwargs
@@ -342,21 +343,22 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     line_fnames_short = [ os.path.basename(x) for x in line_fnames ]
         
     
-    res_tot = []
-    plike_tot = []
+    pool = mp.Pool(threads)
+    pyzdcf_func = partial( utiils.get_zdcf, num_MC=nsim, minpts=minpts, 
+                           uniform_sampling=uniform_sampling, omit_zero_lags=omit_zero_lags,
+                           sparse=sparse, sep=',', verbose=verbose)
     
-    for i in range(len(line_fnames)):
-        dcf_df = utils.get_zdcf( input_dir, cont_fname_short, line_fnames_short[i], 
-                                output_dir + line_names[i+1] + r'/pyzdcf/',
-                                num_MC=nsim, minpts=minpts, 
-                                uniform_sampling=uniform_sampling, omit_zero_lags=omit_zero_lags,
-                                sparse=sparse, 
-                                sep=',',
-                                prefix=line_names[i+1] + '_' + prefix, 
-                                verbose=verbose)
-        
-        res_tot.append(dcf_df)
-        
+    arg1 = np.full( len(line_fnames), input_dir )
+    arg2 = np.full( len(line_fnames), cont_fname_short )
+    arg3 = line_fnames_short
+    arg4 = [ output_dir + x + r'/pyzdcf/' for x in line_names[1:] ]
+    arg5 = [ x + '_' + prefix for x in line_names[1:] ]
+    
+    args = list(zip(arg1, arg2, arg3, arg4, arg5))
+    res_tot = pool.starmap(pyzdcf_func, args)
+    
+    plike_tot = []
+    for i in range(len(line_fnames)):        
         
         x1, y1, yerr1 = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
         x2, y2, yerr2 = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
