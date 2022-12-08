@@ -450,7 +450,7 @@ def plot_weights(output_dir, line_name, res, n0, k, time_unit='d', plot=False):
     ax.tick_params('both', which='minor', length=4)
 
     plt.figlegend(bbox_to_anchor=(1.3,.9), fontsize=12)
-    plt.savefig( output_dir + line_name + r'/' + line_name + '_weights.pdf', dpi=200, bbox_inches='tight' )
+    plt.savefig( output_dir + line_name + r'/weights/' + line_name + '_weights.pdf', dpi=200, bbox_inches='tight' )
 
     if plot:
         plt.show()
