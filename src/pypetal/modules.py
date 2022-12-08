@@ -471,6 +471,8 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     if ( not isinstance(laglimit, str) ) & ( laglimit is not None ):
         if len(laglimit) > 2:
             laglimit_str = 'array'
+        else:
+            laglimit_str = laglimit
     else:
         laglimit_str = laglimit
     
