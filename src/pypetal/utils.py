@@ -22,9 +22,9 @@ import pypetal.pyccf as pyccf
 ##############################################################
 
 def drw_flag(times, data, error,
+             target=None, fname=None, 
              nwalkers=32, nburn=300, nsamp=1000,
              nsig=1, jitter=True, clip=True,
-             target=None, fname=None, 
              plot=True):
     
     
