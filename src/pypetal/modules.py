@@ -168,7 +168,7 @@ use_for_javelin: {}
         else:
             x, y, yerr = np.loadtxt( fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
             
-            line_mask = np.full( len(x), False )
+            mask = np.full( len(x), False )
             taus.append(None)
             sigmas.append(None)
             
@@ -180,7 +180,7 @@ use_for_javelin: {}
                 write_data([x, y, yerr], dat_fname)       
                 
             
-        masks_tot.append(line_mask)
+        masks_tot.append(mask)
     
     output = {
         'masks': masks_tot,
