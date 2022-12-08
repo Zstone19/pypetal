@@ -251,7 +251,7 @@ nbin: {}
      
     res_tot = []
     for i in range(len(line_fnames)):
-        res = utils.get_pyccf_lags( cont_fname, line_fnames[i], lag_bounds[i],
+        res = utils.get_pyccf_lags( cont_fname, line_fnames[i+1], lag_bounds[i],
                                    interp=interp, nsim=nsim, 
                                    mcmode=mcmode, sigmode=sigmode, thres=thres,
                                    threads=threads)
