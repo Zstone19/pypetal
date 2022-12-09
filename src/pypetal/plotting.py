@@ -323,7 +323,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
 
 
     ax1 = fig.add_subplot( gs[0,:2] )
-    ax2 = fig.add_subplot( gs[1,:2] )
+    ax2 = fig.add_subplot( gs[1,:2], sharex=ax1 )
     ax3 = fig.add_subplot( gs[:,2] )
 
     lines, caps, bars = ax1.errorbar(x1, y1, yerr1, fmt='.k')
