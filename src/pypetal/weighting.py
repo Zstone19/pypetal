@@ -6,7 +6,7 @@ import numpy as np
 from scipy.signal import peak_widths
 
 from pypetal import pyccf
-from pypetal.petalio import err2str, write_data
+from pypetal.petalio import err2str, write_data, write_weight_summary
 from pypetal import defaults
 
 
@@ -249,6 +249,29 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
         'rmax': []
     }
     
+    summary_dicts = []
+    for i in range(nlc):
+        
+        x = {
+            'k': k,
+            'n0_pyccf': None,
+            'peak_bounds_pyccf': None,
+            'peak_pyccf': None,
+            'lag_pyccf': None,
+            'lag_err_pyccf': None,
+            'frac_rejected_pyccf': None,
+            'n0_javelin': None,
+            'peak_bounds_javelin': None,
+            'peak_javelin': None,
+            'lag_javelin': None,
+            'lag_err_javelin': None,
+            'frac_rejected_javelin': None,
+            'rmax': None
+        }   
+
+        summary_dicts.append(x)
+    
+    
     #Run weighting on pyCCF CCCDs
     if run_pyccf:
         output['pyccf']['centroid'] = []
@@ -302,9 +325,22 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
             output['pyccf']['frac_rejected'].append( 1 - len(downsampled_cccd) / len(cccd_lags) )
             
             
+            #Add to summary dict
+            summary_dicts['n0_pyccf'] = n0
+            summary_dicts[i]['peak_bounds_pyccf'] = [min_bound, max_bound]
+            summary_dicts[i]['peak_pyccf'] = peak
+            summary_dicts[i]['lag_pyccf'] = med_cent
+            summary_dicts[i]['lag_err_pyccf'] = [cent_err_lo, cent_err_hi]
+            summary_dicts[i]['frac_rejected_pyccf'] = 1 - len(downsampled_cccd) / len(cccd_lags)
+            
             #Plot weights
             plot_weights( output_dir, line_names[i+1], output['pyccf'], n0, k, 
                          time_unit=time_unit, plot=plot )
+            
+            #Write summary file
+            if not run_javelin:            
+                write_weight_summary( output_dir + line_names[i+1] + '/weights/weight_summary.txt',
+                                     summary_dicts[i])
             
             
             
@@ -375,10 +411,22 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
             output['javelin']['frac_rejected'].append( 1 - len(downsampled_dist) / len(lag_dist) )
         
         
+            #Add to summary dict
+            summary_dicts[i]['n0_javelin'] = n0
+            summary_dicts[i]['peak_bounds_javelin'] = [min_bound, max_bound]
+            summary_dicts[i]['peak_javelin'] = peak
+            summary_dicts[i]['lag_javelin'] = med_lag
+            summary_dicts[i]['lag_err_javelin'] = [lag_err_lo, lag_err_hi]
+            summary_dicts[i]['frac_rejected_javelin'] = 1 - len(downsampled_dist) / len(lag_dist)
+        
+        
             #Plot weights
             if not run_pyccf:
                 plot_weights( output_dir, line_names[i+1], output['javelin'], n0, k, 
                              time_unit=time_unit, plot=plot )
+                
+                write_weight_summary( output_dir + line_names[i+1] + '/weights/weight_summary.txt',
+                                     summary_dicts[i] )
 
             
             
@@ -397,6 +445,10 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
             rmax = np.max(ccf[good_ind])
             
             output['rmax'].append(rmax)
+            
+            summary_dicts[i]['rmax'] = rmax
+            write_weight_summary(output_dir + line_names[i+1] + '/weights/weight_summary.txt', 
+                                 summary_dicts[i] )
             
         write_data( output_dir + 'rmax.dat', output['rmax'] )
     

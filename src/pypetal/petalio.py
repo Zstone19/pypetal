@@ -121,6 +121,59 @@ def write_data(arr, fname, header=None):
     return
             
             
+  
+def write_weight_summary(fname, res):
+
+    k = res['k']
+    
+    #pyCCF
+    n0_pyccf = res['n0_pyccf']
+    peak_bounds_pyccf = res['peak_bounds_pyccf']
+    peak_pyccf = res['peak_pyccf']
+    lag_pyccf = res['lag_pyccf']
+    lag_err_pyccf = res['lag_err_pyccf']
+    frac_rejected_pyccf = res['frac_rejected_pyccf']
+    
+    #JAVELIN
+    n0_javelin = res['n0_javelin']
+    peak_bounds_javelin = res['peak_bounds_javelin']
+    peak_javelin = res['peak_javelin']
+    lag_javelin = res['lag_javelin']
+    lag_err_javelin = res['lag_err_javelin']
+    frac_rejected_javelin = res['frac_rejected_javelin']
+    
+    #Total
+    rmax = res['rmax']
+
+
+    with open(fname, 'w') as file:
+        file.write("k = {}\n".format(k))
+        file.write("\n")
+        file.write("pyCCF\n")
+        file.write("----------------\n")
+        file.write("n0 = {}\n".format(n0_pyccf))
+        file.write("peak bounds = {}\n".format(peak_bounds_pyccf))
+        file.write("peak = {}\n".format(peak_pyccf))
+        file.write("lag value = {}\n".format(lag_pyccf))
+        file.write("lag uncertainty = {}\n".format(lag_err_pyccf))
+        file.write("fraction rejected = {}\n".format(frac_rejected_pyccf))
+        file.write("\n")
+        file.write("JAVELIN\n")
+        file.write("----------------\n")
+        file.write("n0 = {}\n".format(n0_javelin))
+        file.write("peak bounds = {}\n".format(peak_bounds_javelin))
+        file.write("peak = {}\n".format(peak_javelin))
+        file.write("lag value = {}\n".format(lag_javelin))
+        file.write("lag uncertainty = {}\n".format(lag_err_javelin))
+        file.write("fraction rejected = {}\n".format(frac_rejected_javelin))
+        file.write("\n")
+        file.write("Total\n")
+        file.write("----------------\n")
+        file.write("rmax = {}\n".format(rmax))
+            
+    return
+    
+    
             
 def write_to_fits(res, output_dir, line_names, run_drw_rej, run_pyccf, run_pyzdcf, run_javelin):
 
