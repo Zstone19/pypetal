@@ -368,7 +368,7 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
             output['javelin']['acf'].append( acf )
             output['javelin']['lags'].append( lags )
             output['javelin']['weight_dist'].append( prob_dist )
-            output['javelin']['smoothed_dist'].append( smooth_dist )
+            output['javelin']['smoothed_dist'].append( smooth_weight_dist )
             output['javelin']['ntau'].append( ntau )
             output['javelin']['lag_dist'].append( lag_dist )
             output['javelin']['downsampled_lag_dist'].append( downsampled_dist )
