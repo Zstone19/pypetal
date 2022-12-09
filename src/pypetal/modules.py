@@ -460,11 +460,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     if not together:
           
         if ( type(laglimit) is str ) | ( laglimit is None ):
-            laglimit = np.full( len(line_fnames), laglimit )            
-            
-        if ( len(line_fnames) == 1 ) & ( laglimit is not None ):
-            laglimit = [laglimit]    
-        
+            laglimit = np.full( len(line_fnames), laglimit )                    
 
     #--------------------------------------------------
     
