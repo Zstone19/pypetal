@@ -566,7 +566,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
                 fixed=None, p_fix=None, subtract_mean=True,
                 nwalkers=100, nburn=100, nchain=100, threads=1, output_chains=False,
                 output_burn=False, output_logp=False, output_dir=None, 
-                nbin=50, verbose=False):
+                nbin=50, verbose=False, plot=False):
     
     """Run JAVELIN on a set of light curves.
     
@@ -729,7 +729,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
                 conthpd[2,1] = conthpd[1,1] + 1e-6
                 
         #Get histogram figure from continuum fit
-        if verbose:
+        if plot:
             cmod.show_hist(bins=nbin)
     else:
         conthpd = None

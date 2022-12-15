@@ -507,13 +507,13 @@ together: {}
                                 fixed=fixed, p_fix=p_fix, subtract_mean=subtract_mean,
                                 nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=threads,
                                 output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
-                                nbin=nbin, verbose=verbose)
+                                nbin=nbin, verbose=verbose, plot=plot)
 
 
         #Plot histograms
         fig, ax = plotting.plot_javelin_hist( res, fixed=fixed, nbin=nbin,
                                              time_unit=time_unit,
-                                            remove_fixed=False,
+                                             remove_fixed=False,
                                              fname= output_dir + 'javelin/javelin_histogram.pdf' )
         
         if plot:
@@ -591,7 +591,7 @@ together: {}
                                     fixed=fixed[i], p_fix=p_fix[i], subtract_mean=subtract_mean,
                                     nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=threads,
                                     output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
-                                    verbose=verbose)
+                                    verbose=verbose, plot=plot)
             
             res_tot.append(res)
             
