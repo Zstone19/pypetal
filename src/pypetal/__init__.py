@@ -1,5 +1,6 @@
 from .drw_funcs import *
 from .defaults import *
+from .detrending import *
 from .modules import *
 from .petalio import *
 from .plotting import *
