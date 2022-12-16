@@ -13,7 +13,8 @@ def set_general(input_args, fnames):
         'lc_unit': 'Arbitrary Units',
         'file_fmt': 'csv',
         'lag_bounds': 'baseline',
-        'threads': 1
+        'threads': 1,
+        'detrending': False
     }
     
     params = { **default_kwargs, **input_args }
