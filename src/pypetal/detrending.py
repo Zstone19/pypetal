@@ -1,0 +1,138 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from linmix import LinMix
+
+from pypetal.petalio import write_data
+
+
+def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, plot=False):
+    lm = LinMix(x, y, ysig=yerr, K=K, parallelize=parallelize)
+    lm.run_mcmc(silent=True)
+    
+    b_chains = []
+    m_chains = []
+    sigsqr_chains = []
+    
+    for i in range(len(lm.chain)):
+        b_chains.append( lm.chain[i][0] )
+        m_chains.append( lm.chain[i][1] )
+        sigsqr_chains.append( lm.chain[i][1] )
+
+        
+    b_med = np.median(b_chains)
+    b_err_hi = np.percentile(b_chains, 84) - b_med
+    b_err_lo = b_med - np.percentile(b_chains, 16)
+
+    m_med = np.median(m_chains)
+    m_err_hi = np.percentile(m_chains, 84) - m_med
+    m_err_lo = b_med - np.percentile(m_chains, 16)
+
+    sigsqr_med = np.median(sigsqr_chains)
+    sigsqr_err_hi = np.percentile(sigsqr_chains, 84) - sigsqr_med
+    sigsqr_err_lo = sigsqr_med - np.percentile(sigsqr_chains, 16)
+
+
+    if verbose:
+        print('m = {:.3f} + {:.3f} - {:.3f}'.format(m_med, m_err_hi, m_err_lo) )
+        print('b = {:.3f} + {:.3f} - {:.3f}'.format(b_med, b_err_hi, b_err_lo) )
+        print('sigsqr = {:.3f} + {:.3f} - {:.3f}'.format(sigsqr_med, sigsqr_err_hi, sigsqr_err_lo) )   
+        
+        
+        
+    y0_vals = []
+    for i in range(len(lm.chain)):
+        m_val = lm.chain[i][1]
+        b_val = lm.chain[i][0]
+        x0 = np.min(x1)
+        
+        y0_vals.append( m_val*x0 + b_val )
+
+
+    lo_ind = np.argmin(y0_vals)
+    m_lo = lm.chain[lo_ind][1]
+    b_lo = lm.chain[lo_ind][0]
+
+    hi_ind = np.argmax(y0_vals)
+    m_hi = lm.chain[hi_ind][1]
+    b_hi = lm.chain[hi_ind][0]
+        
+
+        
+    xsim = np.linspace(x.min(), x.max(), 100)        
+    ysim_avg = m_med*xsim + b_med
+    ysim_lo = m_lo*xsim + b_lo
+    ysim_hi = m_hi*xsim + b_hi
+
+        
+        
+    _, _, bars = plt.errorbar(x, y, yerr, fmt='.k')
+    [bar.set_alpha(.3) for bar in bars]
+
+        
+    plt.plot(xsim, ysim_avg, 'r')
+    plt.fill_between(xsim, ysim_lo, ysim_hi, color='r', alpha=.3)
+    
+    if output_dir is not None:    
+        plt.savefig(output_dir + 'detrend.pdf', dpi=200, bbox_inches='tight')
+    
+    if plot:    
+        plt.show()
+        
+    plt.cla()
+    plt.clf()
+    plt.close()
+    
+    
+    y_dt = y - (m_med*x + b_med)
+    
+    return y_dt     
+
+
+
+
+
+
+
+
+
+def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs):
+
+    verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
+    threads = general_kwargs['threads']
+    time_unit = general_kwargs['time_unit']
+    lc_unit = general_kwargs['lc_unit']
+    
+    fnames_tot = np.hstack([ [cont_fname], line_fnames])
+    
+    if threads > 1:
+        parallelize = True
+    else:
+        parallelize = False    
+        
+        
+    txt = """
+    Running detrending
+    -------------------
+    parallelize: {}
+    K = 2
+    """.format(parallelize)
+    
+    if verbose:
+        print(txt)
+            
+    
+    for i, fname in enumerate(fnames_tot):        
+        x, y, yerr = np.loadtxt( fname, unpack=True, usecols=[0,1,2], delimiter=',' )
+        
+        y_dt = detrend(x, y, yerr, K=2, parallelize=parallelize, 
+                       output_dir=output_dir + line_names[i] + r'/',
+                       verbose=verbose, plot=plot)
+                
+        write_data( output_dir + 'processed_lcs/' + line_names[i] + '_data.dat' )
+        
+    return
+        
+    
+    
+    
