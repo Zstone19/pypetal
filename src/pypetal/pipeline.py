@@ -490,7 +490,7 @@ def run_pipeline(output_dir, arg2,
     if run_drw_rej:
         
         if np.any( reject_data ):
-            os.makedirs( output_dir + 'rejected_lcs/', exist_ok=True )
+            os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
         
         drw_rej_res = modules.drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params ) 
                 
@@ -508,10 +508,10 @@ def run_pipeline(output_dir, arg2,
                 
         #If rejecting any data, make the new files the ones without rejected data
         if np.any( reject_data ):
-            cont_fname = output_dir + 'rejected_lcs/' + line_names[0] + '_data.dat'
+            cont_fname = output_dir + 'processed_lcs/' + line_names[0] + '_data.dat'
             
             for i in range(len(line_fnames)):
-                line_fnames[i] = output_dir + 'rejected_lcs/' + line_names[i+1] + '_data.dat'            
+                line_fnames[i] = output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat'            
             
             
         if use_for_javelin:            

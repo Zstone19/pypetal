@@ -159,7 +159,7 @@ use_for_javelin: {}
             y_new = y[~mask]
             yerr_new = yerr[~mask]
             
-            dat_fname = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'
+            dat_fname = output_dir + 'processed_lcs/' + line_names[i] + '_data.dat'
             write_data( [x_new, y_new, yerr_new], dat_fname )
 
             
@@ -176,7 +176,7 @@ use_for_javelin: {}
                 jitters.append(None)
                 
             if rejecting:
-                dat_fname = output_dir + 'rejected_lcs/' + line_names[i] + '_data.dat'
+                dat_fname = output_dir + 'processed_lcs/' + line_names[i] + '_data.dat'
                 write_data([x, y, yerr], dat_fname)       
                 
             
