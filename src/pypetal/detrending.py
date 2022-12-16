@@ -5,6 +5,23 @@ from linmix import LinMix
 from pypetal.petalio import write_data
 
 
+import matplotlib as mpl
+
+mpl.rcParams['xtick.minor.visible'] = True
+mpl.rcParams['xtick.top'] = True
+mpl.rcParams['xtick.direction'] = 'in'
+
+mpl.rcParams['ytick.minor.visible'] = True
+mpl.rcParams['ytick.right'] = True
+mpl.rcParams['ytick.direction'] = 'in'
+
+mpl.rcParams["figure.autolayout"] = False
+
+mpl.rcParams['savefig.dpi'] = 300
+mpl.rcParams['savefig.format'] = 'pdf'
+
+
+
 def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, plot=False):
     lm = LinMix(x, y, ysig=yerr, K=K, parallelize=parallelize)
     lm.run_mcmc(silent=True)
@@ -65,12 +82,20 @@ def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, 
 
         
         
-    _, _, bars = plt.errorbar(x, y, yerr, fmt='.k')
+    fig, ax = plt.subplots()
+        
+    _, _, bars = ax.errorbar(x, y, yerr, fmt='.k')
     [bar.set_alpha(.3) for bar in bars]
 
         
-    plt.plot(xsim, ysim_avg, 'r')
-    plt.fill_between(xsim, ysim_lo, ysim_hi, color='r', alpha=.3)
+    ax.plot(xsim, ysim_avg, 'r')
+    ax.fill_between(xsim, ysim_lo, ysim_hi, color='r', alpha=.3)
+    
+    ax.set_ylabel('Flux [{}]'.format(lc_unit))
+    ax.set_xlabel('Time [{}]'.format(time_unit))
+    
+    ax.tick_params('both', which='major', length=8)
+    ax.tick_params('both', which='minor', length=3)
     
     if output_dir is not None:    
         plt.savefig(output_dir + 'detrend.pdf', dpi=200, bbox_inches='tight')
@@ -85,7 +110,9 @@ def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, 
     
     y_dt = y - (m_med*x + b_med)
     
-    return y_dt     
+    return y_dt, [m_err_lo, m_med, m_err_hi], \
+        [b_err_lo, b_med, b_err_hi], \
+        [sigsqr_err_lo, sigsqr_med, sigsqr_err_hi]     
 
 
 
@@ -122,16 +149,31 @@ def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
         print(txt)
             
     
+    m_vals = []
+    b_vals = []
+    sigsqr_vals = []
+    
     for i, fname in enumerate(fnames_tot):        
         x, y, yerr = np.loadtxt( fname, unpack=True, usecols=[0,1,2], delimiter=',' )
         
-        y_dt = detrend(x, y, yerr, K=2, parallelize=parallelize, 
+        y_dt, m_res, b_res, sigsqr_res = detrend(x, y, yerr, K=2, parallelize=parallelize, 
                        output_dir=output_dir + line_names[i] + r'/',
                        verbose=verbose, plot=plot)
                 
         write_data( output_dir + 'processed_lcs/' + line_names[i] + '_data.dat' )
         
-    return
+        m_vals.append(m_res)
+        b_vals.append(b_res)
+        sigsqr_vals.append(sigsqr_res)
+    
+        
+    output = {
+        'm': m_vals,
+        'b': b_vals,
+        'sigsqr': sigsqr_vals
+    }
+        
+    return output
         
     
     

@@ -1,7 +1,7 @@
 import pypetal.modules as modules
-from pypetal import weighting
+from pypetal import weighting, defaults
 from pypetal.petalio import write_data, make_directories
-import pypetal.defaults as defaults
+import pypetal.detrending as dtr
 
 import os
 
@@ -416,6 +416,7 @@ def run_pipeline(output_dir, arg2,
     
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
+    detrending = general_kwargs['detrending']
 
     #Get "reject_data" and "together"    
     _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)
@@ -483,6 +484,7 @@ def run_pipeline(output_dir, arg2,
 
         
     drw_rej_res = {}
+    detrend_res = {}
     pyccf_res = {}
     pyzdcf_res = {}
     javelin_res = {}
@@ -567,7 +569,21 @@ def run_pipeline(output_dir, arg2,
             
             write_data( [x,y,yerr,np.full_like(x, False, dtype=bool)], output_dir + 'light_curves/' + line_names[i] + '.dat' )
             
-
+            
+    if detrending:
+        
+        if not run_drw_rej:
+            os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
+        elif (run_drw_rej) & ( ~np.all(reject_data) ):
+            os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
+        
+        detrend_res = dtr.run_detrending(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
+        
+        if not run_drw_rej:
+            cont_fname = output_dir + 'processed_lcs/' + line_names[0] + '_data.dat'
+            
+            for i in range(len(line_fnames)):
+                line_fnames[i] = output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat'                    
 
     if run_pyccf:
         pyccf_res = modules.pyccf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyccf_params)        
@@ -596,6 +612,9 @@ def run_pipeline(output_dir, arg2,
     
     if run_drw_rej:
         tot_res['drw_rej_res'] = drw_rej_res
+    
+    if detrending:
+        tot_res['detrend_res'] = detrend_res
     
     if run_javelin:
         tot_res['javelin_res'] = javelin_res
