@@ -7,6 +7,7 @@ import os
 import shutil
 import multiprocessing as mp
 from functools import partial
+import itertools
 
 import numpy as np
 from astropy.table import Table
@@ -16,6 +17,27 @@ import matplotlib.pyplot as plt
 #For individual functions, see utils.py
 #For plotting tools, see plotting.py
 #For the pipeline, see pipeline.py
+
+
+#For multiprocessing
+def mp_map(func, args, threads):
+    n_inputs = len(args)
+    
+    if (threads > 1) & (n_inputs > 1):
+        pool = mp.Pool(threads)
+        res = pool.starmap(func, args)
+        
+        pool.close()
+        pool.join()
+        
+    else:
+        res = list(itertools.starmap(func, args))
+
+    return res
+
+
+
+
 
 #################################################################
 ######################## DRW REJECTION ##########################
@@ -95,7 +117,6 @@ use_for_javelin: {}
     fnames = np.hstack([ [cont_fname], line_fnames ])
  
  
-    pool = mp.Pool(threads)
     drw_rej_func = partial( utils.drw_flag, nwalkers=nwalker, nburn=nburn, nsamp=nchain,
                             nsig=nsig, jitter=jitter, plot=plot)
        
@@ -118,7 +139,7 @@ use_for_javelin: {}
        
        
     args = list(zip(arg1, arg2, arg3, arg4, arg5))
-    res_tot = pool.starmap(drw_rej_func, args)
+    res_tot = mp_map(drw_rej_func, args)
                         
     masks_tot = []
     n = 0
@@ -357,7 +378,6 @@ plike_dir: {}
     line_fnames_short = [ os.path.basename(x) for x in line_fnames ]
         
     
-    pool = mp.Pool(threads)
     pyzdcf_func = partial( utils.get_zdcf, num_MC=nsim, minpts=minpts, 
                            uniform_sampling=uniform_sampling, omit_zero_lags=omit_zero_lags,
                            sparse=sparse, sep=',', verbose=False)
@@ -369,7 +389,7 @@ plike_dir: {}
     arg5 = [ x + '_' + prefix for x in line_names[1:] ]
     
     args = list(zip(arg1, arg2, arg3, arg4, arg5))
-    res_tot = pool.starmap(pyzdcf_func, args)
+    res_tot = mp_map(pyzdcf_func, args)
     
     plike_tot = []
     for i in range(len(line_fnames)):        

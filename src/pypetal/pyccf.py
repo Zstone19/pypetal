@@ -6,6 +6,23 @@ from functools import partial
 
 
 
+#For multiprocessing
+def mp_map(func, args, threads):
+    n_inputs = len(args)
+    
+    if (threads > 1) & (n_inputs > 1):
+        pool = mp.Pool(threads)
+        res = pool.starmap(func, args)
+        
+        pool.close()
+        pool.join()
+        
+    else:
+        res = list(itertools.starmap(func, args))
+
+    return res
+
+
 def corsig(r, v):
     '''
     Calculate the p value that a random uncorrelated sample can yield a 
@@ -418,7 +435,6 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
     if numt1<2 or numt2<2:
         raise Exception("The light curve should contain at least 2 data points!!!")
     
-    pool = mp.Pool(threads)
     pyccf_func = partial( xcor_mc_loop,
                          t1=t1, y1=y1, dy1=dy1, t2=t2, y2=y2, dy2=dy2,
                          tlagmin=tlagmin, tlagmax=tlagmax, tunit=tunit,
@@ -428,7 +444,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
 
 
     arg = np.full(nsim, mcmode)
-    res = pool.map( pyccf_func, arg )
+    res = mp_map( pyccf_func, arg )
     
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
     
