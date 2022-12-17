@@ -391,7 +391,9 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
 
 
 
-def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, imode=0, nsim=2048, mcmode=0, sigmode=0.2, threads=1):
+def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
+            thres=0.8, siglevel=0.95, imode=0, nsim=2048, mcmode=0, 
+            sigmode=0.2, threads=1, verbose=True):
     '''
     Calculate the uncertainty for the cross-correlation peak.
     
@@ -461,7 +463,9 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
     
     tlags_peak = np.asarray(tlags_peak)
     tlags_centroid = np.asarray(tlags_centroid)
-    print( 'Failed centroids: ', nfail_centroid )
-    print( 'Failed peaks: ', nfail_peak )
+    
+    if verbose:
+        print( 'Failed centroids: ', nfail_centroid )
+        print( 'Failed peaks: ', nfail_peak )
     
     return tlags_peak, tlags_centroid, nsuccess_peak, nfail_peak, nsuccess_centroid, nfail_centroid, max_rvals, nfail_rvals, pvals
