@@ -1,9 +1,10 @@
 import numpy as np
 import scipy.stats as sst
+
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 from functools import partial
-
+import itertools
 
 
 #For multiprocessing
