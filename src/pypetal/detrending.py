@@ -60,7 +60,7 @@ def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, 
     for i in range(len(lm.chain)):
         m_val = lm.chain[i][1]
         b_val = lm.chain[i][0]
-        x0 = np.min(x1)
+        x0 = np.min(x)
         
         y0_vals.append( m_val*x0 + b_val )
 
