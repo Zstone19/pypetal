@@ -12,6 +12,7 @@ from astropy.table import Table
 def run_pipeline(output_dir, arg2, 
                  line_names=None, 
                  run_drw_rej=False, drw_rej_params={},
+                 run_detrend=False, detrend_params={},
                  run_pyccf=False, pyccf_params={},
                  run_pyzdcf=False, pyzdcf_params={},
                  run_javelin=False, javelin_params={},
@@ -570,14 +571,14 @@ def run_pipeline(output_dir, arg2,
             write_data( [x,y,yerr,np.full_like(x, False, dtype=bool)], output_dir + 'light_curves/' + line_names[i] + '.dat' )
             
             
-    if detrending:
+    if run_detrend:
         
         if not run_drw_rej:
             os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
         elif (run_drw_rej) & ( ~np.all(reject_data) ):
             os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
         
-        detrend_res = dtr.detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
+        detrend_res = dtr.detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs, detrend_params)
         
         if not run_drw_rej:
             cont_fname = output_dir + 'processed_lcs/' + line_names[0] + '_data.dat'
@@ -613,7 +614,7 @@ def run_pipeline(output_dir, arg2,
     if run_drw_rej:
         tot_res['drw_rej_res'] = drw_rej_res
     
-    if detrending:
+    if run_detrend:
         tot_res['detrend_res'] = detrend_res
     
     if run_javelin:

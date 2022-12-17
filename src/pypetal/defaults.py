@@ -139,6 +139,23 @@ def set_drw_rej(input_args, fnames):
         reject_data, use_for_javelin
 
 
+def set_detrend(input_args):
+
+    default_kwargs = {
+        'K': 2,
+        'nchain': 4,
+        'miniter': 5000,
+        'maxiter': 10000
+    }
+
+    params = { **default_kwargs, **input_args }
+
+    K = params['K']
+    nchain = params['nchain']
+    miniter = params['miniter']
+    maxiter = params['maxiter']
+
+    return K, nchain, miniter, maxiter
 
 
 def set_pyccf(input_args, fnames):

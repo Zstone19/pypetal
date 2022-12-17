@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from linmix import LinMix
 
 from pypetal.petalio import write_data
+from pypetal.defaults import set_detrend
 
 
 import matplotlib as mpl
@@ -23,6 +24,7 @@ mpl.rcParams['savefig.format'] = 'pdf'
 
 
 def detrend(x, y, yerr, K=2, parallelize=False, 
+            nchain=4, miniter=5000, maxiter=10000,
             time_unit='d', lc_unit='',
             output_dir=None, verbose=False, plot=False):
     
@@ -35,8 +37,8 @@ def detrend(x, y, yerr, K=2, parallelize=False,
         flux_txt = 'Flux [{}]'.format(lc_unit)
     
     
-    lm = LinMix(x, y, ysig=yerr, K=K, parallelize=parallelize)
-    lm.run_mcmc(silent=True)
+    lm = LinMix(x, y, ysig=yerr, K=K, nchains=nchain, parallelize=parallelize)
+    lm.run_mcmc(miniter=miniter, maxiter=maxiter, silent=True)
     
     b_chains = []
     m_chains = []
@@ -137,13 +139,17 @@ def detrend(x, y, yerr, K=2, parallelize=False,
 
 
 
-def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs):
+def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs, **kwargs):
 
     verbose = general_kwargs['verbose']
     plot = general_kwargs['plot']
     threads = general_kwargs['threads']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
+    
+        
+    K, nchain, miniter, maxiter = set_detrend(kwargs)
+    
     
     fnames_tot = np.hstack([ [cont_fname], line_fnames])
     
@@ -154,11 +160,15 @@ def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
         
         
     txt = """
-    Running detrending
-    -------------------
-    parallelize: {}
-    K = 2
-    """.format(parallelize)
+Running detrending
+-------------------
+parallelize: {}
+K: {}
+nchains: {}
+miniter: {}
+maxiter: {}
+-------------------
+    """.format(parallelize, K, nchain, miniter, maxiter)
     
     if verbose:
         print(txt)
@@ -171,12 +181,13 @@ def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
     for i, fname in enumerate(fnames_tot):        
         x, y, yerr = np.loadtxt( fname, unpack=True, usecols=[0,1,2], delimiter=',' )
         
-        y_dt, m_res, b_res, sigsqr_res = detrend(x, y, yerr, K=2, parallelize=parallelize, 
-                       time_unit=time_unit, lc_unit=lc_unit[i],
-                       output_dir=output_dir + line_names[i] + r'/',
-                       verbose=verbose, plot=plot)
+        y_dt, m_res, b_res, sigsqr_res = detrend(x, y, yerr, K=K, 
+                                                parallelize=parallelize, 
+                                                time_unit=time_unit, lc_unit=lc_unit[i],
+                                                output_dir=output_dir + line_names[i] + r'/',
+                                                verbose=verbose, plot=plot)
                 
-        write_data( output_dir + 'processed_lcs/' + line_names[i] + '_data.dat' )
+        write_data( [x, y_dt, yerr], output_dir + 'processed_lcs/' + line_names[i] + '_data.dat' )
         
         m_vals.append(m_res)
         b_vals.append(b_res)
