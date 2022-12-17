@@ -139,7 +139,7 @@ def detrend(x, y, yerr, K=2, parallelize=False,
 
 
 
-def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs, **kwargs):
+def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs, kwargs):
 
     verbose = general_kwargs['verbose']
     plot = general_kwargs['plot']
