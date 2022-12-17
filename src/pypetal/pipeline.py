@@ -577,7 +577,7 @@ def run_pipeline(output_dir, arg2,
         elif (run_drw_rej) & ( ~np.all(reject_data) ):
             os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
         
-        detrend_res = dtr.run_detrending(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
+        detrend_res = dtr.detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
         
         if not run_drw_rej:
             cont_fname = output_dir + 'processed_lcs/' + line_names[0] + '_data.dat'
