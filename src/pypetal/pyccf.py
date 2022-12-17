@@ -444,7 +444,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
 
 
     arg = np.full(nsim, mcmode)
-    res = mp_map( pyccf_func, arg )
+    res = mp_map( pyccf_func, arg, threads )
     
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
     

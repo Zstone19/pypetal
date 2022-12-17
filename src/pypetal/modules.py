@@ -139,7 +139,7 @@ use_for_javelin: {}
        
        
     args = list(zip(arg1, arg2, arg3, arg4, arg5))
-    res_tot = mp_map(drw_rej_func, args)
+    res_tot = mp_map(drw_rej_func, args, threads)
                         
     masks_tot = []
     n = 0
@@ -389,7 +389,7 @@ plike_dir: {}
     arg5 = [ x + '_' + prefix for x in line_names[1:] ]
     
     args = list(zip(arg1, arg2, arg3, arg4, arg5))
-    res_tot = mp_map(pyzdcf_func, args)
+    res_tot = mp_map(pyzdcf_func, args, threads)
     
     plike_tot = []
     for i in range(len(line_fnames)):        
