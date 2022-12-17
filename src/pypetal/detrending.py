@@ -22,7 +22,19 @@ mpl.rcParams['savefig.format'] = 'pdf'
 
 
 
-def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, plot=False):
+def detrend(x, y, yerr, K=2, parallelize=False, 
+            time_unit='d', lc_unit='',
+            output_dir=None, verbose=False, plot=False):
+    
+    
+    if lc_unit == '':
+        flux_txt = 'Flux'
+    elif lc_unit == 'mag':
+        flux_txt = 'Magnitude'
+    else:
+        flux_txt = 'Flux [{}]'.format(lc_unit)
+    
+    
     lm = LinMix(x, y, ysig=yerr, K=K, parallelize=parallelize)
     lm.run_mcmc(silent=True)
     
@@ -90,8 +102,11 @@ def detrend(x, y, yerr, K=2, parallelize=False, output_dir=None, verbose=False, 
         
     ax.plot(xsim, ysim_avg, 'r')
     ax.fill_between(xsim, ysim_lo, ysim_hi, color='r', alpha=.3)
+
+    if lc_unit == 'mag':
+        ax.invert_yaxis()
     
-    ax.set_ylabel('Flux [{}]'.format(lc_unit))
+    ax.set_ylabel(flux_txt)
     ax.set_xlabel('Time [{}]'.format(time_unit))
     
     ax.tick_params('both', which='major', length=8)
@@ -157,6 +172,7 @@ def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs)
         x, y, yerr = np.loadtxt( fname, unpack=True, usecols=[0,1,2], delimiter=',' )
         
         y_dt, m_res, b_res, sigsqr_res = detrend(x, y, yerr, K=2, parallelize=parallelize, 
+                       time_unit=time_unit, lc_unit=lc_unit[i],
                        output_dir=output_dir + line_names[i] + r'/',
                        verbose=verbose, plot=plot)
                 
