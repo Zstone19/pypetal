@@ -326,7 +326,7 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
             
             
             #Add to summary dict
-            summary_dicts['n0_pyccf'] = n0
+            summary_dicts[i]['n0_pyccf'] = n0
             summary_dicts[i]['peak_bounds_pyccf'] = [min_bound, max_bound]
             summary_dicts[i]['peak_pyccf'] = peak
             summary_dicts[i]['lag_pyccf'] = med_cent
