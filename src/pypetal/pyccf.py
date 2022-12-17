@@ -8,18 +8,17 @@ import itertools
 
 
 #For multiprocessing
-def mp_map(func, args, threads):
-    n_inputs = len(args)
+def mp_map(func, arg, threads):
     
-    if (threads > 1) & (n_inputs > 1):
+    if threads > 1:
         pool = mp.Pool(threads)
-        res = pool.starmap(func, args)
+        res = pool.map(func, arg)
         
         pool.close()
         pool.join()
         
     else:
-        res = list(itertools.starmap(func, args))
+        res = list(map(func, arg))
 
     return res
 
@@ -444,7 +443,7 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, thres=0.8, siglev
                          imode=imode, sigmode=sigmode)
 
 
-    arg = [np.full(nsim, mcmode)]
+    arg = np.full(nsim, mcmode)
     res = mp_map( pyccf_func, arg, threads )
     
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
