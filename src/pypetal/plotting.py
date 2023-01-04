@@ -399,7 +399,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[0]) + ']'
-    ax1.set_ylabel( ytxt, fontsize=19, va='center' )
+    plt.figtext( .06, .68, ytxt, fontsize=16, va='center', rotation=90 )
     
     
     if lc_unit[1] == 'mag':
@@ -410,8 +410,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[1]) + ']'
-    ax2.set_ylabel( ytxt, fontsize=19, va='center' )
-    
+    plt.figtext( .06, .3, ytxt, fontsize=16, va='center', rotation=90 )
     
     plt.subplots_adjust(hspace=.03, wspace=.06)
 
