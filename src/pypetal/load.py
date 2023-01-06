@@ -448,8 +448,8 @@ def load_javelin(dir_loc):
 
 
         sig, tau, tophat = np.loadtxt( javelin_dir + 'chain_rmap.txt', unpack=True )
-        res_dict['tau'] = tau
-        res_dict['sigma'] = sig
+        res_dict['tau'] = np.exp(tau)
+        res_dict['sigma'] = np.exp(sig)
         res_dict['tophat_params'] = tophat
         
         x, y, yerr = np.loadtxt(javelin_dir + line_names[0] + '_lc_fits.dat', unpack=True, delimiter=',', usecols=[0,1,2])
@@ -475,8 +475,8 @@ def load_javelin(dir_loc):
             
             
             sig, tau, t, w, s = np.loadtxt( javelin_dir + 'chain_rmap.txt', unpack=True )
-            dict_i['tau'] = tau
-            dict_i['sigma'] = sig
+            dict_i['tau'] = np.exp(tau)
+            dict_i['sigma'] = np.exp(sig)
             dict_i['tophat_params'] = [t, w, s]
             
             x, y, yerr = np.loadtxt(javelin_dir + line_names[0] + '_lc_fits.dat', unpack=True, delimiter=',', usecols=[0,1,2])

@@ -518,8 +518,8 @@ def run_pipeline(output_dir, arg2,
             
             
         if use_for_javelin:            
-            tau_cont = drw_rej_res['taus'][0]
-            sig_cont = drw_rej_res['sigmas'][0]
+            tau_cont = np.median(drw_rej_res['taus'][0])
+            sig_cont = np.median(drw_rej_res['sigmas'][0])
             
             if together:                
             
