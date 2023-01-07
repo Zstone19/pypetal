@@ -428,7 +428,7 @@ def load_pyzdcf(dir_loc):
                              names=['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', '#bin']).to_pandas()
         
 
-        dict_i['DF'] = zdcf_df        
+        dict_i['output'] = zdcf_df        
         dict_i['name'] = line_names[i+1]
         
         pyzdcf_dict_tot.append(dict_i)
@@ -455,7 +455,8 @@ def load_pyzdcf(dir_loc):
                 'output': plike_df,
                 'ML_lag': ml_lag,
                 'ML_lag_err_hi': ml_lag_err_hi,
-                'ML_lag_err_lo': ml_lag_err_lo
+                'ML_lag_err_lo': ml_lag_err_lo,
+                'name': line_names[i+1]
             }
             plike_dict_tot.append(dict_i)
             
