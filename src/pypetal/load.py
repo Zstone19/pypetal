@@ -242,9 +242,6 @@ def get_ordered_line_names(main_dir):
     return line_names_tot
     
     
-
-
-
 def get_line_data_dir(main_dir):
     dirs = glob.glob( main_dir + '*/')
     
@@ -401,6 +398,17 @@ def load_pyccf(dir_loc):
 #                             PYZDCF
 #######################################################################
 
+def get_run_plike(line_dir):
+    pyzdcf_dir = line_dir + 'pyzdcf/'
+    
+    line_name = os.basename( os.dirname(line_dir) )
+    
+    if pyzdcf_dir + line_name + '_plike.out' in glob.glob( pyzdcf_dir + '*' ):
+        return True
+    else:
+        return False
+    
+
 def load_pyzdcf(dir_loc):
     
     line_names = get_ordered_line_names(dir_loc)
@@ -409,14 +417,15 @@ def load_pyzdcf(dir_loc):
     line_dirs = dirs_tot[1:]
     cont_dir = dirs_tot[0]
     
-    res_dict_tot = []
+    pyzdcf_dict_tot = []
+    plike_dict_tot = []
     for i, dir_i in enumerate(line_dirs):        
         pyzdcf_dir = dir_i + 'pyzdcf/'
         dict_i = {}
         
         dcf_file = glob.glob(pyzdcf_dir + '*.dcf')[0] 
         zdcf_df = Table.read(dcf_file, format='ascii',
-                             names=['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', 'npts'])
+                             names=['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', '#bin']).to_pandas()
         
 
         dict_i['DF'] = zdcf_df        
@@ -424,7 +433,36 @@ def load_pyzdcf(dir_loc):
         
         res_dict_tot.append(dict_i)
         
-    return res_dict_tot
+        
+        run_plike = get_run_plike(dir_i)
+        if run_plike:
+            dict_i = {}
+            
+            plike_file = glob.glob(pyzdcf_dir + '*.out')[0]
+            plike_df = Table.read(plike_file, format='ascii',
+                                  names=['num', 'lag', 'r', '-dr', '+dr', 'likelihood']) 
+            
+            
+            file = open(plike_file, 'r')
+            output_str = list(file)[-3:]
+            
+            ml_lag = float( output_str[1].split()[7] )
+            ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
+            ml_lag_err_lo = np.abs( float( output_str[1].split()[9] )  )
+
+
+            dict_i = {
+                'output': plike_df,
+                'ML_lag': ml_lag,
+                'ML_lag_err_hi': ml_lag_err_hi,
+                'ML_lag_err_lo': ml_lag_err_lo
+            }
+            plike_dict_tot.append(dict_i)
+            
+        else:
+            plike_dict_tot.append[{}]
+        
+    return pyzdcf_dict_tot, plike_dict_tot
 
 
 #######################################################################
@@ -741,6 +779,7 @@ Weighting: {}
     drw_rej_res = {}
     pyccf_res = {}
     pyzdcf_res = {}
+    plike_res = {}
     javelin_res = {}
     weighting_res = {}
     
@@ -763,6 +802,7 @@ Weighting: {}
     res_tot['drw_rej_res'] = drw_rej_res
     res_tot['pyccf_res'] = pyccf_res
     res_tot['pyzdcf_res'] = pyzdcf_res
+    res_tot['plike_res'] = plike_res
     res_tot['javelin_res'] = javelin_res
     res_tot['weighting_res'] = weighting_res
     
