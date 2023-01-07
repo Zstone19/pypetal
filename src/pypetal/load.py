@@ -790,7 +790,7 @@ Weighting: {}
         pyccf_res = load_pyccf(main_dir)
         
     if run_pyzdcf:
-        pyzdcf_res = load_pyzdcf(main_dir)
+        pyzdcf_res, plike_res = load_pyzdcf(main_dir)
         
     if run_javelin:
         javelin_res = load_javelin(main_dir)
