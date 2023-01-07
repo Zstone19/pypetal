@@ -401,7 +401,7 @@ def load_pyccf(dir_loc):
 def get_run_plike(line_dir):
     pyzdcf_dir = line_dir + 'pyzdcf/'
     
-    line_name = os.basename( os.dirname(line_dir) )
+    line_name = os.path.basename( os.path.dirname(line_dir) )
     
     if pyzdcf_dir + line_name + '_plike.out' in glob.glob( pyzdcf_dir + '*' ):
         return True
