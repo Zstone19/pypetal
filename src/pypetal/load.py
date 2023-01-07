@@ -431,7 +431,7 @@ def load_pyzdcf(dir_loc):
         dict_i['DF'] = zdcf_df        
         dict_i['name'] = line_names[i+1]
         
-        res_dict_tot.append(dict_i)
+        pyzdcf_dict_tot.append(dict_i)
         
         
         run_plike = get_run_plike(dir_i)
