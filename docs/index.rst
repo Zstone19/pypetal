@@ -20,7 +20,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Tutorials
 
    notebooks/drw_rej
