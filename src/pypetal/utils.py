@@ -219,7 +219,7 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     os.chdir(plike_dir)
     
     #Make sure dcf file exists
-    assert dcf_fname in glob.glob( plike_dir + '*' )
+    assert os.path.exists(dcf_fname)
     
     if verbose:
         print('Executing PLIKE')
@@ -228,7 +228,7 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     res = subprocess.check_output(exec_str, shell=True)
     
     #Make sure plike.out exists
-    while plike_dir + 'plike.out' not in glob.glob( plike_dir + '*' ):
+    while not os.path.exists(plike_dir + 'plike.out'):
         time.sleep(1)
     
     os.chdir(cwd)
