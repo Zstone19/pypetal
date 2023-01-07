@@ -6,6 +6,7 @@ import re
 import astropy.units as u
 from astropy.io import fits
 
+from pypetal.load import get_modules, get_ordered_line_names      
 
 
 
@@ -173,13 +174,16 @@ def write_weight_summary(fname, res):
             
     return
     
-    
-            
-def write_to_fits(res, output_dir, line_names, run_drw_rej, run_pyccf, run_pyzdcf, run_javelin):
+          
+def write_to_fits(res, output_dir, line_names=None):
 
     """Write all output information from a given module into a single FITS file.
     """
 
+    if line_names is None:
+        line_names = get_ordered_line_names(line_names)
+    
+    run_drw_rej, run_pyccf, run_pyzdcf, run_javelin, run_weighting = get_modules(output_dir)
     nlc = len(line_names)
 
     if run_drw_rej:
@@ -192,7 +196,9 @@ def write_to_fits(res, output_dir, line_names, run_drw_rej, run_pyccf, run_pyzdc
             if res['drw_rej_res']['jitters'][i] is not None:      
                 c3 = fits.Column( name='jitter_sample', array=res['drw_rej_res']['jitters'][i], format='F' )
             else:
-                c3 = fits.Column( name='jitter_sample', array=res['drw_rej_res']['jitters'][i], format='F' )
+                c3 = fits.Column( name='jitter_sample', 
+                                 array=np.full( len(res['drw_rej_res']['taus'][i]), np.nan ), 
+                                 format='F' )
         
         
             hdr = fits.Header()
@@ -410,20 +416,40 @@ def write_to_fits(res, output_dir, line_names, run_drw_rej, run_pyccf, run_pyzdc
                 
                 
                 #Create bestfit model table
-                xvals = res['javelin_res'][i]['bestfit_model'].jlist[i]
-                yvals = res['javelin_res'][i]['bestfit_model'].mlist[i] + res['javelin_res'][i]['bestfit_model'].blist[i]
-                yerr_vals = res['javelin_res'][i]['bestfit_model'].elist[i]
                 
-                c1 = fits.column(name='times', array=xvals, format='F')
-                c2 = fits.column(name='mean', array=yvals, format='F')
-                c3 = fits.column(name='error', array=yerr_vals, format='F')
+                #Continuum
+                xvals = res['javelin_res'][i]['bestfit_model'].jlist[0]
+                yvals = res['javelin_res'][i]['bestfit_model'].mlist[0] + res['javelin_res'][i]['bestfit_model'].blist[0]
+                yerr_vals = res['javelin_res'][i]['bestfit_model'].elist[0]
+                
+                c1 = fits.column(name='cont_times', array=xvals, format='F')
+                c2 = fits.column(name='cont_mean', array=yvals, format='F')
+                c3 = fits.column(name='cont_error', array=yerr_vals, format='F')
                 
                 hdr = fits.Header()
-                hdr['TIMES'] = 'The times for the bestfit model'
-                hdr['MEAN'] = 'The mean fit for the bestfit model'
-                hdr['ERROR'] = 'The error for the bestfit model'
+                hdr['CONT_TIMES'] = 'The times for the bestfit continuum model'
+                hdr['CONT_MEAN'] = 'The mean fit for the bestfit continuum model'
+                hdr['CONT_ERROR'] = 'The error for the bestfit continuum model'
+
+
+                #Line
+                xvals = res['javelin_res'][i]['bestfit_model'].jlist[1]
+                yvals = res['javelin_res'][i]['bestfit_model'].mlist[1] + res['javelin_res'][i]['bestfit_model'].blist[1]
+                yerr_vals = res['javelin_res'][i]['bestfit_model'].elist[1]
                 
-                javelin_bestfit_table = fits.BinTableHDU.from_columns( [c1, c2, c3], header=hdr )
+                c4 = fits.column(name='times', array=xvals, format='F')
+                c5 = fits.column(name='mean', array=yvals, format='F')
+                c6 = fits.column(name='error', array=yerr_vals, format='F')
+                
+                hdr = fits.Header()
+                hdr['TIMES'] = 'The times for the bestfit line model'
+                hdr['MEAN'] = 'The mean fit for the bestfit line model'
+                hdr['ERROR'] = 'The error for the bestfit line model'
+
+
+                
+                javelin_bestfit_table = fits.BinTableHDU.from_columns( [c1, c2, c3, c4, c5, c6], 
+                                                                       header=hdr )
                 
                 
                 #Create primary HDU
@@ -432,9 +458,120 @@ def write_to_fits(res, output_dir, line_names, run_drw_rej, run_pyccf, run_pyzdc
                 javelin_primary_hdu = fits.PrimaryHDU(header=hdr)
                 
                 #Create HDU List
-                hdul = fits.HDUList([javelin_primary_hdu, javelin_cont_hpd_table, javelin_mcmc_table, avelin_rmap_hpd_table, javelin_bestfit_table])
+                hdul = fits.HDUList([javelin_primary_hdu, javelin_cont_hpd_table, javelin_mcmc_table, javelin_rmap_hpd_table, javelin_bestfit_table])
                 
                 #Write to file
                 hdul.writeto(output_dir + line_names[i+1] + '/javelin.fits', overwrite=True)
+
+
+    if run_weighting:
+        
+        for i in range(nlc-1):
+            
+            ################
+            #    pyCCF
+            ################
+            
+            #Create weight table
+            c1 = fits.Column( name='lags', array=res['weighting_res']['pyccf']['lags'][i], format='F' )
+            c2 = fits.Column( name='acf', array=res['weighting_res']['pyccf']['acf'][i], format='F')
+            c3 = fits.Column( name='ntau', array=res['weighting_res']['pyccf']['ntau'][i], format='F' )
+            c4 = fits.Column( name='weight_dist', array=res['weighting_res']['pyccf']['weight_dist'][i], format='F' )
+            c5 = fits.Column( name='smoothed_weight_dist', array=res['weighting_res']['pyccf']['smoothed_dist'][i], format='F' )
+
+            hdr = fits.Header()
+            hdr['MODULE'] = 'pyCCF'
+            hdr['LAGS'] = 'The lags for the weight distributions'
+            hdr['ACF'] = 'The autocorrelation function for the continuum'
+            hdr['NTAU'] = 'The non-normalized probability weighting N(tau)'
+            hdr['WEIGHT_DIST'] = 'The weight distribution described in Grier et al. (2019)'
+            hdr['SMOOTHED_WEIGHT_DIST'] = 'The weight distribution smoothed with a Gaussian kernel'
+            
+            pyccf_weight_table = fits.BinTableHDU.from_columns( [c1, c2, c3, c4, c5], header=hdr )
+
+
+            #Create downsampled dist table
+            c1 = fits.Column( name='downsampled_cccd', array=res['weighting_res']['pyccf']['downsampled_CCCD'][i], format='F' )
+            
+            hdr = fits.Header()
+            hdr['MODULE'] = 'pyCCF'
+            hdr['DOWNSAMPLED_CCCD'] = 'The downsampled CCCD after finding the peak'
+            hdr['FRAC_REJECTED'] = res['weighting_res']['pyccf']['frac_rejected'][i]
+            
+            pyccf_downsample_table = fits.BinTableHDU.from_columns( [c1], header=hdr )
+            
+            
+            #Create peak table
+            c1 = fits.Column( name='centroid', array=res['weighting_res']['pyccf']['centroid'][i], format='F' )
+            c2 = fits.Column( name='primary_peak', array=res['weighting_res']['pyccf']['bounds'][i], format='F' )
+            
+            hdr = fits.Header()
+            hdr['MODULE'] = 'pyCCF'
+            hdr['CENTROID'] = 'The median of the downsampled CCCD, with its uncertainty given as [lower error, value, upper error]'
+            hdr['PRIMARY_PEAK'] = 'The primary peak of the weighted and smoothed CCCD, given as [lower bound, peak, upper bound]'
+
+            pyccf_peak_table = fits.BinTableHDU.from_columns( [c1, c2], header=hdr )
+            
+            
+            
+            
+            ################
+            #    JAVELIN
+            ################
+            
+            #Create weight table
+            c1 = fits.Column( name='lags', array=res['weighting_res']['javelin']['lags'][i], format='F' )
+            c2 = fits.Column( name='acf', array=res['weighting_res']['javelin']['acf'][i], format='F')
+            c3 = fits.Column( name='ntau', array=res['weighting_res']['javelin']['ntau'][i], format='F' )
+            c4 = fits.Column( name='weight_dist', array=res['weighting_res']['javelin']['weight_dist'][i], format='F' )
+            c5 = fits.Column( name='smoothed_weight_dist', array=res['weighting_res']['javelin']['smoothed_dist'][i], format='F' )
+
+            hdr = fits.Header()
+            hdr['MODULE'] = 'JAVELIN'
+            hdr['LAGS'] = 'The lags for the weight distributions'
+            hdr['ACF'] = 'The autocorrelation function for the continuum'
+            hdr['NTAU'] = 'The non-normalized probability weighting N(tau)'
+            hdr['WEIGHT_DIST'] = 'The weight distribution described in Grier et al. (2019)'
+            hdr['SMOOTHED_WEIGHT_DIST'] = 'The weight distribution smoothed with a Gaussian kernel'
+            
+            javelin_weight_table = fits.BinTableHDU.from_columns( [c1, c2, c3, c4, c5], header=hdr )
+
+
+            #Create downsampled dist table
+            c1 = fits.Column( name='downsampled_lag_dist', array=res['weighting_res']['javelin']['downsampled_lag_dist'][i], format='F' )
+            
+            hdr = fits.Header()
+            hdr['MODULE'] = 'pyCCF'
+            hdr['DOWNSAMPLED_CCCD'] = 'The downsampled CCCD after finding the peak'
+            hdr['FRAC_REJECTED'] = res['weighting_res']['javelin']['frac_rejected'][i]
+            
+            javelin_downsample_table = fits.BinTableHDU.from_columns( [c1], header=hdr )
+            
+            
+            #Create peak table
+            c1 = fits.Column( name='tophat_lag', array=res['weighting_res']['javelin']['tophat_lag'][i], format='F' )
+            c2 = fits.Column( name='primary_peak', array=res['weighting_res']['javelin']['bounds'][i], format='F' )
+            
+            hdr = fits.Header()
+            hdr['MODULE'] = 'pyCCF'
+            hdr['TOPHAT_LAG'] = 'The median of the downsampled lag distribution, with its uncertainty given as [lower error, value, upper error]'
+            hdr['PRIMARY_PEAK'] = 'The primary peak of the weighted and smoothed lag_distribution, given as [lower bound, peak, upper bound]'
+            hdr['RMAX'] = res['weighting_res']['rmax'][i]
+
+            javelin_peak_table = fits.BinTableHDU.from_columns( [c1, c2], header=hdr )
+            
+            
+            ################
+            #    Total
+            ################            
+            
+            #Create primary HDU
+            hdr = fits.Header()
+            hdr['NAME'] = line_names[i+1]
+            primary_hdu = fits.PrimaryHDU(header=hdr)   
+            
+            hdul = fits.HDUList([primary_hdu, 
+                                 pyccf_weight_table, pyccf_downsample_table, pyccf_peak_table,
+                                 javelin_weight_table, javelin_downsample_table, javelin_peak_table])                 
 
     return    
