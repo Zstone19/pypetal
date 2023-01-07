@@ -176,7 +176,7 @@ def get_cont_name(main_dir):
         if main_dir + 'processed_lcs/' in dirs_tot:
             dirs_tot.remove( main_dir + 'processed_lcs/')
             
-        has_pyccf = np.zeros( len(dirs_tot), dtype=bool )
+        has_pyzdcf = np.zeros( len(dirs_tot), dtype=bool )
         for i, dir_i in enumerate(dirs_tot):
             subdirs = glob.glob(dir_i + '*/')
             if dir_i + 'pyzdcf/' in subdirs:
@@ -460,7 +460,7 @@ def load_pyzdcf(dir_loc):
             plike_dict_tot.append(dict_i)
             
         else:
-            plike_dict_tot.append[{}]
+            plike_dict_tot.append({})
         
     return pyzdcf_dict_tot, plike_dict_tot
 
