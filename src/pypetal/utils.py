@@ -223,8 +223,12 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     exec_str =  r"./plike <<< $'" + dcf_fname + r"\n" + str(lag_bounds[0]) + r"\n" +  str(lag_bounds[1]) + r"'"
     res = subprocess.check_output(exec_str, shell=True)
     
+    #Make sure plike.out exists
+    while plike_dir + 'plike.out' not in glob.glob( plike_dir + '*' ):
+        time.sleep(1)
+    
     os.chdir(cwd)
-
+        
     return
 
 
