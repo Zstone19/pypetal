@@ -367,6 +367,8 @@ def run_pipeline(output_dir, arg2,
                 
     """
 
+    output_dir = os.path.abspath(output_dir) + r'/'
+
     if arg2 is None:
         raise Exception('Please provide a list of light curve filenames or the light curves themselves')
 
