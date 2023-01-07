@@ -218,6 +218,9 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     cwd = os.getcwd()    
     os.chdir(plike_dir)
     
+    #Make sure dcf file exists
+    assert dcf_fname in glob.glob( plike_dir + '*' )
+    
     if verbose:
         print('Executing PLIKE')
     
