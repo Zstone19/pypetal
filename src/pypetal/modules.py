@@ -407,6 +407,7 @@ plike_dir: {}
             else:
                 lag_range = lag_bounds[i]
                 
+            print(output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_' + prefix + '.dcf')
                         
             utils.run_plike( output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_' + prefix + '.dcf', lag_range, plike_dir,
                             verbose=verbose)   
