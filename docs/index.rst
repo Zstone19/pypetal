@@ -30,6 +30,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
    javelin_toc
    notebooks/weighting
    notebooks/all_together
+   notebooks/load
 
 
 .. toctree::
