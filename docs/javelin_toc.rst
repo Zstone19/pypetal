@@ -8,7 +8,7 @@ provide in-depth tutorials on how to use the JAVELIN module for pyPetal here.
 
 .. toctree::
     :maxdepth: 1
-    :caption: JAVELIN
+    :caption: JAVELIN Tutorials
 
     notebooks/javelin/basic
     notebooks/javelin/fixed
