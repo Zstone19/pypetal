@@ -26,6 +26,18 @@ def set_general(input_args, fnames):
     lag_bounds = params['lag_bounds']
     threads = params['threads']
     
+    if isinstance(lag_bounds, list):
+        if len(lag_bounds) == 1:
+            assert isinstance(lag_bounds[0], list) or isinstance(lag_bounds[0], str) or ( lag_bounds[0] is None )
+            
+        elif len(lag_bounds) == 2:
+            pass
+            
+        else:
+            for i in range(len(lag_bounds)): 
+                assert len(lag_bounds[i]) == 2
+    
+    
     if isinstance(lc_unit, str):
         lc_unit = list( np.full( len(fnames), lc_unit ) )
         
@@ -48,8 +60,9 @@ def set_general(input_args, fnames):
         for i in range(len(fnames)-1):
             lag_bounds.append(lag_bounds_og)
             
-    if (len(fnames) == 2) and ( not isinstance(lag_bounds[0], list) ):
-        lag_bounds = [lag_bounds]
+    if (len(fnames) == 2) and ( not isinstance(lag_bounds[0], list) ):        
+        if not isinstance(lag_bounds[0], str):
+            lag_bounds = [lag_bounds]
             
             
             
@@ -74,9 +87,7 @@ def set_general(input_args, fnames):
         baseline = np.max([ xvals_tot[0].max(), xvals_tot[i+1].max() ]) - np.min([ xvals_tot[0].min(), xvals_tot[i+1].min() ])
         baselines.append(baseline)    
     
-    
     for i in range(len(fnames)-1):
-        
         if (lag_bounds[i] is None) | (lag_bounds[i] == 'baseline'):
             lag_bounds[i] = [-baselines[i], baselines[i]]
 
