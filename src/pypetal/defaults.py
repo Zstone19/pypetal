@@ -13,8 +13,7 @@ def set_general(input_args, fnames):
         'lc_unit': 'Arbitrary Units',
         'file_fmt': 'csv',
         'lag_bounds': 'baseline',
-        'threads': 1,
-        'detrending': False
+        'threads': 1
     }
     
     params = { **default_kwargs, **input_args }
@@ -91,8 +90,7 @@ def set_general(input_args, fnames):
         'lc_unit': lc_unit,
         'file_fmt': file_fmt,
         'lag_bounds': lag_bounds,
-        'threads': threads,
-        'detrending': detrending
+        'threads': threads
     }
             
     return output

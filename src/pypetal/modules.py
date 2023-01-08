@@ -399,16 +399,8 @@ plike_dir: {}
         
         plike_dict = None
         if run_plike:
-            
-            if lag_bounds[i] == 'baseline':    
-                lag_range = [ np.min([x1.min(), x2.min()]) ,
-                               np.max([x1.max(), x2.max()]) ]
-
-            else:
-                lag_range = lag_bounds[i]
-                
-                                        
-            utils.run_plike( arg4[i] + arg5[i] + '.dcf', lag_range, plike_dir,
+                                                        
+            utils.run_plike( arg4[i] + arg5[i] + '.dcf', lag_bounds[i], plike_dir,
                             verbose=verbose)   
                     
             plike_fname = plike_dir + 'plike.out'        
