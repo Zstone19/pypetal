@@ -221,6 +221,11 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     #Make sure dcf file exists
     assert os.path.exists(dcf_fname)
     
+    #Make sure there are two lag bounds
+    if len(lag_bounds) != 2:
+        print('Lag bounds: ', lag_bounds) 
+        raise ValueError('Must provide two lag bounds.')
+    
     if verbose:
         print('Executing PLIKE')
     
