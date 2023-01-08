@@ -27,6 +27,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
    notebooks/detrending
    notebooks/pyccf
    notebooks/pyzdcf
+   notebooks/plike
    javelin_toc
    notebooks/weighting
    notebooks/all_together
