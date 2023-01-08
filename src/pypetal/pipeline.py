@@ -419,7 +419,6 @@ def run_pipeline(output_dir, arg2,
     
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
-    detrending = general_kwargs['detrending']
 
     #Get "reject_data" and "together"    
     _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)

@@ -25,7 +25,6 @@ def set_general(input_args, fnames):
     file_fmt = params['file_fmt']
     lag_bounds = params['lag_bounds']
     threads = params['threads']
-    detrending = params['detrending']
     
     if isinstance(lc_unit, str):
         lc_unit = list( np.full( len(fnames), lc_unit ) )
