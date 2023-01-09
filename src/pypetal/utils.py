@@ -215,8 +215,16 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     
     """
     
+    #Make sure plike dir exists
+    assert os.path.exists( plike_dir )    
+    
     cwd = os.getcwd()    
     os.chdir(plike_dir)
+    
+    #Delete old plike.out if it exists
+    if os.path.exists( plike_dir + 'plike.out' ):
+        os.remove( plike_dir + 'plike.out' )
+    
     
     #Make sure dcf file exists
     assert os.path.exists(dcf_fname)
