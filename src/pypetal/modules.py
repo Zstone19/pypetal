@@ -405,7 +405,7 @@ plike_dir: {}
                     
             plike_fname = plike_dir + 'plike.out'     
             output_fname = output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out'
-            assert os.path.exists( output_fname )
+            assert os.path.exists( os.path.dirname(output_fname) )
             
             shutil.move( plike_fname, output_fname )
             plike_dat = Table.read( output_fname, 
