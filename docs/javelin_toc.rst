@@ -11,8 +11,8 @@ provide in-depth tutorials on how to use the JAVELIN module for pyPetal here.
     :caption: JAVELIN Tutorials
 
     notebooks/javelin/basic
-    notebooks/javelin/fixed
     notebooks/javelin/together
+    notebooks/javelin/fixed
     notebooks/javelin/type
     notebooks/javelin/advanced 
 
