@@ -216,7 +216,8 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     """
     
     #Make sure plike dir exists
-    assert os.path.exists( plike_dir )    
+    assert os.path.exists( plike_dir )  
+    plike_dir = os.path.abspath(plike_dir) + r'/'  
     
     cwd = os.getcwd()    
     os.chdir(plike_dir)
@@ -227,6 +228,8 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     
     #Make sure dcf file exists
     assert os.path.exists(dcf_fname)
+    dcf_fname = os.path.abspath(dcf_fname)
+    
     
     #Make sure there are two lag bounds
     if len(lag_bounds) != 2:
@@ -241,8 +244,8 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     
     #Make sure plike.out exists
     while not ( plike_dir + 'plike.out' in glob.glob(plike_dir + '*.out') ):
-        time.sleep(1)
         print( glob.glob( plike_dir + '*' ) )
+        time.sleep(1)
     
     os.chdir(cwd)
         
