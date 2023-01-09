@@ -403,17 +403,17 @@ plike_dir: {}
             utils.run_plike( arg4[i] + arg5[i] + '.dcf', lag_bounds[i], plike_dir,
                             verbose=verbose)   
                     
-            plike_fname = plike_dir + 'plike.out'        
-            shutil.move( plike_fname, 
-                      output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out' )
+            plike_fname = plike_dir + 'plike.out'     
+            output_fname = output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out'
+            assert os.path.exists( output_fname )
             
-            plike_dat = Table.read( output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out', 
+            shutil.move( plike_fname, output_fname )
+            plike_dat = Table.read( output_fname, 
                                     format='ascii',
                                     names=['num', 'lag', 'r', '-dr', '+dr', 'likelihood'])
             
             
-            file = open(output_dir + line_names[i+1] + r'/pyzdcf/' + line_names[i+1] + '_plike.out', 'r')
-            output_str = list(file)[-3:]
+            file = open(output_fname, 'r')            output_str = list(file)[-3:]
             
             ml_lag = float( output_str[1].split()[7] )
             ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
