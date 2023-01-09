@@ -244,7 +244,6 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     
     #Make sure plike.out exists
     while not ( plike_dir + 'plike.out' in glob.glob(plike_dir + '*.out') ):
-        print( glob.glob( plike_dir + '*' ) )
         time.sleep(1)
     
     os.chdir(cwd)
