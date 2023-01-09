@@ -413,7 +413,8 @@ plike_dir: {}
                                     names=['num', 'lag', 'r', '-dr', '+dr', 'likelihood'])
             
             
-            file = open(output_fname, 'r')            output_str = list(file)[-3:]
+            file = open(output_fname, 'r')
+            output_str = list(file)[-3:]
             
             ml_lag = float( output_str[1].split()[7] )
             ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
