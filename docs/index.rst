@@ -38,6 +38,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
    :maxdepth: 1
    :caption: API
 
+   pl_args
    python/drw_rej
    python/pyccf
    python/pyzdcf
