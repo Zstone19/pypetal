@@ -11,17 +11,17 @@ Required General Arguments
 ``output_dir``
     The directory used for all output.
     
-    Type: str
+    Type: :python:`str`
 
 
 
 ``arg2``
-    Either the list of filenames to all light curve fils, or an 
+    Either the list of filenames to all light curve files, or an 
     array of the light curves themselves. If given as a list of 
     filenames, all files must be in the same directory. The first 
     line will be considered the continuum light curve.
 
-    Type: list of str, list of float  
+    Type: :python:`list` of :python:`str`, :python:`list` of :python:`float`  
 
 
 
@@ -38,81 +38,153 @@ Optional General Arguments
 
 
 
-``file_fmt``: The format of the light curve files input in ``arg2``. All light curve files are 
-                required to be CSV in the analysis, so if :python:`file_fmt != "csv"`, it will be saved 
-                in the ``light_curves/`` directory in CSV format. Currently, "csv" and "ascii" are 
-                recognised. All other formats will need to be recognised by the ``astropy.table`` 
-                module.
-                Type: :python:`str``
-                Default: "csv"
+``file_fmt``
+    The format of the light curve files input in ``arg2``. All light curve files are 
+    required to be CSV in the analysis, so if :python:`file_fmt != "csv"`, it will be saved 
+    in the ``light_curves/`` directory in CSV format. Currently, "csv" and "ascii" are 
+    recognised. All other formats will need to be recognised by the ``astropy.table`` 
+    module.
 
-* ``verbose``: Whether or not to display text progress of the pipeline.
-               Type: :python:`bool`
-               Default: :python:`False`
+    Type: :python:`str``
 
-* ``plot``: Whether or not to display plots showing the progress of the pipeline.
-            Type: bool
-            Default: False
+    Default: "csv"
 
-* ``time_unit``: The unit to use for figures for the time axis.
-                 Type: str
-                 Default: "d"
 
-* ``lc_unit``: The unit used for figures for the light curve axis. Can be a list of units or a single unit. 
-               If a single unit is given, it will be assumed for all lines. pyPetal will recognize "mag" as
-               as magnitude and invert the axis of all plots. All other units will be assumed to be flux units.
-               Type: str, list of str
-               Default: ""
 
-* ``lag_bounds``: The range of lags to use for all pyPetal modules when searching for a lag. If ``None`` or "baseline" are 
-                  input for a given line, the baseline (both positive and negative) will be used as the lag bounds. If only one
-                  set of bounds is given, it will be assumed for all lines.
-                  Type: list of float, ``None``, "baseline"
+``verbose``
+    Whether or not to display text progress of the pipeline.
+
+    Type: :python:`bool`
+
+    Default: :python:`False`
+
+
+
+``plot``
+    Whether or not to display plots showing the progress of the pipeline.
+
+    Type: :python:`bool`
+
+    Default: :python:`False`
+
+
+
+
+``time_unit``
+    The unit to use for figures for the time axis.
+
+    Type: :python:`str`
+
+    Default: "d"
+
+
+
+``lc_unit``
+    The unit used for figures for the light curve axis. Can be a list of units or a single unit. 
+    If a single unit is given, it will be assumed for all lines. pyPetal will recognize "mag" as
+    as magnitude and invert the axis of all plots. All other units will be assumed to be flux units.
+
+    Type: :python:`str`, :python:`list` of :python:`str`
+
+    Default: ""
+
+
+
+``lag_bounds``
+    The range of lags to use for all pyPetal modules when searching for a lag. If :python:`None` or "baseline" are 
+    input for a given line, the baseline (both positive and negative) will be used as the lag bounds. If only one
+    set of bounds is given, it will be assumed for all lines.
+
+    Type: :python:`list` of :python:`float`, :python:`None`, "baseline"
+
 
 
 
 Module: DRW Rejection (``run_drw_rej``)
 ---------------------------------------
 
-* ``nsig``: The number of $\sigma$ from the mean DRW fit to reject data points.
-            Type: float
-            Default: 3.0
+``nsig``
+    The number of $\sigma$ from the mean DRW fit to reject data points.
+    
+    Type: :python:`float`
+    
+    Default: 3.0
 
-* ``jitter``: Whether to incluse a noise ("jitter") term in the DRW fitting process.
-              Type: bool
-              Default: True
 
-* ``nchain``: The number of chains for Monte Carlo sampling.
-              Type: int
-              Default: 10000
 
-* ``nburn``: The number of burn-in Monte Carlo samples.
-             Type: int
-             Default: 3000
 
-* ``nwalker``: The number of walkers for Monte Carlo sampling.
-               Type: int
-               Default: 32
+``jitter``
+    Whether to incluse a noise ("jitter") term in the DRW fitting process.
 
-* ``clip``: Celerite will use a prior for the characteristic DRW timescale $\tau_{\rm DRW}$, 
-            spanning the minimum cadence to the baseline of the input light curve. If ``clip=True`` 
-            for a given light curve, instead of using the minimum difference between times given for
-            the light curve, it will clip these differences for values below $10^{-8}$. If one value 
-            is given, it will be assumed for all light curves.
-            Type: bool, list of bool 
-            Default: True  
+    Type: :python:`bool`
 
-* ``reject_data``: If ``reject_data=True`` for a given light curve, it will be fit and its values will be 
-                   rejected based on the value of ``nsig``. If ``reject_data=False`` for a given light curve,
-                   it will not be fit to a DRW. If one value is given, it will be assumed for all light curves.
-                   Type: bool, list of bool
-                   Default: ``True`` for the continuum, ``False`` for all lines
+    Default: :python:`True`
 
-* ``use_for_javelin``: If ``True``, the resulting DRW parameters ($\sigma_{\rm DRW}$, $\tau_{\rm DRW}$), will
-                       be used as input to the JAVELIN module of pyPetal. The DRW parameters in each fit will be
-                       fixed to the results obtained in this module.
-                       Type: bool
-                       Default: False
+
+
+
+``nchain``
+    The number of chains for Monte Carlo sampling.
+
+    Type: :python:`int`
+    
+    Default: 10000
+
+
+
+``nburn``
+    The number of burn-in Monte Carlo samples.
+    
+    Type: :python:`int`
+    
+    Default: 3000
+
+
+
+
+``nwalker``
+    The number of walkers for Monte Carlo sampling.
+    
+    Type: :python:`int`
+    
+    Default: 32
+
+
+
+
+``clip``
+    ``Celerite`` will use a prior for the characteristic DRW timescale $\tau_{\rm DRW}$, 
+    spanning the minimum cadence to the baseline of the input light curve. If :python:`clip=True` 
+    for a given light curve, instead of using the minimum difference between times given for
+    the light curve, it will clip these differences for values below $10^{-8}$. If one value 
+    is given, it will be assumed for all light curves.
+
+    Type: :python:`bool`, :python:`list` of :python:`bool` 
+
+    Default: :python:`True`
+
+
+
+``reject_data``: 
+    If :python:`reject_data=True` for a given light curve, it will be fit and its values will be 
+    rejected based on the value of ``nsig``. If :python:`reject_data=False` for a given light curve,
+    it will not be fit to a DRW. If one value is given, it will be assumed for all light curves.
+    
+    Type: :python:`bool`, :python:`list` of :python:`bool`
+    
+    Default: :python:`True` for the continuum, :python:`False` for all lines
+
+
+
+``use_for_javelin``
+    If :python:`True`, the resulting DRW parameters ($\sigma_{\rm DRW}$, $\tau_{\rm DRW}$), will
+    be used as input to the JAVELIN module of pyPetal. The DRW parameters in each fit will be
+    fixed to the results obtained in this module.
+    
+    Type: :python:`bool`
+    
+    Default: :python:`False`
+
 
 
 
