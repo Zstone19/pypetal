@@ -4,25 +4,37 @@ pyPetal Arguments
 Required General Arguments
 ---------------------------
 
-* ``output_dir``: The directory used for all output.
-                  Type: str
+``output_dir``
+    The directory used for all output.
+    
+    Type: str
 
-* ``arg2``: Either the list of filenames to all light curve fils, or an 
-            array of the light curves themselves. If given as a list of 
-            filenames, all files must be in the same directory. The first 
-            line will be considered the continuum light curve.
-            Type: list of str, list of float  
+
+
+``arg2``
+    Either the list of filenames to all light curve fils, or an 
+    array of the light curves themselves. If given as a list of 
+    filenames, all files must be in the same directory. The first 
+    line will be considered the continuum light curve.
+
+    Type: list of str, list of float  
+
 
 
 Optional General Arguments
 ----------------------------
 
-* ``line_names``: A list of the names of all lines input in ``arg2``. If ``None``, the 
-                  lines will be named in chronological order (i.e. "Line1", "Line2", etc...)
-                  Type: ``None``, list of str
-                  Default: ``None``
+``line_names``
+    A list of the names of all lines input in ``arg2``. If ``None``, the 
+    lines will be named in chronological order (i.e. "Line1", "Line2", etc...)
 
-* ``file_fmt``: The format of the light curve files input in ``arg2``. All light curve files are 
+    Type: ``None``, list of str
+
+    Default: ``None``
+
+
+
+``file_fmt``: The format of the light curve files input in ``arg2``. All light curve files are 
                 required to be CSV in the analysis, so if ``file_fmt != "csv"``, it will be saved 
                 in the ``light_curves/`` directory in CSV format. Currently, "csv" and "ascii" are 
                 recognised. All other formats will need to be recognised by the ``astropy.table`` 
