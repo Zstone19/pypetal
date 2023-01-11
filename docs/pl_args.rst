@@ -1,3 +1,7 @@
+.. role:: python(code)
+   :language: highlight
+   :class:
+
 pyPetal Arguments
 ==================
 
@@ -25,26 +29,26 @@ Optional General Arguments
 ----------------------------
 
 ``line_names``
-    A list of the names of all lines input in ``arg2``. If ``None``, the 
+    A list of the names of all lines input in ``arg2``. If :python:`None`, the 
     lines will be named in chronological order (i.e. "Line1", "Line2", etc...)
 
-    Type: ``None``, list of str
+    Type: :python:`None`, list of :python:`str`
 
-    Default: ``None``
+    Default: :python:`None`
 
 
 
 ``file_fmt``: The format of the light curve files input in ``arg2``. All light curve files are 
-                required to be CSV in the analysis, so if ``file_fmt != "csv"``, it will be saved 
+                required to be CSV in the analysis, so if :python:`file_fmt != "csv"`, it will be saved 
                 in the ``light_curves/`` directory in CSV format. Currently, "csv" and "ascii" are 
                 recognised. All other formats will need to be recognised by the ``astropy.table`` 
                 module.
-                Type: str
+                Type: :python:`str``
                 Default: "csv"
 
 * ``verbose``: Whether or not to display text progress of the pipeline.
-               Type: bool
-               Default: False
+               Type: :python:`bool`
+               Default: :python:`False`
 
 * ``plot``: Whether or not to display plots showing the progress of the pipeline.
             Type: bool
