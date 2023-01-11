@@ -1,6 +1,6 @@
 .. role:: python(code)
-   :language: highlight
-   :class:
+   :language: python
+   :class: highlight
 
 pyPetal Arguments
 ==================
