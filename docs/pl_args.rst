@@ -104,7 +104,7 @@ Module: DRW Rejection (``run_drw_rej``)
 ---------------------------------------
 
 ``nsig``
-    The number of $\sigma$ from the mean DRW fit to reject data points.
+    The number of :math:`\sigma` from the mean DRW fit to reject data points.
     
     Type: :python:`float`
     
@@ -153,7 +153,7 @@ Module: DRW Rejection (``run_drw_rej``)
 
 
 ``clip``
-    ``Celerite`` will use a prior for the characteristic DRW timescale $\tau_{\rm DRW}$, 
+    ``Celerite`` will use a prior for the characteristic DRW timescale :math:`\tau_{\rm DRW}`, 
     spanning the minimum cadence to the baseline of the input light curve. If :python:`clip=True` 
     for a given light curve, instead of using the minimum difference between times given for
     the light curve, it will clip these differences for values below $10^{-8}$. If one value 
@@ -177,7 +177,7 @@ Module: DRW Rejection (``run_drw_rej``)
 
 
 ``use_for_javelin``
-    If :python:`True`, the resulting DRW parameters ($\sigma_{\rm DRW}$, $\tau_{\rm DRW}$), will
+    If :python:`True`, the resulting DRW parameters :math:`(\sigma_{\rm DRW}, $\tau_{\rm DRW})`, will
     be used as input to the JAVELIN module of pyPetal. The DRW parameters in each fit will be
     fixed to the results obtained in this module.
     
@@ -264,7 +264,7 @@ Module: pyCCF (``run_pyccf``)
 
 ``sigmode``
     The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. 
-    Must be within the interval (0,1). All peaks and centroids with correlation coefficient $r_{\rm max} <=$ ``sigmode`` 
+    Must be within the interval (0,1). All peaks and centroids with correlation coefficient :math:`r_{\rm max} \leq` ``sigmode`` 
     will be considered as “failed”. If set to 0, will exclude all peaks based on a p-value significance 
     test (see pyCCF documentation). 
 
@@ -439,7 +439,7 @@ Module: JAVELIN (``run_javelin``)
 * ``fixed``: 
     A list to determine what parameters to fix/vary when fitting the light curves. This should be an 
     array with a length equal to the number of parameters in the model (i.e. 2 + 3*(number of light curves) ). 
-    The fitted parameters will be the two DRW parameters ( log($sigma_{\rm DRW}$), log($tau_{\rm DRW}$) ) and 
+    The fitted parameters will be the two DRW parameters :math:`( \log(\sigma_{\rm DRW}), \log(\tau_{\rm DRW}) )` and 
     three tophat parameters for each non-continuum light curve (lag, width, scale). Setting to 0 will fix the 
     parameter and setting to 1 will allow it to vary. If None, all parameters will be allowed to vary. The fixed 
     parameters must match the fixed value in the array input to the ``p_fix`` argument. If :python:`together=False`, this 
@@ -502,7 +502,7 @@ Module: Weighting (``run_weighting``)
 -------------------------------------
 
 ``gap_size``
-    The minimum gap size to use to detect gaps in the continuum light curve when obtaining $N(\tau)$.
+    The minimum gap size to use to detect gaps in the continuum light curve when obtaining :math:`N(\tau)`.
 
     Type: :python:`float`
 
@@ -511,7 +511,7 @@ Module: Weighting (``run_weighting``)
 
 
 ``k``
-    The exponent used when calculating $P(\tau)$.
+    The exponent used when calculating :math:`P(\tau)`.
     
     Type: :python:`float`
     
