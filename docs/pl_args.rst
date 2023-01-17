@@ -8,18 +8,19 @@ pyPetal Arguments
 Required General Arguments
 ---------------------------
 
-+=================+=====================================================+=========================+
-| Argument        | Description                                         | Type                    |
-+=================+=====================================================+=========================+
-| **output_dir**  | The directory used for all output.                  | :python:`str`           |
-+-----------------+-----------------------------------------------------+-------------------------+
-| **arg2**        | Either the list of filenames to all light curve     | list of :python:`str`   |
-|                 | files, or an array of the light curves themselves.  | list of :python:`float` |
-|                 | If given as a list of filenames, all files must be  |                         |
-|                 | in the same directory. The first line will be       |                         |
-|                 | considered the continuum light curve.               |                         |
-+=================+=====================================================+=========================+
+.. list-table:: 
+    :widths: 20 80 20
+    :header-rows: 1
 
+    * - Argument
+      - Description
+      - Type
+    * - **output_dir**
+      - The directory used for all output.
+      - :python:`str`
+    * - **arg2**
+      - Either the list of filenames to all light curve files, or an array of the light curves themselves. If given as a list of filenames, all files must be in the same directory. The first line will be considered the continuum light curve.
+      - list of :python:`str`, list of :python:`float`
 
 Optional General Arguments
 ----------------------------
@@ -43,7 +44,7 @@ Optional General Arguments
 
     Type: :python:`str`
 
-    Default: "csv"
+    Default: :python:`"csv"`
 
 
 
@@ -71,7 +72,7 @@ Optional General Arguments
 
     Type: :python:`str`
 
-    Default: "d"
+    Default: :python:`"d"`
 
 
 
@@ -82,7 +83,7 @@ Optional General Arguments
 
     Type: :python:`str`, list of :python:`str`
 
-    Default: ""
+    Default: :python:`""`
 
 
 
@@ -92,6 +93,8 @@ Optional General Arguments
     set of bounds is given, it will be assumed for all lines.
 
     Type: list of :python:`float`, :python:`None`, "baseline"
+
+    Default: :python:`None`
 
 
 
