@@ -32,11 +32,11 @@ Required General Arguments
 Optional General Arguments
 ----------------------------
 
-+================+=============================================================================+=========================+=================+
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
 | Argument       | Description                                                                 | Type                    | Default         |
 +================+=============================================================================+=========================+=================+
-| ``line_names`` | A list of the names of all lines input in ``arg2``. If :python:`None`, the  | :python:`None`, list of | :python:`None`  |    
-|                | lines will be named in chronological order (i.e. "Line1", "Line2", etc...)  | :python:`str`           |                 |
+| ``line_names`` | A list of the names of all lines input in ``arg2``. If :python:`None`, the  | :python:`None`          | :python:`None`  |    
+|                | lines will be named in chronological order (i.e. "Line1", "Line2", etc...)  | list of :python:`str`   |                 |
 +----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
 | ``file_fmt``   | The format of the light curve files input in ``arg2``. All light curve      | :python:`str`           | :python:`"csv"` |
 |                | files are required to be CSV in the analysis, so if                         |                         |                 |
@@ -59,7 +59,7 @@ Optional General Arguments
 |                | If :python:`None` or "baseline" are input for a given line, the baseline    | :python:`float`,        |                 |
 |                | (both positive and negative) will be used as the lag bounds. If only one    | :python:`"baseline"`    |                 |
 |                | set of bounds is given, it will be assumed for all lines.                   |                         |                 |
-+================+=============================================================================+=========================+=================+
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
 
 
 
