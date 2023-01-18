@@ -15,11 +15,13 @@ Required General Arguments
     * - Argument
       - Description
       - Type
-    * - **output_dir**
+    * - ``output_dir``
       - The directory used for all output.
       - :python:`str`
-    * - **arg2**
-      - Either the list of filenames to all light curve files, or an array of the light curves themselves. If given as a list of filenames, all files must be in the same directory. The first line will be considered the continuum light curve.
+    * - ``arg2``
+      - Either the list of filenames to all light curve files, or an array of the light 
+        curves themselves. If given as a list of filenames, all files must be in the same 
+        directory. The first line will be considered the continuum light curve.
       - list of :python:`str`, list of :python:`float`
 
 Optional General Arguments
