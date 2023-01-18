@@ -46,6 +46,8 @@ bibtex_reference_style = 'author_year'
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_css_files = [ 'css/custom.css' ]
+
 
 # Napoleon settings
 napoleon_google_docstring = True
