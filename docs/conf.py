@@ -87,3 +87,8 @@ class Mock(MagicMock):
 
 MOCK_MODULES = ['javelin', 'javelin.zylc', 'javelin.lcio', 'javelin.lcmodel']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+# -- Add custom table ---------------------------------------------
+
+def setup(app):
+    app.add_stylesheet("css/custom.css")
