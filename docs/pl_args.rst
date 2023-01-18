@@ -11,9 +11,8 @@ Required General Arguments
 ---------------------------
 
 .. list-table::
-    :widths: 20 80 20
+    :widths: 20 60 20
     :header-rows: 1
-    :class: tight-table
 
     * - Argument
       - Description

@@ -46,7 +46,7 @@ bibtex_reference_style = 'author_year'
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
-html_css_files = [ 'css/custom.css' ]
+html_css_files = ['css/custom.css']
 
 
 # Napoleon settings
@@ -89,8 +89,3 @@ class Mock(MagicMock):
 
 MOCK_MODULES = ['javelin', 'javelin.zylc', 'javelin.lcio', 'javelin.lcmodel']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-# -- Add custom table ---------------------------------------------
-
-def setup(app):
-    app.add_stylesheet("css/custom.css")
