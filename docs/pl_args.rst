@@ -8,96 +8,58 @@ pyPetal Arguments
 Required General Arguments
 ---------------------------
 
-.. list-table:: 
-    :widths: 20 80 20
-    :header-rows: 1
++================+=======================================+=========================+
+| Argument       | Description                           | Type                    |
++================+=======================================+=========================+
+| ``output_dir`` | The directory used for all output.    | :python:`str`           |
+|                |                                       |                         |
+|                |                                       |                         |
+|                |                                       |                         |
+|                |                                       |                         |
+|                |                                       |                         |
+|                |                                       |                         |
++----------------+---------------------------------------+-------------------------+
+| ``arg2``       | Either the list of filenames to all   | list of :python:`str`   |
+|                | light curve files, or an array of the | list of :python:`float` |
+|                | light curves themselves. If given as  |                         |
+|                | a list of filenames, all files must   |                         |
+|                | be in the same directory. The first   |                         |
+|                | line will be considered the           |                         |
+|                | continuum light curve.                |                         |
++================+=======================================+=========================+
 
-    * - Argument
-      - Description
-      - Type
-    * - ``output_dir``
-      - The directory used for all output.
-      - :python:`str`
-    * - ``arg2``
-      - Either the list of filenames to all light curve files, or an array of the light 
-        curves themselves. If given as a list of filenames, all files must be in the same 
-        directory. The first line will be considered the continuum light curve.
-      - list of :python:`str`, list of :python:`float`
 
 Optional General Arguments
 ----------------------------
 
-``line_names``
-    A list of the names of all lines input in ``arg2``. If :python:`None`, the 
-    lines will be named in chronological order (i.e. "Line1", "Line2", etc...)
-
-    Type: :python:`None`, list of :python:`str`
-
-    Default: :python:`None`
-
-
-
-``file_fmt``
-    The format of the light curve files input in ``arg2``. All light curve files are 
-    required to be CSV in the analysis, so if :python:`file_fmt != "csv"`, it will be saved 
-    in the ``light_curves/`` directory in CSV format. Currently, "csv" and "ascii" are 
-    recognised. All other formats will need to be recognised by the ``astropy.table`` 
-    module.
-
-    Type: :python:`str`
-
-    Default: :python:`"csv"`
-
-
-
-``verbose``
-    Whether or not to display text progress of the pipeline.
-
-    Type: :python:`bool`
-
-    Default: :python:`False`
-
-
-
-``plot``
-    Whether or not to display plots showing the progress of the pipeline.
-
-    Type: :python:`bool`
-
-    Default: :python:`False`
-
-
-
-
-``time_unit``
-    The unit to use for figures for the time axis.
-
-    Type: :python:`str`
-
-    Default: :python:`"d"`
-
-
-
-``lc_unit``
-    The unit used for figures for the light curve axis. Can be a list of units or a single unit. 
-    If a single unit is given, it will be assumed for all lines. pyPetal will recognize "mag" as
-    as magnitude and invert the axis of all plots. All other units will be assumed to be flux units.
-
-    Type: :python:`str`, list of :python:`str`
-
-    Default: :python:`""`
-
-
-
-``lag_bounds``
-    The range of lags to use for all pyPetal modules when searching for a lag. If :python:`None` or "baseline" are 
-    input for a given line, the baseline (both positive and negative) will be used as the lag bounds. If only one
-    set of bounds is given, it will be assumed for all lines.
-
-    Type: list of :python:`float`, :python:`None`, "baseline"
-
-    Default: :python:`None`
-
++================+=============================================================================+=========================+=================+
+| Argument       | Description                                                                 | Type                    | Default         |
++================+=============================================================================+=========================+=================+
+| ``line_names`` | A list of the names of all lines input in ``arg2``. If :python:`None`, the  | :python:`None`, list of | :python:`None`  |    
+|                | lines will be named in chronological order (i.e. "Line1", "Line2", etc...)  | :python:`str`           |                 |
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
+| ``file_fmt``   | The format of the light curve files input in ``arg2``. All light curve      | :python:`str`           | :python:`"csv"` |
+|                | files are required to be CSV in the analysis, so if                         |                         |                 |
+|                | :python:`file_fmt != "csv"`, it will be saved in the ``light_curves/``      |                         |                 |
+|                | directory in CSV format. Currently, "csv" and "ascii" are recognised. All   |                         |                 | 
+|                | other formats will need to be recognised by the ``astropy.table`` module.   |                         |                 |
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
+| ``verbose``    | Whether or not to display text progress of the pipeline.                    | :python:`bool`          | :python:`False` |
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
+| ``plot``       | Whether or not to display plots showing the progress of the pipeline.       | :python:`bool`          | :python:`False` |
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
+| ``time_unit``  | The unit to use for figures for the time axis.                              | :python:`str`           | :python:`"d"`   |
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
+| ``lc_unit``    | The unit used for figures for the light curve axis. Can be a list of units  | :python:`str`           | :python:`""`    |
+|                | or a single unit. If a single unit is given, it will be assumed for all     | list of :python:`str`   |                 |
+|                | lines. pyPetal will recognize "mag" as as magnitude and invert the axis of  |                         |                 |
+|                | all plots. All other units will be assumed to be flux units.                |                         |                 |
++----------------+-----------------------------------------------------------------------------+-------------------------+-----------------+
+| ``lag_bounds`` | The range of lags to use for all pyPetal modules when searching for a lag.  | list of :python:`None`, | :python:`None`  |
+|                | If :python:`None` or "baseline" are input for a given line, the baseline    | :python:`float`,        |                 |
+|                | (both positive and negative) will be used as the lag bounds. If only one    | :python:`"baseline"`    |                 |
+|                | set of bounds is given, it will be assumed for all lines.                   |                         |                 |
++================+=============================================================================+=========================+=================+
 
 
 
