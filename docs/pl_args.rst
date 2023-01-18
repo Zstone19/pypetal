@@ -8,7 +8,7 @@ pyPetal Arguments
 Required General Arguments
 ---------------------------
 
-+================+=======================================+=========================+
++----------------+---------------------------------------+-------------------------+
 | Argument       | Description                           | Type                    |
 +================+=======================================+=========================+
 | ``output_dir`` | The directory used for all output.    | :python:`str`           |
@@ -26,7 +26,7 @@ Required General Arguments
 |                | be in the same directory. The first   |                         |
 |                | line will be considered the           |                         |
 |                | continuum light curve.                |                         |
-+================+=======================================+=========================+
++----------------+---------------------------------------+-------------------------+
 
 
 Optional General Arguments
