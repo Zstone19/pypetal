@@ -76,6 +76,7 @@ Optional General Arguments
       - 1
 
 
+
 Module: DRW Rejection (``run_drw_rej``)
 ---------------------------------------
 
@@ -92,7 +93,7 @@ Module: DRW Rejection (``run_drw_rej``)
       - :python:`float`
       - 3.0
     * - ``jitter``
-      - Whether to incluse a noise ("jitter") term in the DRW fitting process.
+      - Whether to incluse a noise ("jitter") term :math:`\sigma_n` in the DRW fitting process.
       - :python:`bool`
       - :python:`True`
     * - ``nchain``
@@ -108,10 +109,10 @@ Module: DRW Rejection (``run_drw_rej``)
       - :python:`int`
       - 32
     * - ``clip``
-      - ``Celerite`` will use a prior for the characteristic DRW timescale :math:`\tau_{\rm DRW}`, spanning the minimum cadence to the baseline of the input light curve. If :python:`clip=True` for a given light curve, instead of using the minimum difference between times given for the light curve, it will clip these differences for values below $10^{-8}$. If one value is given, it will be assumed for all light curves.
+      - ``Celerite`` will use a prior for the characteristic DRW timescale :math:`\tau_{\rm DRW}`, spanning the minimum cadence to the baseline of the input light curve. If :python:`clip=True` for a given light curve, instead of using the minimum difference between times given for the light curve, it will clip these differences for values below :math:`10^{-8}`. If one value is given, it will be assumed for all light curves.
       - :python:`bool`, list of :python:`bool` 
       - :python:`True`
-    * ``reject_data``
+    * - ``reject_data``
       - If :python:`reject_data=True` for a given light curve, it will be fit and its values will be rejected based on the value of ``nsig``. If :python:`reject_data=False` for a given light curve, it will not be fit to a DRW. If one value is given, it will be assumed for all light curves.
       - :python:`bool`, list of :python:`bool`
       - :python:`True` for the continuum, :python:`False` for all lines   
@@ -119,6 +120,7 @@ Module: DRW Rejection (``run_drw_rej``)
       - If :python:`True`, the resulting DRW parameters :math:`(\sigma_{\rm DRW}, $\tau_{\rm DRW})`, will used as input to the JAVELIN module of pyPetal. The DRW parameters in each fit will be fixed to the results obtained in this module.
       - :python:`bool`
       - :python:`False`
+
 
 
 Module: Detrending (``run_detrend``)
