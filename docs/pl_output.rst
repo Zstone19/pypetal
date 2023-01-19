@@ -209,11 +209,11 @@ The output dictionary(ies) will have the following keys:
       - The output ``javelin.lcmodel`` object for the final fit.
       - ``javelin.lcmodel.Rmap_Model``, ``javelin.lcmodel.Pmap_Model``
     * - ``cont_dat``
-      - The continuum light curve in a ``javelin.LightCurve`` object.
-      - ``javelin.LightCurve``
+      - The continuum light curve in a ``javelin.zylc.LightCurve`` object.
+      - ``javelin.zylc.LightCurve``
     * - ``tot_dat``
-      - All light curves (continuum +lines) in a ``javelin.LightCurve`` object.
-      - ``javelin.LightCurve``
+      - All light curves (continuum +lines) in a ``javelin.zylc.LightCurve`` object.
+      - ``javelin.zylc.LightCurve``
     * - ``bestfit_model``
       - The best-fit ``javelin.lcmodel`` object for the light curves.
       - ``javelin.lcmodel.Rmap_Model``, ``javelin.lcmodel.Pmap_Model``
