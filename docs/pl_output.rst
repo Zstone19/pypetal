@@ -1,5 +1,5 @@
-pyPetal Pipeline Output
-========================
+pyPetal Output
+===============
 
 Each module run in pyPetal has its own output, most of which are dictionaries with a variety of keys. These keys lead to the different output data from each module. Here we provide an in-depth description of all output and how to access them.
 Firstly, the output from the pipeline itself (i.e. from ``pyPetal.pipeline.run_pipeline``) will be a dictionary, containing the output dictionaries for each module (except the detrending module). 

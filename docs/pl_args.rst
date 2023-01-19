@@ -25,6 +25,12 @@ Required General Arguments
       - list of :python:`str`, list of :python:`float`
 
 
+.. note:: pyPetal will use the first 3 columns of the light curve files, and assume they represent the time, values, and uncertainty in the light curves.
+
+.. warning:: By default, :python:`arg2=None`. pyPetal will raise an error if :python:`arg2=None`.
+
+
+
 Optional General Arguments
 ----------------------------
 
@@ -285,6 +291,11 @@ Module: JAVELIN (``run_javelin``)
       - The number of bins to use for the output histogram plots.
       - :python:`int`
       - 100
+
+.. note:: If :python:`use_for_javelin=True` in the DRW Rejection module, and ``fixed/p_fix`` are set in the JAVELIN module, the DRW fitting results will be used instead of the input fixed parameter values.
+
+.. note:: If :python:`rm_type="phot"`, only one light curve can be modeled to a given continuum. Therefore, pyPetal will set :python:`together=False`.
+
 
 
 Module: Weighting (``run_weighting``)
