@@ -78,7 +78,7 @@ The output pyCCF module will be a list of dictionaries, one for each line, with 
     * - ``peak_err_hi``
       - The upper error on the peak.
       - :python:`float`
-    * ``CCCD_lags``
+    * - ``CCCD_lags``
       - The lags corresponding to the CCCD.
       - list of :python:`float`
     * - ``CCPD_lags``
@@ -95,7 +95,7 @@ Module: pyZDCF
 
 The pyZDCF can have one or two outputs, depending on the value of ``run_plike``. If ``run_plike=True``, there will be a pyZDCF output and a PLIKE output in the output dictionary.
 
-The pyZDCF output will be a list of ``pandas.DataFrame`` objects, which are output from pyZDCF itself. These will be in the same order as the input light curves. These ``DataFrame``s have the following columns:
+The pyZDCF output will be a list of ``pandas.DataFrame`` objects, which are output from pyZDCF itself. These will be in the same order as the input light curves. These ``DataFrame`` objects have the following columns:
 
 .. list-table::
     :widths: 20 60 20 
@@ -197,7 +197,7 @@ The output dictionary(ies) will have the following keys:
       - The list of MCMC samples for :math:`\sigma_{\rm DRW}`.
       - list of :python:`float`
     * - ``tophat_params``
-      - The list of MCMC samples for the tophat parameters. If :python:`together=True`, there will be :math:`3 \cdoot ({\rm number of lines})` columns, grouped in threes for each line in the following order: (lag, width, scale). These tophat parameters will be ordered in the same way as the input light curves. If :python:`together=False`, this will have three columns, corresponding to the lag, width, and scale of the tophat.
+      - The list of MCMC samples for the tophat parameters. If :python:`together=True`, there will be :math:`3 \cdot ({\rm number \ of \ lines})` columns, grouped in threes for each line in the following order: (lag, width, scale). These tophat parameters will be ordered in the same way as the input light curves. If :python:`together=False`, this will have three columns, corresponding to the lag, width, and scale of the tophat.
       - list of :python:`float`   
     * - ``hpd``
       - The HPD interval for the combined fit. The first column corresponds to :math:`\sigma_{\rm DRW}`, the second corresponds to :math:`\tau_{\rm DRW}`, and the rest are the tophat parameters, in the same order as described in ``tophat_params``.
@@ -301,4 +301,4 @@ Similarly, for the JAVELIN dictionary:
       - list of :python:`float`
 
 
-In addition, if both pyCCF and JAVELIN are run, there will be an additional key in the output dictionary labeled ``rmax``. This will be a list of :python:`float`s, as the values of :math:`r_{\rm max}` for each line in the order input.
+In addition, if both pyCCF and JAVELIN are run, there will be an additional key in the output dictionary labeled ``rmax``. This will be a list of :python:`float`, being the values of :math:`r_{\rm max}` for each line in the order input.
