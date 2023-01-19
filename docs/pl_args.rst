@@ -64,6 +64,10 @@ Optional General Arguments
       - The range of lags to use for all pyPetal modules when searching for a lag. If :python:`None` or "baseline" are input for a given line, the baseline (both positive and negative) will be used as the lag bounds. If only one set of bounds is given, it will be assumed for all lines.
       - list of :python:`None`, :python:`float`, :python:`"baseline"`
       - :python:`None`
+    * - ``threads``
+      - The number of threads to use for multiprocessing. This will be applied to all modules selected.
+      - :python:`int`
+      - 1
 
 
 Module: DRW Rejection (``run_drw_rej``)
@@ -254,7 +258,7 @@ Module: JAVELIN (``run_javelin``)
       - :python:`bool`
       - :python:`False`
     * - ``lagtobaseline``
-      - A log prior is used to logarithmically penalizes lag values larger than ``x``*baseline, where ``x`` is the value of this parameter. 
+      - A log prior is used to logarithmically penalizes lag values larger than `x`*baseline, where `x` is the value of this parameter. 
       - :python:`float`
       - 0.3
     * - ``fixed``

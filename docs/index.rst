@@ -39,6 +39,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
    :caption: API
 
    pl_args
+   pl_output
    python/drw_rej
    python/pyccf
    python/pyzdcf
