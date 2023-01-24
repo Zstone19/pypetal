@@ -471,10 +471,10 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
 
 
 def plot_weights(output_dir, line_name, res, n0, k, time_unit='d', plot=False):
-    lags = res['lags'][-1]
-    acf = res['acf'][-1]
-    prob_dist = res['weight_dist'][-1]
-    ntau = res['ntau'][-1]    
+    lags = res['lags'][-1].copy()
+    acf = res['acf'][-1].copy()
+    prob_dist = res['weight_dist'][-1].copy()
+    ntau = res['ntau'][-1].copy()    
     
     #Get P(tau)
     probs = (ntau/n0)**k
@@ -606,16 +606,16 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
     for i in range(nlc):
         
         if module == 'pyccf':
-            lags = res['lags'][i]
-            lag_dist = res['CCCD'][i]
+            lags = res['lags'][i].copy()
+            lag_dist = res['CCCD'][i].copy()
 
             llim = res['bounds'][i][0]
             rlim = res['bounds'][i][2]
             peak = res['bounds'][i][1]
             
-            weight_dist = res['weight_dist'][i]
-            smooth_dist = res['smoothed_dist'][i]
-            acf = res['acf'][i]
+            weight_dist = res['weight_dist'][i].copy()
+            smooth_dist = res['smoothed_dist'][i].copy()
+            acf = res['acf'][i].copy()
             
             lag_err_lo = res['centroid'][i][0]
             lag_err_hi = res['centroid'][i][2]
@@ -624,22 +624,29 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
             xlabel = r'{ \rm CCCD }'
             
         elif module == 'javelin':
-            lags = res['lags'][i]
-            lag_dist = res['lag_dist'][i]
+            lags = res['lags'][i].copy()
+            lag_dist = res['lag_dist'][i].copy()
             
             llim = res['bounds'][i][0]
             rlim = res['bounds'][i][2]
             peak = res['bounds'][i][1]
             
-            weight_dist = res['weight_dist'][i]
-            smooth_dist = res['smoothed_dist'][i]
-            acf = res['acf'][i]
+            weight_dist = res['weight_dist'][i].copy()
+            smooth_dist = res['smoothed_dist'][i].copy()
+            acf = res['acf'][i].copy()
             
             lag_err_lo = res['tophat_lag'][i][0]
             lag_err_hi = res['tophat_lag'][i][2]
             lag_value = res['tophat_lag'][i][1]
             
             xlabel = r't'
+
+
+        #Set ACF=0 when ACF<0
+        ind1 = np.max( np.argwhere( (acf < 0) & (lags < 0) ).T[0] )
+        ind2 = np.min( np.argwhere( (acf < 0) & (lags > 0) ).T[0] )
+        acf[:ind1] = 0
+        acf[ind2:] = 0
         
         
         
@@ -788,11 +795,6 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
                     
                     
         #Plot ACF
-        ind1 = np.max( np.argwhere( (acf < 0) & (lags < 0) ).T[0] )
-        ind2 = np.min( np.argwhere( (acf < 0) & (lags > 0) ).T[0] )
-        acf[:ind1] = 0
-        acf[ind2:] = 0
-        
         im3, = ax_tot[row_ind, col_ind][0].plot(lags, acf, c='r')                
     
     
@@ -840,10 +842,13 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
     plt.subplots_adjust(wspace=.15)
     
     #Put legends for the top and bottom plots
-    plt.figlegend( [im1, im2, im3], [r'w($\tau$)', 'Smoothed Dist', 'ACF'],
-                    bbox_to_anchor=(1,.9), fontsize=11)
-    plt.figlegend( [bin1, bin2], ['Original', 'Weighted'],
-                    bbox_to_anchor=(.98, .7), fontsize=11)       
+    for i in range(Nrow):
+        ax_tot[i, -1][0].legend( [im1, im2, im3], [r'w($\tau$)', 'Smoothed Dist', 'ACF'],
+                                bbox_to_anchor=(1,1.1), fontsize=11, loc='upper left' )
+
+        ax_tot[i, -1][1].legend( [bin1, bin2], ['Original', 'Weighted'],
+                                bbox_to_anchor=(1, 1), fontsize=11, loc='upper left')  
+        
      
     plt.savefig( output_dir + module + '_weights_res.pdf', dpi=200, bbox_inches='tight' )
     
