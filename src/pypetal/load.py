@@ -45,14 +45,21 @@ def get_modules(main_dir):
             has_drw[i] = True
     
     run_drw_rej = np.any( has_drw )
+
+    ###########################################################
+    #Detrend
+
+    has_detrend = np.zeros( len(line_names), dtype=bool )
+    for i, dir_i in enumerate(line_dirs):
+        subdirs = glob.glob(dir_i + '*.pdf')
+        if dir_i + 'detrend.pdf' in subdirs:
+            has_detrend[i] = True
     
+    run_detrend = np.any( has_detrend )
+
 
     #Get number of lines (not counting continuum)
-    if run_drw_rej:
-        n_lnc = len( line_dirs ) - 1
-    else:
-        n_lnc = len(line_dirs) 
-
+    n_lnc = len(line_names) - 1
 
     ###########################################################
     #pyCCF
