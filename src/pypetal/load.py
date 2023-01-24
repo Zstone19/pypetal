@@ -760,6 +760,8 @@ def load_weighting(main_dir):
 
 def load(main_dir, verbose=False):
 
+    main_dir = os.path.abspath(main_dir) + r'/'
+
     run_drw_rej, run_pyccf, run_pyzdcf, run_javelin, run_weighting = get_modules(main_dir)
     
     txt = """
