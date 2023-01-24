@@ -107,7 +107,8 @@ def get_modules(main_dir):
         
     ###########################################################
     #Weighting
-        
+    run_weighting = False
+
     has_weighting = np.zeros( len(line_names), dtype=bool )
     for i, dir_i in enumerate(line_dirs):
         subdirs = glob.glob(dir_i + '*/')
