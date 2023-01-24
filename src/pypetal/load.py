@@ -35,7 +35,7 @@ def get_modules(main_dir):
     
     line_names = get_line_names(main_dir)
     line_dirs = np.array([ main_dir + x + r'/' for x in line_names ]) 
-    
+
     ###########################################################
     #DRW Rejection
     has_drw = np.zeros( len(line_names), dtype=bool )
@@ -45,9 +45,22 @@ def get_modules(main_dir):
             has_drw[i] = True
     
     run_drw_rej = np.any( has_drw )
+
+    ###########################################################
+    #Detrend
+
+    has_detrend = np.zeros( len(line_names), dtype=bool )
+    for i, dir_i in enumerate(line_dirs):
+        subdirs = glob.glob(dir_i + '*.pdf')
+        if dir_i + 'detrend.pdf' in subdirs:
+            has_detrend[i] = True
     
-    
-    
+    run_detrend = np.any( has_detrend )
+
+
+    #Get number of lines (not counting continuum)
+    n_lnc = len(line_names) - 1
+
     ###########################################################
     #pyCCF
     has_pyccf = np.zeros( len(line_names), dtype=bool )
@@ -58,7 +71,7 @@ def get_modules(main_dir):
     
     
     n_pyccf = len( np.argwhere(has_pyccf).T[0] )
-    if ( n_pyccf != len(line_dirs) - 1 ) & ( n_pyccf > 0 ):
+    if ( n_pyccf != n_lnc ) & ( n_pyccf > 0 ):
         print('pyCCF was not completed for all lines, so will assume run_pyccf=False')
         run_pyccf = False
     else:
@@ -75,8 +88,9 @@ def get_modules(main_dir):
     
     
     n_pyzdcf = len( np.argwhere(has_pyzdcf).T[0] )
-    if ( n_pyzdcf != len(line_dirs) - 1 ) & ( n_pyzdcf > 0 ):
+    if ( n_pyzdcf != n_lnc ) & ( n_pyzdcf > 0 ):
         print('pyZDCF was not completed for all lines, so will assume run_pyzdcf=False')
+        run_pyzdcf = False
     else:
         run_pyzdcf = np.any( has_pyzdcf )
     
@@ -98,7 +112,7 @@ def get_modules(main_dir):
             has_javelin[i] = True
             
     n_javelin = len( np.argwhere(has_javelin).T[0] )
-    if ( n_javelin != len(line_dirs) - 1 ) & ( n_javelin > 0 ):
+    if ( n_javelin != n_lnc ) & ( n_javelin > 0 ):
         print('JAVELIN was not completed for all lines, so will assume run_javelin=False')
     else:
         run_javelin = np.any( has_javelin )
@@ -107,7 +121,6 @@ def get_modules(main_dir):
         
     ###########################################################
     #Weighting
-        
     has_weighting = np.zeros( len(line_names), dtype=bool )
     for i, dir_i in enumerate(line_dirs):
         subdirs = glob.glob(dir_i + '*/')
@@ -116,14 +129,15 @@ def get_modules(main_dir):
             has_weighting[i] = True
         
     n_weighting = len( np.argwhere(has_weighting).T[0] )
-    if ( n_weighting != len(line_dirs) - 1 ) & ( n_weighting > 0 ):
+    if ( n_weighting != n_lnc ) & ( n_weighting > 0 ):
         print('Weighting was not completed for all lines, so will assume run_weighting=False')
+        run_weighting = False
     else:
         run_weighting = np.any( has_weighting )
         
         
         
-    return run_drw_rej, run_pyccf, run_pyzdcf, run_javelin, run_weighting    
+    return run_drw_rej, run_pyccf, run_pyzdcf, run_javelin, run_weighting
     
     
     
@@ -759,6 +773,8 @@ def load_weighting(main_dir):
 #######################################################################
 
 def load(main_dir, verbose=False):
+
+    main_dir = os.path.abspath(main_dir) + r'/'
 
     run_drw_rej, run_pyccf, run_pyzdcf, run_javelin, run_weighting = get_modules(main_dir)
     
