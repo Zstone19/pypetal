@@ -77,6 +77,7 @@ def get_modules(main_dir):
     n_pyzdcf = len( np.argwhere(has_pyzdcf).T[0] )
     if ( n_pyzdcf != len(line_dirs) - 1 ) & ( n_pyzdcf > 0 ):
         print('pyZDCF was not completed for all lines, so will assume run_pyzdcf=False')
+        run_pyzdcf = False
     else:
         run_pyzdcf = np.any( has_pyzdcf )
     
@@ -107,8 +108,6 @@ def get_modules(main_dir):
         
     ###########################################################
     #Weighting
-    run_weighting = False
-
     has_weighting = np.zeros( len(line_names), dtype=bool )
     for i, dir_i in enumerate(line_dirs):
         subdirs = glob.glob(dir_i + '*/')
@@ -119,6 +118,7 @@ def get_modules(main_dir):
     n_weighting = len( np.argwhere(has_weighting).T[0] )
     if ( n_weighting != len(line_dirs) - 1 ) & ( n_weighting > 0 ):
         print('Weighting was not completed for all lines, so will assume run_weighting=False')
+        run_weighting = False
     else:
         run_weighting = np.any( has_weighting )
         
