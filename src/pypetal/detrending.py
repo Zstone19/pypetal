@@ -28,6 +28,70 @@ def detrend(x, y, yerr, K=2, parallelize=False,
             time_unit='d', lc_unit='',
             output_dir=None, verbose=False, plot=False):
     
+
+    """Detrend a light curve using a linear model from LinMix.
+
+    Parameters
+    ----------
+
+    x : list of float
+        Time values of the light curve.
+
+    y : list of float
+        Values of the light curve.
+        
+    yerr : list of float
+        Uncertainties in the light curve.
+
+    K : int, optional
+        The number of Gaussians to use in the LinMix model. Default is 2.
+
+    parallelize : bool, optional
+        Whether to parallelize the MCMC chains. Default is ``False``.
+
+    nchain : int, optional
+        The number of MCMC chains to run. Default is 4.
+
+    miniter : int, optional
+        The minimum number of iterations to run. Default is 5000.
+
+    maxiter : int, optional
+        The maximum number of iterations to run. Default is 10000.
+
+    time_unit : str, optional
+        The unit of time for the light curve. Default is 'd'.
+
+    lc_unit : str, optional
+        The unit of the light curve. Default is ''.
+
+    output_dir : str, optional
+        The directory to save the detrending figure to. Default is ``None``.
+
+    verbose : bool, optional
+        Whether to print the results of the detrending. Default is ``False``.
+
+    plot : bool, optional
+        Whether to plot the detrending figure. Default is ``False``.
+
+
+    Returns
+    -------
+
+    y_dt : list of float
+        The detrended light curve.
+
+    m_res: list of float
+        The fitted value and uncertainty in the slope of the linear model, given as [lower error, value, upper error].
+
+    b_res: list of float
+        The fitted value and uncertainty in the intercept of the linear model, given as [lower error, value, upper error].
+
+    sigsqr_res: list of float
+        The fitted value and uncertainty in the variance of the linear model, given as [lower error, value, upper error].
+
+    """
+
+
     
     if lc_unit == '':
         flux_txt = 'Flux'

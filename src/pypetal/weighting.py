@@ -12,6 +12,34 @@ from pypetal import defaults
 
 
 def find_overlap(x1, x2, gaps):
+
+    """Find the amount of overlapping data points between two light curves,
+    taking into account seasonal gaps in the data.
+
+    Parameters
+    ----------
+
+    x1 : list of float
+        The time values of the first light curve.
+
+    x2 : list of float
+        The time values of the second light curve.
+
+    gaps : list of float
+        A list of gaps in the data for the first light curve. The list should be structured
+        a a list of 2 element arrays, where the first element is the start of the gap and the
+        second element is the end of the gap.
+
+
+
+
+    Returns
+    -------
+
+    Ntot : int
+        The number of overlapping data points between the two light curves.
+
+    """
         
     sort_ind = np.argsort(x1)
     x1 = x1[sort_ind]
@@ -39,6 +67,59 @@ def find_overlap(x1, x2, gaps):
 
 def prob_tau(x1, x2, laglim=None, lagvals=None, Nlag=1000, gap_size=30, k=2):
         
+
+    """Calculate the probability distribution P(tau) to weight the time lag distribution described in 
+    Grier et al. (2019). 
+
+    
+    
+    Parameters
+    ----------
+
+    x1 : list of float
+        The time values of the first light curve.
+
+    x2 : list of float
+        The time values of the second light curve.
+
+    laglim : list of float, optional
+        The limits of lags to search over. If ``None``, the limits will be set to the baseline of the
+        light curves. If not ``None``, Nlag must be set. Default is ``None``.
+
+    lagvals : list of float, optional
+        The values of lags to search over. If ``None``, the limits will be set to the baseline of the
+        light curves. If not ``None``, Nlag must be set. Default is ``None``.
+
+    Nlag : int, optional
+        The number of lags to search over. Default is 1000.
+
+    gap_size : float, optional
+        The minimum gap size to use when searching for seasonal gaps in the first light curve.
+        Default is 30.
+
+    k : int, optional
+        The power to raise the probability distribution to. Default is 2.
+
+
+
+
+    Returns
+    -------
+
+    probs : list of float
+        The probability distribution P(tau).
+
+    nvals : list of float
+        The number of overlapping data points for each lag N(tau).
+
+    N0 : int
+        The number of overlapping points when tau = 0.
+
+    lags : list of float
+        The lags used to calculate the probability distribution.
+
+    """
+
     sort_ind = np.argsort(x1)
     x1 = x1[sort_ind]
     
@@ -88,6 +169,45 @@ def prob_tau(x1, x2, laglim=None, lagvals=None, Nlag=1000, gap_size=30, k=2):
 def get_acf(x, y, interp=None, lag_bounds=None, 
             sigmode=0.2, thres=0.8):
 
+
+    """Calculate the autocorrelation function of a light curve.
+
+
+    Parameters
+    ----------
+
+    x : list of float
+        The time values of the light curve.
+
+    y : list of float
+        The flux values of the light curve.
+
+    interp : float, optional
+        The interpolation distance to use for pyCCF. Default is ``None``.
+
+    lag_bounds : list of float, optional
+        The limits of lags to search over. If ``None``, the limits will be set to the baseline of the
+        light curve. Default is ``None``.
+
+    sigmode : float, optional
+        The ``sigmode`` option for pyCCF. Default is 0.2.
+
+    thres : float, optional
+        The ``thres`` option for pyCCF. Default is 0.8.
+
+
+    Returns
+    -------
+
+    acf : list of float
+        The autocorrelation function of the light curve.
+
+    lags : list of float
+        The lags used to calculate the ACF.
+
+    """
+
+
     sort_ind = np.argsort(x)
     x = x[sort_ind]
     y = y[sort_ind]
@@ -113,6 +233,69 @@ def get_acf(x, y, interp=None, lag_bounds=None,
 
 def get_weights(x1, y1, x2, y2, interp=None, lag_bounds=None,
                 sigmode=0.2, thres=0.8, gap_size=30, k=2):
+
+
+    """Calculate the total weighting distribution w(tau) described in Grier et al. (2019).
+    This calculates the probability weights depending on the number of overlapping data points as
+    a function of time lag P(tau) and convolves it with the ACF of the continuum light curve.
+
+
+    Parameters
+    ----------
+
+    x1 : list of float
+        The time values of the first light curve.
+
+    y1 : list of float
+        The flux values of the first light curve.
+
+    x2 : list of float
+        The time values of the second light curve.
+
+    y2 : list of float
+        The flux values of the second light curve.
+
+    interp : float, optional
+        The interpolation distance to use for pyCCF. Default is ``None``.
+
+    lag_bounds : list of float, optional
+        The limits of lags to search over. If ``None``, the limits will be set to the baseline of the
+        light curve. Default is ``None``.
+
+    sigmode : float, optional
+        The ``sigmode`` option for pyCCF. Default is 0.2.
+
+    thres : float, optional
+        The ``thres`` option for pyCCF. Default is 0.8.
+
+    gap_size : float, optional
+        The minimum gap size to use when searching for seasonal gaps in the first light curve.
+        Default is 30.
+
+    k : int, optional
+        The power to raise the probability distribution to. Default is 2.
+
+    
+
+    Returns
+    -------
+
+    prob_dist : list of float
+        The total weighting distribution w(tau).
+
+    lags : list of float
+        The lags used to calculate the total weighting distribution.
+
+    ntau : list of float
+        The number of overlapping data points as a function of time lag N(tau).
+
+    acf : list of float
+        The ACF of the first light curve.
+
+    n0 : float
+        The number of overlapping data points at a lag tau = 0.
+
+    """
 
     #Get ACF for continuum light curve    
     acf, acf_lags = get_acf(x1, y1, interp=interp, lag_bounds=lag_bounds,
@@ -143,6 +326,49 @@ def gaussian(x, sigma):
     return np.exp(-0.5 * (x / sigma)**2) / c
 
 def get_bounds(dist, weights, lags, width=15):
+
+
+    """Find the bounds of the peak of the weighted distribution, given the original distribution and weights.
+    This will convolve this weighted distribution with a Gaussian and find the bounds of the primary (i.e tallest) 
+    peak in the distribution.
+
+
+    Parameters
+    ----------
+
+    dist : list of float
+        The original distribution.
+
+    weights : list of float
+        The weights to apply to the distribution.
+
+    lags : list of float
+        The lags used to calculate the distribution.
+
+    width : float, optional
+        The width of the Gaussian to convolve the distribution with. Default is 15.
+
+
+
+    Returns
+    -------
+
+    peak_lower_bound : float
+        The lag of the lower bound of the peak of the distribution.
+
+    peak: int
+        The lag of the peak of the distribution.
+
+    peak_upper_bound : float
+        The lag of the upper bound of the peak of the distribution.
+
+    smooth_dist : list of float
+        The smoothed original distribution.
+
+    smooth_weight_dist : list of float
+        The smoothed weighted distribution.
+
+    """
     
     #Bin dist into weight lags
     dbin = lags[1] - lags[0]
@@ -471,6 +697,47 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
 
 
 def plot_weights(output_dir, line_name, res, n0, k, time_unit='d', plot=False):
+
+    """Plot the weight distribution for a given object for a given module's output distribution.
+
+    Parameters
+    ----------
+
+    output_dir : str
+        Directory to save plots to.
+
+    line_name : str
+        Name of the line.
+
+    res : dict
+        Dictionary containing the results from the module.
+
+    n0 : int
+        The number of overlapping data points at a lag tau = 0.
+
+    k : int, optional
+        The power the probability distribution was raised to.
+
+    time_unit : str, optional
+        The time unit of the lag distribution. Default is 'd'.
+
+    plot : bool, optional
+        Whether to show the plotted results. Default is ``False``.
+
+
+
+    Returns
+    -------
+
+    fig : matplotlib.figure.Figure
+        The figure object containing the plot.
+
+    ax : matplotlib.axes.Axes
+        The axes object for the plot.
+
+    """
+
+
     lags = res['lags'][-1].copy()
     acf = res['acf'][-1].copy()
     prob_dist = res['weight_dist'][-1].copy()

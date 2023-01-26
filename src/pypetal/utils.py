@@ -38,13 +38,13 @@ def drw_flag(times, data, error,
     Parameters
     ----------
     
-    times : array_like
+    times : list of astropy.units.Quantity
         Times for the light curve.
         
-    data : array_like
+    data : list of astropy.units.Quantity
         Data for the light curve.
     
-    error : array_like
+    error : list of astropy.units.Quantity
         Uncertainty in the light curve.
         
     nwalkers : int, optional
@@ -266,23 +266,23 @@ def get_zdcf(input_dir, fname1, fname2, out_dir, prefix='zdcf', num_MC=500, minp
     ----------
     
     input_dir : str
-            Path to the directory containing the light curves
+            Path to the directory containing the light curves.
    
     fname1 : str
-            Name of the first light curve file
+            Name of the first light curve file.
    
     fname2 : str
-            Name of the second light curve file
+            Name of the second light curve file.
    
     out_dir : str
-            Path to the directory to place the output ZDCF file    
+            Path to the directory to place the output ZDCF file. 
    
     num_MC : float, optional
             The number of Monte Carlo simulations to run. Default is 500.
    
     minpts : int, optional
             The minimum number of points to use in each bin when computing the ZDCF. 
-            Must be larger than 11. If set to 0, it will be set to 11. Default is 0
+            Must be larger than 11. If set to 0, it will be set to 11. Default is 0.
             
     uniform_sampling: bool, optional
             If True, the light curves will be assumed to be uniformly sampled.
@@ -301,7 +301,7 @@ def get_zdcf(input_dir, fname1, fname2, out_dir, prefix='zdcf', num_MC=500, minp
             Determines whether to use a sparse matrix implementation for reduced RAM usage.
             This feature is suitable for longer light curves (> 3000 data points). If True, will
             use sparse matrix implementation. If set to 'auto', will use sparse matrix implementation
-            if there are more than 3000 data points per light curve. Default is 'auto'
+            if there are more than 3000 data points per light curve. Default is 'auto'.
    
     sep : str, optional
             The delimiter used in the light curve files. Default is ',' for CSV files.            
@@ -400,10 +400,10 @@ def get_pyccf_lags(fname1, fname2,
     ----------    
 
     fname1 : str
-        Path to the first light curve file 
+        Path to the first light curve file .
             
     fname2 : str
-        Path to the second light curve file 
+        Path to the second light curve file .
             
     file_fmt : str, optional
         Format of the file. Default is 'csv'.
@@ -434,7 +434,7 @@ def get_pyccf_lags(fname1, fname2,
         the interval (0,1). The default is 0.8.
             
 
-    .. note:: Both light curve files must be in CSV format with the following columns in order: time, value, uncertainty
+    .. note:: Both light curve files must be in CSV format with the following columns in order: time, value, uncertainty.
 
 
 
@@ -444,35 +444,35 @@ def get_pyccf_lags(fname1, fname2,
     result: dict 
         Dict of output results, containing:
         
-        * 'CCF' : (N,) array_like
-            The ICCF
+        * 'CCF' : list of floats
+            The ICCF.
             
-        * 'CCF_lags' : (N,) array_like
-            The lags corresponding to the ICCF
+        * 'CCF_lags' : list of floats
+            The lags corresponding to the ICCF.
 
         * 'centroid' : float
-            The median of the CCCD
+            The median of the CCCD.
 
         * 'centroid_err_hi' : float
-            The upper error of the centroid
+            The upper error of the centroid.
 
         * 'centroid_err_lo' : float
-            The lower error of the centroid
+            The lower error of the centroid.
 
         * 'peak' : float
-            The median of the CCPD
+            The median of the CCPD.
 
         * 'peak_err_hi' : float
-            The upper error of the peak
+            The upper error of the peak.
 
         * 'peak_err_lo' : float
-            The lower error of the peak
+            The lower error of the peak.
 
-        * 'CCCD_lags' : (nsim,) array_like
-            The CCCD
+        * 'CCCD_lags' : list of floats
+            The CCCD.
 
-        * 'CCPD_lags' : (nsim,) array_like
-            The CCPD
+        * 'CCPD_lags' : list of floats
+            The CCPD.
                 
     """
     
@@ -603,8 +603,8 @@ def run_javelin(cont_fname, line_fnames, line_names,
         The filename(s) of the line light curve(s).
         
     rm_type : str, optional
-        The type of analysis (and JAVELIN model) to use. May either be 'spec for 
-        spectroscopic RM or 'phot' for photometric RM. Default is 'spec'.
+        The type of analysis (and JAVELIN model) to use. May either be "spec" for 
+        spectroscopic RM or "phot" for photometric RM. Default is "spec".
         
     lagtobaseline : float, optional
         JAVELIN will use a log prior on the lag and penalize lags larger x*baseline,
@@ -613,7 +613,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
         
     laglimit : (2,) list of floats, str, optional
          The range of lags to search for the lag between light curves in the following form:
-         [lower, upper]. If set to 'baseline', the range will be set to [-baseline, baseline].
+         [lower, upper]. If set to "baseline", the range will be set to [-baseline, baseline].
          Default is 'baseline'.
          
     fixed : None or list of floats, optional
@@ -659,25 +659,25 @@ def run_javelin(cont_fname, line_fnames, line_names,
     res : dict
         A dictionary containing the results of the JAVELIN analysis. Has the following keys:
         
-        * cont_hpd : (3,2) array_like
+        * cont_hpd : list of float
             The highest posterior density (HPD) interval for the continuum light curve DRW fits.
 
-        * tau : array_like
+        * tau : list of float
             The MC chain for the DRW tau parameter.
             
-        * sigma : array_like
+        * sigma : list of float
             The MC chain for the DRW sigma parameter.
             
-        * tophat_params : array_like
+        * tophat_params : list of float
             The MC chains for the tophat parameters (lag, width, scale), 3 for each light curve.
             
-        * hpd : array_like
+        * hpd : list of float
             The HPD intervals for the DRW and tophat parameters for each light curve.
         
         * cont_model : javelin.lcmodel.Cont_Model
             The continuum model object.
             
-        * rmap_model : javelin.lcmodel.Rmap_Model or javelin.lcmodel.Pmap_Model
+        * rmap_model : javelin.lcmodel.Rmap_Model, javelin.lcmodel.Pmap_Model
             The RM model object.
             
         * cont_dat : javelin.zylc.LightCurve
@@ -825,13 +825,13 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, metric='med'):
 
     metric : str, optional
         The metric to use to get the bestfit parameter from the parameter distributions.
-        Can be either 'mean' or 'med'. Default is 'med'.
+        Can be either "mean" or "med". Default is "med".
 
 
     Returns
     -------
 
-    rmap_bestfit : javelin.lcmodel.Rmap_Model or javelin.lcmodel.Pmap_Model
+    rmap_bestfit : javelin.lcmodel.Rmap_Model, javelin.lcmodel.Pmap_Model
         The RM model using the best fit parameters to predict the light curve(s).
     
     """
