@@ -28,26 +28,26 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
     Parameters
     ----------
 
-    x : list of astropy.units.Quantity
+    x : list of float
         Time values of the data.
 
-    y : list of astropy.units.Quantity
-        Values of the data
+    y : list of float
+        Values of the data.
 
-    yerr : list of astropy.units.Quantity
-        Uncertainties on the data
+    yerr : list of float
+        Uncertainties in the data.
 
     kernel : celerite.terms.Term
-        Kernel to fit to the data
+        Kernel to fit to the data.
 
     nwalkers : int
-        Number of walkers to use in the MCMC
+        Number of walkers to use in the MCMC.
 
     nburn : int
-        Number of burn-in steps to use in the MCMC
+        Number of burn-in steps to use in the MCMC.
 
     nsamp : int
-        Number of samples to use in the MCMC
+        Number of samples to use in the MCMC.
 
     solver : str, optional
         Solver to use for the GP fit. Options are "minimize" for ``scipy.optimize.minimize`` and
@@ -65,10 +65,10 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
     -------
 
     samples : array_like
-        Samples of the kernel parameters from the MCMC fit
+        Samples of the kernel parameters from the MCMC fit.
 
     gp : celerite.GP
-        GP object used for the fit
+        GP object used for the fit.
 
     statuses : list of bool
         Status of the fit to the light curve. There are three statuses given:
@@ -195,10 +195,10 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
         Time values of the data.
 
     y : list of astropy.units.Quantity
-        Values of the data
+        Values of the data.
 
     yerr : list of astropy.units.Quantity
-        Uncertainties on the data
+        Uncertainties on the data.
 
     nwalkers : int, optional
         Number of walkers to use in the MCMC. Default is 32.
@@ -227,7 +227,7 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
     Returns
     -------
 
-    samples : array_like
+    samples : list of float
         Samples of the kernel parameters from the MCMC fit
 
     gp : celerite.GP
@@ -305,19 +305,19 @@ def psd_from_gp(fLS, powerLS, gp, samples, baseline):
     ----------
 
     fLS : list of astropy.units.Quantity
-        Frequencies from the Lomb-Scargle periodogram
+        Frequencies from the Lomb-Scargle periodogram.
 
     powerLS : list of astropy.units.Quantity
-        Powers from the Lomb-Scargle periodogram
+        Powers from the Lomb-Scargle periodogram.
 
     gp : celerite.GP
-        GP object used for the fit
+        GP object used for the fit.
 
     samples : array_like
-        Samples of the kernel parameters from the MCMC fit
+        Samples of the kernel parameters from the MCMC fit.
 
     baseline : astropy.units.Quantity
-        Baseline of the light curve
+        Baseline of the light curve.
 
 
 
@@ -375,13 +375,13 @@ def binLS(fLS, powerLS_samp, num_bins):
     Parameters
     ----------
     fLS : list of astropy.units.Quantity
-        Frequencies from the Lomb-Scargle periodogram
+        Frequencies from the Lomb-Scargle periodogram.
 
     powerLS_samp : list of astropy.units.Quantity
-        Samples of the Lomb-Scargle periodogram
+        Samples of the Lomb-Scargle periodogram.
 
     num_bins : int
-        Number of bins to use for the binned periodogram
+        Number of bins to use for the binned periodogram.
 
 
 
@@ -389,16 +389,16 @@ def binLS(fLS, powerLS_samp, num_bins):
     -------
 
     binCenters : list of astropy.units.Quantity
-        Bin centers for the binned periodogram
+        Bin centers for the binned periodogram.
 
     bin_vals : list of astropy.units.Quantity
-        The values of the binned periodogram
+        The values of the binned periodogram.
 
     bin_errs : list of astropy.units.Quantity
-        The upper error on the binned periodogram
+        The upper error on the binned periodogram.
 
     lower_err : list of astropy.units.Quantity
-        The lower error on the binned periodogram
+        The lower error on the binned periodogram.
 
     """
 
@@ -470,15 +470,14 @@ def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
 
     """A smoothly broken power law:
 
-    .. math::
-        P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}
+    .. math:: P(f) = \frac{A}{(f / f_{br})^\alpha + (f/f_{br})^\beta}
 
 
 
     Parameters
     ----------
 
-    f : array_like
+    f : list of float
         Frequencies at which to evaluate the power law.
 
     A : float
@@ -498,12 +497,13 @@ def smoothly_broken_power_law(f, A=1, f_br=1e-3, alpha=0, beta=2):
     Returns
     -------
 
-    power : array_like
+    power : list of float
         The power law.
 
     """
 
     return A/((f/f_br)**alpha + (f/f_br)**beta)
+
 
 
 def psd_sbpl(f, psd, err, p0, bounds):
@@ -514,19 +514,19 @@ def psd_sbpl(f, psd, err, p0, bounds):
     Parameters
     ----------
 
-    f : array_like
+    f : list of float
         Frequencies for the input PSD.
 
-    psd : array_like
+    psd : list of float
         The input PSD.
 
-    err : array_like
+    err : list of float
         The error on the input PSD.
 
-    p0 : array_like
+    p0 : list of float
         The initial guess for the parameters of the smoothly broken power law.
 
-    bounds : array_like
+    bounds : list of float
         The bounds on the parameters of the smoothly broken power law.
 
 
@@ -535,10 +535,10 @@ def psd_sbpl(f, psd, err, p0, bounds):
     Returns
     -------
 
-    fit_vals : array_like
+    fit_vals : list of float
         The best fit parameters for the smoothly broken power law.
 
-    fit_errs : array_like
+    fit_errs : list of float
         The errors on the best fit parameters for the smoothly broken power law.
 
     """
@@ -567,23 +567,23 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
     Parameters
     ----------
 
-    x : array_like
-        The light curve times
+    x : list of astropy.units.Quantity
+        The light curve times.
 
-    y : array_like
-        The light curve values
+    y : list of astropy.units.Quantity
+        The light curve values.
 
-    yerr : array_like
-        The uncertainty in the light curve
+    yerr : list of astropy.units.Quantity
+        The uncertainty in the light curve.
 
-    samples : array_like
-        The samples from the MCMC fit
+    samples : list of float
+        The samples from the MCMC fit.
 
     gp : celerite.GP
-        The GP object used to fit the light curve
+        The GP object used to fit the light curve.
 
     nsamp : int
-        The number of samples of the Lomb-Scargle periodogram to use
+        The number of samples of the Lomb-Scargle periodogram to use.
 
 
 
@@ -597,30 +597,30 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
         The power for the Lomb-Scargle periodogram.
 
     f_eval : list of astropy.unit.Quantity
-        The frequencies for the PSD from the celerite fit
+        The frequencies for the PSD from the celerite fit.
 
     psd_credint : list of astropy.unit.Quantity
-        The (16th, 50th, 84th) percentiles of the PSD from the celerite fit
+        The (16th, 50th, 84th) percentiles of the PSD from the celerite fit.
 
     bin_vals : list of astropy.unit.Quantity
-        The values of the Lomb-Scargle periodogram
+        The values of the Lomb-Scargle periodogram.
 
     bin_err : list of astropy.unit.Quantity
-        The upper error on the binned Lomb-Scargle periodogram
+        The upper error on the binned Lomb-Scargle periodogram.
 
     lower_err : list of astropy.unit.Quantity
-        The lower error on the binned Lomb-Scargle periodogram
+        The lower error on the binned Lomb-Scargle periodogram.
 
     binCenters : list of astropy.unit.Quantity
-        The centers of the bins for the binned Lomb-Scargle periodogram
+        The centers of the bins for the binned Lomb-Scargle periodogram.
 
     fit_vals : list of astropy.unit.Quantity
         The best fit parameters for the smoothly broken power law fit to
-        the Lomb-Scargle periodogram
+        the Lomb-Scargle periodogram.
 
     fit_errs : list of astropy.unit.Quantity
         The errors on the best fit parameters for the smoothly broken
-        power law fit to the Lomb-Scargle periodogram
+        power law fit to the Lomb-Scargle periodogram.
 
     """
 
@@ -682,22 +682,22 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     ----------
     
     x : list of astropy.units.Quantity
-        The times of the light curve
+        The times of the light curve.
 
     y : list of astropy.units.Quantity
-        The light curve
+        The light curve.
 
     yerr : list of astro.units.Quantity
-        The uncertainty in the light curve
+        The uncertainty in the light curve.
 
     samples : array_like
-        The output MCMC samples from the DRW fit
+        The output MCMC samples from the DRW fit.
 
     gp : celerite.GP
         The GP object used to fit the DRW
 
     unit : str, astropy.units.Unit
-        The unit of the light curve
+        The unit of the light curve.
 
     nsig : int, optional
         The number of standard deviations away from the mean DRW fit at which to 

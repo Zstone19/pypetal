@@ -774,6 +774,28 @@ def load_weighting(main_dir):
 
 def load(main_dir, verbose=False):
 
+    """Load the results from a previous run of pyPetal.
+
+    Parameters
+    ----------
+
+    main_dir : str
+        The main output directory of the pyPetal run.
+
+    verbose : bool, optional
+        Whether or not to print the summary of the run (i.e. what modules were run).
+
+
+
+
+    Returns
+    -------
+
+    output : dict
+        A dictionary containing the results of the run.
+
+    """
+
     main_dir = os.path.abspath(main_dir) + r'/'
 
     run_drw_rej, run_pyccf, run_pyzdcf, run_javelin, run_weighting = get_modules(main_dir)

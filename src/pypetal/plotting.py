@@ -270,22 +270,22 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
     Parameters
     ----------
     
-    x1 : array-like
+    x1 : list of float
         Time array for the first light curve.
         
-    y1 : array-like
+    y1 : list of float
         Values for the first light curve.
     
-    yerr1 : array-like
+    yerr1 : list of float
         Uncertainty in the first light curve.
         
-    x2 : array-like
+    x2 : list of float
         Time array for the second light curve.
         
-    y2 : array-like
+    y2 : list of float
         Values for the second light curve.
         
-    yerr2 : array-like
+    yerr2 : list of float
         Uncertainty in the second light curve.
         
     dcf_df : pandas.DataFrame
@@ -300,7 +300,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
     lc_unit : str, optional
         The unit of the light curves. Default is 'mJy'.
         
-    lc_names : list, optional
+    lc_names : list of str, optional
         The names of the light curves. Default is ['', ''].
         
     fname : str, optional
@@ -440,6 +440,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
 
     """Plot the histograms of the posteriors for the JAVELIN fit parameters.
     
+
     Parameters
     ----------
     
@@ -461,6 +462,8 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     fname : str, optional
         If not ``None``, will save the plot to the given filename. Default is ``None``.
         
+
+    
         
         
         
