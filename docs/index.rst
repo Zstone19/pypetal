@@ -45,7 +45,6 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
    python/pyccf
    python/pyzdcf
    python/javelin
-   python/pipeline
    python/weighting
    python/load
    python/plot
