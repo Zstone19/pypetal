@@ -606,7 +606,6 @@ together: {}
                                     output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
                                     verbose=verbose, plot=plot)
             
-            res_tot.append(res)
             
             #Plot histograms
             fig, ax = plotting.plot_javelin_hist( res, fixed=fixed[i], nbin=nbin,
@@ -641,6 +640,10 @@ together: {}
                                                 metric=metric)
             
             
+
+            res['bestfit_model'] = bestfit_model
+            res_tot.append(res)
+
             #Plot model fits
             fig, ax = plotting.plot_javelin_bestfit(res, bestfit_model, time_unit=time_unit, 
                                                     lc_unit=[lc_unit[0], lc_unit[i+1]],
