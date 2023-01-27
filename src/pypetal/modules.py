@@ -148,11 +148,11 @@ use_for_javelin: {}
         if reject_data[i]:            
             res = res_tot[n]
             
-            sigmas.append( np.median(res['sigma']) )
-            taus.append( np.median(res['tau']) )
+            sigmas.append( res['sigma'])
+            taus.append( res['tau'])
             
             if jitter:
-                jitters.append( np.median(res['jitter']) )
+                jitters.append( res['jitter'] )
             
             mask = res['mask']
             
