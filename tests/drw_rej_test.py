@@ -1,6 +1,8 @@
 import pypetal.pipeline as pl
-import glob
 import numpy as np 
+
+import os
+import glob
 import shutil
 
 import unittest
