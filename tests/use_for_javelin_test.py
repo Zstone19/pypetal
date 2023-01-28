@@ -31,10 +31,18 @@ class TestDrwRej(unittest.TestCase):
             'use_for_javelin': True
         }
 
+
+        fixed1 = [1, 0,           1, 0,   1]
+        p_fix1 = [0, np.log(300), 0, 300, 0]
+        fixed2 = None
+        p_fix2 = None
+
         javelin_params = {
             'nchain': 20,
             'nburn': 10,
-            'nwalker': 10
+            'nwalker': 10,
+            'fixed': [fixed1, fixed2],
+            'p_fix': [p_fix1, p_fix2]
         }
 
         lag_bounds = [ [-1000, 1000], [-500, 500] ]
@@ -52,6 +60,7 @@ class TestDrwRej(unittest.TestCase):
 
 
     #Make chain is only one value for sigma and tau
+    #Make sure the fixed value is from the DRW rejection, and not from "fixed/p_fix"
     def test_chain(self):
         drw_sigma = np.median(self.res['drw_rej_res']['sigmas'][0])
         drw_tau = np.median(self.res['drw_rej_res']['taus'][0])
