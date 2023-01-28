@@ -148,11 +148,11 @@ use_for_javelin: {}
         if reject_data[i]:            
             res = res_tot[n]
             
-            sigmas.append( np.median(res['sigma']) )
-            taus.append( np.median(res['tau']) )
+            sigmas.append( res['sigma'])
+            taus.append( res['tau'])
             
             if jitter:
-                jitters.append( np.median(res['jitter']) )
+                jitters.append( res['jitter'] )
             
             mask = res['mask']
             
@@ -288,7 +288,7 @@ nbin: {}
         write_data( [ res['CCCD_lags'], res['CCPD_lags'] ], dat_fname, header )        
         
         
-        res['name'] = line_names[i]
+        res['name'] = line_names[i+1]
     
         x1, y1, yerr1 = np.loadtxt( cont_fname, delimiter=',', unpack=True, usecols=[0,1,2] )
         x2, y2, yerr2 = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
@@ -606,7 +606,6 @@ together: {}
                                     output_chains=output_chains, output_burn=output_burn, output_logp=output_logp,
                                     verbose=verbose, plot=plot)
             
-            res_tot.append(res)
             
             #Plot histograms
             fig, ax = plotting.plot_javelin_hist( res, fixed=fixed[i], nbin=nbin,
@@ -641,6 +640,10 @@ together: {}
                                                 metric=metric)
             
             
+
+            res['bestfit_model'] = bestfit_model
+            res_tot.append(res)
+
             #Plot model fits
             fig, ax = plotting.plot_javelin_bestfit(res, bestfit_model, time_unit=time_unit, 
                                                     lc_unit=[lc_unit[0], lc_unit[i+1]],
