@@ -14,7 +14,7 @@ class TestJAVELIN(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'test_repo/pypetal/examples/dat/javelin_'
+        main_dir = '../examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
