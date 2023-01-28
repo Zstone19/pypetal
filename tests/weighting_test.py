@@ -268,3 +268,8 @@ class TestWeighting(unittest.TestCase):
             self.assertEqual( weight_dict['pyccf_frac_rejected'], 1- len(cccd_ds)/len(cccd) )
             self.assertEqual( weight_dict['javelin_frac_rejected'], 1- len(lag_dist_ds)/len(lag_dist) )
 
+
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+

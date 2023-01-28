@@ -129,3 +129,10 @@ class TestPyZDCF(unittest.TestCase):
 
             for col in df_cols:
                 self.assertListEqual( list(res_df[col]), list(file_df[col]) )
+
+
+
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+

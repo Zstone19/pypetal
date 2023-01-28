@@ -297,3 +297,8 @@ class TestJavelinTogether(unittest.TestCase):
         for j in range(6):
             self.assertListEqual( list(file_tophat[j]), list(self.res['javelin_res']['tophat_params'][j]) )
 
+
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+

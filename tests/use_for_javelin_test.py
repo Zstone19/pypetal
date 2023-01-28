@@ -64,3 +64,8 @@ class TestDrwRej(unittest.TestCase):
                 self.assertAlmostEqual( self.res['javelin_res'][i]['sigma'][j], drw_sigma, places=6 )
                 self.assertAlmostEqual( self.res['javelin_res'][i]['tau'][j], drw_tau, places=6 )
 
+
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+

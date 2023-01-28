@@ -73,4 +73,7 @@ class TestWeighting(unittest.TestCase):
             xdata, _, _ = np.loadtxt(self.filenames[i], unpack=True, usecols=[0,1,2])
             self.assertEqual( len(x), len(xdata) )
 
-        
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+

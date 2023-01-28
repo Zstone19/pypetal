@@ -181,3 +181,9 @@ class TestDrwRej(unittest.TestCase):
 
             res_mask = self.res['drw_rej_res']['masks'][i]
             self.assertListEqual( list(file_mask), list(res_mask) )
+
+
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+

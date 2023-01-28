@@ -164,3 +164,8 @@ class TestPyCCF(unittest.TestCase):
             self.assertListEqual( list(file_cccd), list(res_cccd) )
             self.assertListEqual( list(file_ccpd), list(res_ccpd) )
 
+
+    def tearDown(self):
+        if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
+            shutil.rmtree('.tmp/')
+
