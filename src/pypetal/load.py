@@ -369,14 +369,14 @@ def load_drw_rej(dir_loc):
             
             res_dict['fit_x'].append(None)
             res_dict['fit_y'].append(None)
-            res_dict['fit_yerr'].append(None)
+            res_dict['fit_err'].append(None)
             
             
             x, y, yerr = np.loadtxt( dir_loc + 'light_curves/' + line_names[i] + '.dat', unpack=True, delimiter=',', usecols=[0,1,2] )
             res_dict['masks'].append( np.zeros( len(x), dtype=bool ) )
             res_dict['names'].append(line_names[i])
     
-        return res_dict
+    return res_dict
     
     
 #######################################################################
