@@ -232,7 +232,7 @@ def get_cont_name(main_dir):
         
         
     elif run_drw_rej:
-        line_names, reject_data = get_reject_data(main_dir)
+        line_names, reject_data = get_reject_data(main_dir, ordered=False)
         
         if np.all(~reject_data):
             cont_name = line_names[0]
@@ -296,9 +296,13 @@ def get_line_data(main_dir):
 #######################################################################
 
 
-def get_reject_data(main_dir):
-    line_names = get_ordered_line_names(main_dir)
-    
+def get_reject_data(main_dir, ordered=True):
+
+    if ordered:
+        line_names = get_ordered_line_names(main_dir)
+    else:
+        line_names = get_line_names(main_dir)
+
     reject_data = np.zeros( len(line_names), dtype=bool )
     for i, name in enumerate(line_names):
         dir_i = main_dir + name + r'/'
@@ -329,7 +333,7 @@ def load_drw_rej(dir_loc):
     res_dict['fit_err'] = []
     
     res_dict['masks'] = []
-    res_dict['reject_data'] = get_reject_data(dir_loc)[0]
+    res_dict['reject_data'] = get_reject_data(dir_loc)[1]
     res_dict['names'] = []    
     
     for i, dir_i in enumerate(line_dirs):
