@@ -135,7 +135,7 @@ def run_pipeline(output_dir, arg2,
 
     #Get "reject_data" and "together"    
     _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)
-    _, fixed, p_fix, _, _, _, _, _, _, _, _, _, _, together, _ = defaults.set_javelin(javelin_params, fnames)   
+    _, fixed, p_fix, _, _, _, _, _, _, _, _, _, _, together, rm_type = defaults.set_javelin(javelin_params, fnames)   
     
     javelin_params['fixed'] = fixed
     javelin_params['p_fix'] = p_fix
