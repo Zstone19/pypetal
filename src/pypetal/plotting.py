@@ -484,7 +484,7 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     if type(res['rmap_model']) == javelin.lcmodel.Rmap_Model:
         rm_type = 'spec'
         Ncol = 3
-    elif type(res['rmap_model']) == javelin.lcmodel.Pamp_Model:
+    elif type(res['rmap_model']) == javelin.lcmodel.Pmap_Model:
         rm_type = 'phot'
         Ncol = 4
 
