@@ -381,7 +381,7 @@ class TestAll(unittest.TestCase):
 
 
             self.assertIs( self.res['javelin_res'][i]['cont_model'], None )
-            self.assertIs( type(self.res['javelin_res'][i]['rmap_model']), javelin.lcmodel.Rmap_Model )
+            self.assertIs( type(self.res['javelin_res'][i]['rmap_model']), javelin.lcmodel.Pmap_Model )
             
             for key in ['cont_dat', 'tot_dat', 'bestfit_model']:
                 self.assertIs( type(self.res['javelin_res'][i][key]), javelin.zylc.LightCurve )
