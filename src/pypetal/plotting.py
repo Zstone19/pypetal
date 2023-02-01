@@ -613,7 +613,7 @@ def javelin_corner(res, nbin=20, fname=None):
         labels.append( r'$w_{' + res['tot_dat'].names[i+1] + '}$' )
         labels.append( r'$s_{' + res['tot_dat'].names[i+1] + '}$' )
 
-        if rm_spec == 'phot':
+        if rm_type == 'phot':
             labels.append( r'$\alpha_{' + res['tot_dat'].names[i+1] + '}$' )
 
 
