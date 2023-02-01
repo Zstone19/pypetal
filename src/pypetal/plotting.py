@@ -595,12 +595,13 @@ def javelin_corner(res, nbin=20, fname=None):
         labels.append( r'$t_{' + res['tot_dat'].names[i+1] + '}$' )
         labels.append( r'$w_{' + res['tot_dat'].names[i+1] + '}$' )
         labels.append( r'$s_{' + res['tot_dat'].names[i+1] + '}$' )
-    
-    print(labels)
-    print(res.keys())
 
     #Plot original output with weighted output superposed on histograms
     corner_dat = np.vstack( [np.log10(res['sigma']), np.log10(res['tau']),  res['tophat_params']]).T
+
+    print( len(res['tophat_params']) )
+    print(len(corner_dat))
+
     fig = corner.corner( corner_dat,
                 labels=labels, show_titles=False, bins=nbin,
                 label_kwargs={'fontsize': 20} )
