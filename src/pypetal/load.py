@@ -522,8 +522,8 @@ def load_javelin(dir_loc):
         javelin_dir = dir_loc + 'javelin/'
 
         chains = np.loadtxt( javelin_dir + 'chain_rmap.txt', unpack=True )
-        res_dict['tau'] = np.exp(chains[0])
-        res_dict['sigma'] = np.exp(chains[1])
+        res_dict['tau'] = np.exp(chains[1])
+        res_dict['sigma'] = np.exp(chains[0])
         res_dict['tophat_params'] = chains[2:]
         
         x, y, yerr = np.loadtxt(javelin_dir + line_names[0] + '_lc_fits.dat', unpack=True, delimiter=',', usecols=[0,1,2])
