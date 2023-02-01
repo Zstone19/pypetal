@@ -836,9 +836,9 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, metric='med'):
     
     """
 
-    if type(rmod) == javelin.lcmodel.Rmap_Model:
+    if type(rmod) == Rmap_Model:
         rm_type = 'spec'
-    elif type(rmod) == javelin.lcmodel.Pmap_Model:
+    elif type(rmod) == Pmap_Model:
         rm_type = 'phot'
     
     tau = rmod.flatchain[:,1]
