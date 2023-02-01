@@ -12,7 +12,7 @@ from pyzdcf import pyzdcf
 
 from javelin.zylc import get_data
 from javelin.lcio import writelc
-from javelin.lcmodel import Cont_Model, Rmap_Model, Pmap_Model, SPmap_Model
+from javelin.lcmodel import Cont_Model, Rmap_Model, Pmap_Model
 
 import pypetal.drw_funcs as drw
 import pypetal.pyccf as pyccf
@@ -768,6 +768,8 @@ def run_javelin(cont_fname, line_fnames, line_names,
         rmod = Rmap_Model(tot_dat)
     elif rm_type == 'phot':
         rmod = Pmap_Model(tot_dat)
+
+    print(rmod)
         
     if len(total_fnames) == 2:
         laglimit = [laglimit]
