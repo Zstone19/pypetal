@@ -769,7 +769,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
     elif rm_type == 'phot':
         rmod = Pmap_Model(tot_dat)
 
-    print(rmod)
+    print(rm_type == 'phot', rm_type, rmod)
         
     if len(total_fnames) == 2:
         laglimit = [laglimit]
