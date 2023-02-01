@@ -835,13 +835,23 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, metric='med'):
         The RM model using the best fit parameters to predict the light curve(s).
     
     """
+
+    if type(rmod) == javelin.lcmodel.Rmap_Model:
+        rm_type = 'spec'
+    elif type(rmod) == javelin.lcmodel.Pmap_Model:
+        rm_type = 'phot'
     
     tau = rmod.flatchain[:,1]
     sigma = rmod.flatchain[:,0]
     tophat_params = rmod.flatchain[:, 2:].T
     
-    Nlc = len(tophat_params)//3
-    
+    if rm_type == 'spec':
+        Nlc = len(tophat_params)//3
+        ntophat = 3
+    elif rm_type == 'phot':
+        Nlc = len(tophat_params)//4
+        ntophat = 4
+
     if metric == 'med':
         func = np.median
     if metric == 'mean':
@@ -850,20 +860,20 @@ def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, metric='med'):
     
     
     tau_best = func(tau)
-    sigma_best = func(sigma)
-    
-    tophat_best = np.zeros( Nlc*3 )
-    
+    sigma_best = func(sigma)    
+    tophat_best = np.zeros( Nlc*ntophat )
+
+
     for i in range(Nlc):
         for j in range(3):
             
             
             if j == 0:
-                mc_vals = tophat_params[3*i + j, :]               
-                tophat_best[ 3*i + j ] = func(mc_vals)
+                mc_vals = tophat_params[ntophat*i + j, :]               
+                tophat_best[ ntophat*i + j ] = func(mc_vals)
                 
             else:
-                tophat_best[ 3*i + j ] = func(tophat_params[ 3*i + j, : ])
+                tophat_best[ ntophat*i + j ] = func(tophat_params[ ntophat*i + j, : ])
 
 
     bestfit_vals = np.concatenate([ [sigma_best], [tau_best], tophat_best ])
