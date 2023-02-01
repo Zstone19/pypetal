@@ -370,14 +370,14 @@ class TestAll(unittest.TestCase):
             self.assertEqual( len(self.res['javelin_res'][i]['tau']), self.javelin_mc )            
             self.assertEqual( len(self.res['javelin_res'][i]['sigma']), self.javelin_mc )
 
-            self.assertEqual( len(self.res['javelin_res'][i]['tophat_params']), 3 )
+            self.assertEqual( len(self.res['javelin_res'][i]['tophat_params']), 4 )
             for j in range(3):
                 self.assertEqual( len(self.res['javelin_res'][i]['tophat_params'][j]), self.javelin_mc)
 
             self.assertIs( self.res['javelin_res'][i]['cont_hpd'], None )
-            self.assertEqual( len(self.res['javelin_res'][i]['hpd']), 3 )
+            self.assertEqual( len(self.res['javelin_res'][i]['hpd']), 4 )
             for j in range(3):
-                self.assertEqual( len(self.res['javelin_res'][i]['hpd'][j]), 5)
+                self.assertEqual( len(self.res['javelin_res'][i]['hpd'][j]), 6)
 
 
             self.assertIs( self.res['javelin_res'][i]['cont_model'], None )
@@ -523,8 +523,8 @@ class TestAll(unittest.TestCase):
         #Javelin
         for i in range(len(self.line_names[1:])):
             #Chains
-            file_sig, file_tau, t, w, s = np.loadtxt( '.tmp/' + self.line_names[i+1] + '/javelin/chain_rmap.txt', unpack=True )
-            file_tophat = [t.tolist(), w.tolist(), s.tolist()]
+            file_sig, file_tau, t, w, s, a = np.loadtxt( '.tmp/' + self.line_names[i+1] + '/javelin/chain_rmap.txt', unpack=True )
+            file_tophat = [t.tolist(), w.tolist(), s.tolist(), a.tolist()]
 
             self.assertListEqual( list(np.exp(file_sig)), list(self.res['javelin_res'][i]['sigma']) )
             self.assertListEqual( list(np.exp(file_tau)), list(self.res['javelin_res'][i]['tau']) )
