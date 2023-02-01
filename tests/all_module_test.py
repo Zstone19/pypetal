@@ -81,9 +81,9 @@ class TestAll(unittest.TestCase):
         }
 
         params = {
-            'nchain': 20,
-            'nburn': 10,
-            'nwalker': 10,
+            'nchain': 40,
+            'nburn': 20,
+            'nwalker': 20,
             'rm_type': "phot"
         }
 
