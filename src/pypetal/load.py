@@ -686,6 +686,9 @@ def load_weighting(main_dir):
         javelin_files = glob.glob( weight_dir + 'javelin*' )
         pyccf_files = glob.glob( weight_dir + 'pyccf*' )
         
+        jweight = False
+        pweight = False
+
         if len(javelin_files) > 0:
             jweight = True
         if len(pyccf_files) > 0:
