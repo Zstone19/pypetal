@@ -3,6 +3,9 @@ pyPETaL: A Pipeline for Estimating AGN Time Lags
 
 [![Documentation Status](https://readthedocs.org/projects/pypetal/badge/?version=latest)](https://pypetal.readthedocs.io/en/latest/?badge=latest)
 
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
+
 Installation
 ------------
 External requirements (not installed by ``pip`` or ``setup.py``):
