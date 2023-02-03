@@ -4,3 +4,7 @@ examples/dat/javelin_yelm.dat
 examples/dat/javelin_zing.dat
 examples/dat/pyccf_lc1.dat
 examples/dat/pyccf_lc2.dat
+examples/dat/pyzdcf_lc1.dat
+examples/dat/pyzdcf_lc2.dat
+examples/dat/rm017_cont.txt
+examples/dat/rm017_hb.txt
