@@ -43,7 +43,7 @@ jobs:
 
     - name: Test with pytest-cov
       run: |
-        pytest tests/general_test.py --cov
+        pytest tests/test_javelin/ --cov
 
     - name: Upload coverage reports to Codecov
       run: |
