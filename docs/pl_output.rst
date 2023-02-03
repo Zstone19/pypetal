@@ -200,7 +200,7 @@ The output dictionary(ies) will have the following keys:
       - The list of MCMC samples for :math:`\sigma_{\rm DRW}`.
       - list of :python:`float`
     * - ``tophat_params``
-      - The list of MCMC samples for the tophat parameters. If :python:`together=True`, there will be :math:`3 \cdot ({\rm number \ of \ lines})` columns, grouped in threes for each line in the following order: (lag, width, scale). These tophat parameters will be ordered in the same way as the input light curves. If :python:`together=False`, this will have three columns, corresponding to the lag, width, and scale of the tophat.
+      - The list of MCMC samples for the tophat parameters. These tophat parameters will be ordered in the same way as the input light curves.
       - list of :python:`float`   
     * - ``hpd``
       - The HPD interval for the combined fit. The first column corresponds to :math:`\sigma_{\rm DRW}`, the second corresponds to :math:`\tau_{\rm DRW}`, and the rest are the tophat parameters, in the same order as described in ``tophat_params``.

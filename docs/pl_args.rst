@@ -270,7 +270,7 @@ Module: JAVELIN (``run_javelin``)
       - :python:`float`
       - 0.3
     * - ``fixed``
-      - A list to determine what parameters to fix/vary when fitting the light curves. This should be an array with a length equal to the number of parameters in the model (i.e. 2 + 3*(number of light curves) ). The fitted parameters will be the two DRW parameters :math:`( \log(\sigma_{\rm DRW}), \log(\tau_{\rm DRW}) )` and three tophat parameters for each non-continuum light curve (lag, width, scale). Setting to 0 will fix the parameter and setting to 1 will allow it to vary. If None, all parameters will be allowed to vary. The fixed parameters must match the fixed value in the array input to the ``p_fix`` argument. If :python:`together=False`, this can be input as a list of inputs, one for each line. If only one input is given, it will be assumed for each line.
+      - A list to determine what parameters to fix/vary when fitting the light curves. This should be an array with a length equal to the number of parameters in the model. The fitted parameters will be the two DRW parameters :math:`( \log(\sigma_{\rm DRW}), \log(\tau_{\rm DRW}) )` and (3 or 4) tophat parameters for each non-continuum light curve. Setting to 0 will fix the parameter and setting to 1 will allow it to vary. If None, all parameters will be allowed to vary. The fixed parameters must match the fixed value in the array input to the ``p_fix`` argument. If :python:`together=False`, this can be input as a list of inputs, one for each line. If only one input is given, it will be assumed for each line.
       - :python:`None`, list of :python:`int`
       - :python:`None`
     * - ``p_fix``
@@ -293,6 +293,31 @@ Module: JAVELIN (``run_javelin``)
       - The number of bins to use for the output histogram plots.
       - :python:`int`
       - 100
+
+
+Determining the number of parameters in the JAVELIN model:
+
+.. list-table::
+    :widths: 25 25 25 25
+    :header-rows: 1
+
+    * - :python:`rm_type`
+      - :python:`together`
+      - Number of Parameters
+      - Parameter Names
+    * - :python:`"spec"`
+      - :python:`True`
+      - 2 + 3*(number of light curves)
+      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t_1`, :math:`w_1`, :math:`s_1`, :math:`t_2`, ... 
+    * - :python:`"spec"`
+      - :python:`False`
+      - 5 per line
+      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t`, :math:`w`, :math:`s`
+    * - :python:`"phot"`
+      - :python:`True`
+      - 6 per line
+      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t`, :math:`w`, :math:`s`, :math:`alpha`
+
 
 .. note:: If :python:`use_for_javelin=True` in the DRW Rejection module, and ``fixed/p_fix`` are set in the JAVELIN module, the DRW fitting results will be used instead of the input fixed parameter values.
 
