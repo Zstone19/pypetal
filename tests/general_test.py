@@ -1,11 +1,11 @@
-import pypetal.pipeline as pl
+import glob
+import os
+import shutil
+import unittest
+
 import numpy as np
 
-import os
-import glob
-import shutil
-
-import unittest
+import pypetal.pipeline as pl
 
 
 #Test arg2 with filenames

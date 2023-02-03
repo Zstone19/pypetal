@@ -1,13 +1,14 @@
-import pypetal.pipeline as pl
-from pypetal.load import read_weighting_summary
-from pypetal.weighting import prob_tau
-import numpy as np
-
 import glob
 import os
 import shutil
-
 import unittest
+
+import numpy as np
+
+import pypetal.pipeline as pl
+from pypetal.load import read_weighting_summary
+from pypetal.weighting import prob_tau
+
 
 class TestWeighting(unittest.TestCase):
 

@@ -1,12 +1,12 @@
-import pypetal.modules as modules
-from pypetal import weighting, defaults
-from pypetal.petalio import write_data, make_directories
-import pypetal.detrending as dtr
-
 import os
 
 import numpy as np
 from astropy.table import Table
+
+import pypetal.detrending as dtr
+import pypetal.modules as modules
+from pypetal import defaults, weighting
+from pypetal.petalio import make_directories, write_data
 
 
 def run_pipeline(output_dir, arg2,

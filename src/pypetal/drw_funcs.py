@@ -1,21 +1,18 @@
 import warnings
 
-import matplotlib.pyplot as plt
-from matplotlib import gridspec
-import corner
-
-import numpy as np
-
 import celerite
-from celerite import terms
+import corner
 import emcee
-
-from scipy.optimize import minimize, curve_fit, differential_evolution
+import matplotlib.pyplot as plt
+import numpy as np
 import scipy.stats as stat
-
 from astropy import units as u
 from astropy.timeseries import LombScargle
 from astropy.visualization import quantity_support
+from celerite import terms
+from matplotlib import gridspec
+from scipy.optimize import curve_fit, differential_evolution, minimize
+
 quantity_support()
 
 

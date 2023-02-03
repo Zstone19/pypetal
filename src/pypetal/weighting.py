@@ -1,14 +1,12 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes, BboxConnector, TransformedBbox
-from matplotlib import gridspec
-
 import numpy as np
+from matplotlib import gridspec
+from mpl_toolkits.axes_grid1.inset_locator import (BboxConnector,
+                                                   TransformedBbox, inset_axes)
 from scipy.signal import peak_widths
 
-from pypetal import pyccf
+from pypetal import defaults, pyccf
 from pypetal.petalio import err2str, write_data, write_weight_summary
-from pypetal import defaults
-
 
 
 def find_overlap(x1, x2, gaps):

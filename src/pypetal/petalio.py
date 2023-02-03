@@ -1,13 +1,11 @@
 import os
-
-import numpy as np
 import re
 
 import astropy.units as u
+import numpy as np
 from astropy.io import fits
 
 from pypetal.load import get_modules, get_ordered_line_names
-
 
 
 def make_directories(output_dir, fnames, line_names,

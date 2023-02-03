@@ -1,12 +1,12 @@
-import pypetal.pipeline as pl
-from pypetal.load import get_javelin_together
+import os
+import shutil
+import unittest
 
 import javelin.lcmodel
 
-import os
-import shutil
+import pypetal.pipeline as pl
+from pypetal.load import get_javelin_together
 
-import unittest
 
 class TestJAVELIN(unittest.TestCase):
 

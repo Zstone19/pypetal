@@ -1,22 +1,19 @@
+import glob
 import os
 import subprocess
 import time
-import glob
 
-import numpy as np
-import matplotlib.pyplot as plt
-from astropy.table import Table
 import astropy.units as u
-
-from pyzdcf import pyzdcf
-
-from javelin.zylc import get_data
+import matplotlib.pyplot as plt
+import numpy as np
+from astropy.table import Table
 from javelin.lcio import writelc
-from javelin.lcmodel import Cont_Model, Rmap_Model, Pmap_Model
+from javelin.lcmodel import Cont_Model, Pmap_Model, Rmap_Model
+from javelin.zylc import get_data
+from pyzdcf import pyzdcf
 
 import pypetal.drw_funcs as drw
 import pypetal.pyccf as pyccf
-
 
 ##############################################################
 ####################### DRW REJECTION ########################
@@ -806,6 +803,8 @@ def run_javelin(cont_fname, line_fnames, line_names,
 
 
 from scipy.stats import binned_statistic
+
+
 def javelin_pred_lc(rmod, t_cont, t_lines, nbin=None, metric='med'):
 
     """Predict light curve(s) from a JAVELIN RM fit object.

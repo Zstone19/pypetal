@@ -1,11 +1,12 @@
-import pypetal.pipeline as pl
-import numpy as np
-
 import glob
 import os
 import shutil
-
 import unittest
+
+import numpy as np
+
+import pypetal.pipeline as pl
+
 
 class TestPyCCF(unittest.TestCase):
 

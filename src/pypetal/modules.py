@@ -1,18 +1,18 @@
-import pypetal.utils as utils
-import pypetal.plotting as plotting
-from pypetal.petalio import write_data
-import pypetal.defaults as defaults
-
+import itertools
+import multiprocessing as mp
 import os
 import shutil
-import multiprocessing as mp
 from functools import partial
-import itertools
 
-import numpy as np
-from astropy.table import Table
 import astropy.units as u
 import matplotlib.pyplot as plt
+import numpy as np
+from astropy.table import Table
+
+import pypetal.defaults as defaults
+import pypetal.plotting as plotting
+import pypetal.utils as utils
+from pypetal.petalio import write_data
 
 #For individual functions, see utils.py
 #For plotting tools, see plotting.py

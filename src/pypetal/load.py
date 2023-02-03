@@ -1,10 +1,9 @@
-import os
 import glob
+import os
 
 import numpy as np
-from astropy.table import Table
 import pandas as pd
-
+from astropy.table import Table
 
 
 def get_line_names(main_dir):

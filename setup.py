@@ -1,6 +1,5 @@
 from setuptools import setup
 
-
 NAME = 'pypetal'
 VERSION = '0.1.0'
 URL = 'https://github.com/Zstone19/pypetal'

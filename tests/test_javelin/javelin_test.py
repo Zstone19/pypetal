@@ -1,14 +1,14 @@
-import pypetal.pipeline as pl
-import numpy as np
-
-import javelin.lcmodel
-import javelin.zylc
-
 import glob
 import os
 import shutil
-
 import unittest
+
+import javelin.lcmodel
+import javelin.zylc
+import numpy as np
+
+import pypetal.pipeline as pl
+
 
 class TestJAVELIN(unittest.TestCase):
 

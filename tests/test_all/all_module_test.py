@@ -1,20 +1,17 @@
-import pypetal.pipeline as pl
-from pypetal.load import read_weighting_summary
-from pypetal.weighting import prob_tau
-
-import numpy as np
-import pandas as pd
+import glob
+import os
+import shutil
+import unittest
 
 import javelin.lcmodel
 import javelin.zylc
+import numpy as np
+import pandas as pd
 from javelin.zylc import get_data
 
-import os
-import glob
-import shutil
-
-import unittest
-
+import pypetal.pipeline as pl
+from pypetal.load import read_weighting_summary
+from pypetal.weighting import prob_tau
 
 
 def format_float(x):

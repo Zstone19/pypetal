@@ -1,17 +1,14 @@
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-import numpy as np
-
-import javelin.lcmodel
-
-from matplotlib.colors import ListedColormap
-import palettable
-
 import corner
+import javelin.lcmodel
+import matplotlib as mpl
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
+import palettable
+from matplotlib.colors import ListedColormap
+
 import pypetal.utils as utils
 from pypetal.petalio import err2str
-
-import matplotlib as mpl
 
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True

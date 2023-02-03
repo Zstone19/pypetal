@@ -1,12 +1,10 @@
-import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 from linmix import LinMix
 
-from pypetal.petalio import write_data
 from pypetal.defaults import set_detrend
-
-
-import matplotlib as mpl
+from pypetal.petalio import write_data
 
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True

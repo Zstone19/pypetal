@@ -1,12 +1,12 @@
-import pypetal.pipeline as pl
-import pypetal.load as load
+import glob
+import os
+import shutil
+import unittest
+
 import numpy as np
 
-import os
-import glob
-import shutil
-
-import unittest
+import pypetal.load as load
+import pypetal.pipeline as pl
 
 
 class TestLoad(unittest.TestCase):
