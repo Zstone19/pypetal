@@ -1,5 +1,5 @@
 import pypetal.pipeline as pl
-import numpy as np 
+import numpy as np
 
 import os
 import glob
@@ -26,7 +26,7 @@ class TestDrwRej(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -48,7 +48,7 @@ class TestDrwRej(unittest.TestCase):
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
                             run_drw_rej=True,
-                            drw_rej_params=params, 
+                            drw_rej_params=params,
                             file_fmt='ascii')
 
         self.filenames = filenames
@@ -59,7 +59,7 @@ class TestDrwRej(unittest.TestCase):
 
     #Make sure the lengths and keys of each of the resulting arrays are correct
     def test_res(self):
-        
+
         expected_keys = ['masks', 'reject_data', 'taus', 'sigmas', 'jitters']
         expected_lengths = np.full( len(expected_keys), 3 )
 
@@ -137,7 +137,7 @@ class TestDrwRej(unittest.TestCase):
 
 
             #Make sure the chain file has the correct number of lines
-            taus, sigs, jits = np.loadtxt(fdir + 'drw_rej/' + self.line_names[i] + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1,2])            
+            taus, sigs, jits = np.loadtxt(fdir + 'drw_rej/' + self.line_names[i] + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1,2])
             self.assertEqual( len(taus), 100*20 )
 
 
@@ -186,4 +186,3 @@ class TestDrwRej(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

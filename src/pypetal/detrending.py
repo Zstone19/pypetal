@@ -23,11 +23,11 @@ mpl.rcParams['savefig.format'] = 'pdf'
 
 
 
-def detrend(x, y, yerr, K=2, parallelize=False, 
+def detrend(x, y, yerr, K=2, parallelize=False,
             nchain=4, miniter=5000, maxiter=10000,
             time_unit='d', lc_unit='',
             output_dir=None, verbose=False, plot=False):
-    
+
 
     """Detrend a light curve using a linear model from LinMix.
 
@@ -39,7 +39,7 @@ def detrend(x, y, yerr, K=2, parallelize=False,
 
     y : list of float
         Values of the light curve.
-        
+
     yerr : list of float
         Uncertainties in the light curve.
 
@@ -92,28 +92,28 @@ def detrend(x, y, yerr, K=2, parallelize=False,
     """
 
 
-    
+
     if lc_unit == '':
         flux_txt = 'Flux'
     elif lc_unit == 'mag':
         flux_txt = 'Magnitude'
     else:
         flux_txt = 'Flux [{}]'.format(lc_unit)
-    
-    
+
+
     lm = LinMix(x, y, ysig=yerr, K=K, nchains=nchain, parallelize=parallelize)
     lm.run_mcmc(miniter=miniter, maxiter=maxiter, silent=True)
-    
+
     b_chains = []
     m_chains = []
     sigsqr_chains = []
-    
+
     for i in range(len(lm.chain)):
         b_chains.append( lm.chain[i][0] )
         m_chains.append( lm.chain[i][1] )
         sigsqr_chains.append( lm.chain[i][1] )
 
-        
+
     b_med = np.median(b_chains)
     b_err_hi = np.percentile(b_chains, 84) - b_med
     b_err_lo = b_med - np.percentile(b_chains, 16)
@@ -130,16 +130,16 @@ def detrend(x, y, yerr, K=2, parallelize=False,
     if verbose:
         print('m = {:.3f} + {:.3f} - {:.3f}'.format(m_med, m_err_hi, m_err_lo) )
         print('b = {:.3f} + {:.3f} - {:.3f}'.format(b_med, b_err_hi, b_err_lo) )
-        print('sigsqr = {:.3f} + {:.3f} - {:.3f}'.format(sigsqr_med, sigsqr_err_hi, sigsqr_err_lo) )   
-        
-        
-        
+        print('sigsqr = {:.3f} + {:.3f} - {:.3f}'.format(sigsqr_med, sigsqr_err_hi, sigsqr_err_lo) )
+
+
+
     y0_vals = []
     for i in range(len(lm.chain)):
         m_val = lm.chain[i][1]
         b_val = lm.chain[i][0]
         x0 = np.min(x)
-        
+
         y0_vals.append( m_val*x0 + b_val )
 
 
@@ -150,50 +150,50 @@ def detrend(x, y, yerr, K=2, parallelize=False,
     hi_ind = np.argmax(y0_vals)
     m_hi = lm.chain[hi_ind][1]
     b_hi = lm.chain[hi_ind][0]
-        
 
-        
-    xsim = np.linspace(x.min(), x.max(), 100)        
+
+
+    xsim = np.linspace(x.min(), x.max(), 100)
     ysim_avg = m_med*xsim + b_med
     ysim_lo = m_lo*xsim + b_lo
     ysim_hi = m_hi*xsim + b_hi
 
-        
-        
+
+
     fig, ax = plt.subplots()
-        
+
     _, _, bars = ax.errorbar(x, y, yerr, fmt='.k')
     [bar.set_alpha(.3) for bar in bars]
 
-        
+
     ax.plot(xsim, ysim_avg, 'r')
     ax.fill_between(xsim, ysim_lo, ysim_hi, color='r', alpha=.3)
 
     if lc_unit == 'mag':
         ax.invert_yaxis()
-    
+
     ax.set_ylabel(flux_txt)
     ax.set_xlabel('Time [{}]'.format(time_unit))
-    
+
     ax.tick_params('both', which='major', length=8)
     ax.tick_params('both', which='minor', length=3)
-    
-    if output_dir is not None:    
+
+    if output_dir is not None:
         plt.savefig(output_dir + 'detrend.pdf', dpi=200, bbox_inches='tight')
-    
-    if plot:    
+
+    if plot:
         plt.show()
-        
+
     plt.cla()
     plt.clf()
     plt.close()
-    
-    
+
+
     y_dt = y - (m_med*x + b_med)
-    
+
     return y_dt, [m_err_lo, m_med, m_err_hi], \
         [b_err_lo, b_med, b_err_hi], \
-        [sigsqr_err_lo, sigsqr_med, sigsqr_err_hi]     
+        [sigsqr_err_lo, sigsqr_med, sigsqr_err_hi]
 
 
 
@@ -210,19 +210,19 @@ def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs,
     threads = general_kwargs['threads']
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
-    
-        
+
+
     K, nchain, miniter, maxiter = set_detrend(kwargs)
-    
-    
+
+
     fnames_tot = np.hstack([ [cont_fname], line_fnames])
-    
+
     if threads > 1:
         parallelize = True
     else:
-        parallelize = False    
-        
-        
+        parallelize = False
+
+
     txt = """
 Running detrending
 -------------------
@@ -233,39 +233,35 @@ miniter: {}
 maxiter: {}
 -------------------
     """.format(parallelize, K, nchain, miniter, maxiter)
-    
+
     if verbose:
         print(txt)
-            
-    
+
+
     m_vals = []
     b_vals = []
     sigsqr_vals = []
-    
-    for i, fname in enumerate(fnames_tot):        
+
+    for i, fname in enumerate(fnames_tot):
         x, y, yerr = np.loadtxt( fname, unpack=True, usecols=[0,1,2], delimiter=',' )
-        
-        y_dt, m_res, b_res, sigsqr_res = detrend(x, y, yerr, K=K, 
-                                                parallelize=parallelize, 
+
+        y_dt, m_res, b_res, sigsqr_res = detrend(x, y, yerr, K=K,
+                                                parallelize=parallelize,
                                                 time_unit=time_unit, lc_unit=lc_unit[i],
                                                 output_dir=output_dir + line_names[i] + r'/',
                                                 verbose=verbose, plot=plot)
-                
+
         write_data( [x, y_dt, yerr], output_dir + 'processed_lcs/' + line_names[i] + '_data.dat' )
-        
+
         m_vals.append(m_res)
         b_vals.append(b_res)
         sigsqr_vals.append(sigsqr_res)
-    
-        
+
+
     output = {
         'm': m_vals,
         'b': b_vals,
         'sigsqr': sigsqr_vals
     }
-        
+
     return output
-        
-    
-    
-    

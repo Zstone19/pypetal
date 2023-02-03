@@ -46,9 +46,9 @@ Light Curves
 
 Regardless of the modules run, pyPetal will produce a ``light_curves`` subdirectory within the main ``output_directory``. This contains the original light curves obtained through the ``arg2`` argument of ``pypetal.pipeline.run_pipeline``.
 These light curves will be named ``{line_name}.dat``, where ``line_name`` is the name of the given light curve input to the pyPetal pipeline. These will be formatted as CSV files, with the first three columns
-representing the times, values, and uncertainties of the light curve. 
+representing the times, values, and uncertainties of the light curve.
 
-If the DRW-based outlier rejection module is run, these light curve files will contain a fourth column with the DRW-rejection mask. This mask will consist of booleans, where :python:`True` means a point was rejeted. 
+If the DRW-based outlier rejection module is run, these light curve files will contain a fourth column with the DRW-rejection mask. This mask will consist of booleans, where :python:`True` means a point was rejeted.
 
 
 
@@ -59,7 +59,7 @@ The DRW Rejection module file output is unique in that it depends on the user's 
 This subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -77,10 +77,10 @@ This subdirectory will contain the following files:
     * - ``{line_name}_mask.dat``
       - The DRW-based outlier rejection mask.
       - CSV
-      -  
+      -
     * - ``{line_name}_drw_fit.pdf``
       - A figure describing the DRW fit to the light curve (see the DRW rejection tutorial).
-      - PDF 
+      - PDF
       -
 
 .. note:: If :python:`jitter=False` for the module, there will only be two columns in ``{line_name}_chain.dat``, and the jitter term :math:`sigma_n` will not be included.
@@ -94,7 +94,7 @@ In addition, pypetal will save the light curve excluding the rejected points to 
 Module: Detrending
 ------------------
 
-There is only file output from the detrending module, which will appear in each line's subdirectory. This will be a plot showing the linear fit to the original light curve before subtraction, which will be named ``detrend.pdf``. 
+There is only file output from the detrending module, which will appear in each line's subdirectory. This will be a plot showing the linear fit to the original light curve before subtraction, which will be named ``detrend.pdf``.
 
 In addition, the detrended light curve will be saved to the ``processed_lcs`` subdirectory under the name ``{line_name}_detrended.dat``.
 
@@ -110,7 +110,7 @@ Module: PyCCF
 Each line subdirectory (excluding the continuum) will contain a subdirectory ``pyccf/`` for all results from the pyCCF module. This subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -119,7 +119,7 @@ Each line subdirectory (excluding the continuum) will contain a subdirectory ``p
       - Columns
     * - ``{line_name}_ccf_dists.dat``
       - The CCCD and CCPD.
-      - CSV 
+      - CSV
       - CCCD, CCPD
     * - ``{line_name}_ccf.dat``
       - The CCF.
@@ -138,7 +138,7 @@ Module: pyZDCF
 Each line subdirectory (excluding the continuum) will contain a subdirectory ``pyzdcf/`` for all results from the pyZDCF module. This subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -148,7 +148,7 @@ Each line subdirectory (excluding the continuum) will contain a subdirectory ``p
     * - ``{line_name}_{prefix}.dcf``
       - The ZDCF file from pyZDCF.
       - ASCII
-      - tau, -sig(tau), +sig(tau), dcf, -err(dcf), +err(dcf), #bin 
+      - tau, -sig(tau), +sig(tau), dcf, -err(dcf), +err(dcf), #bin
     * - ``{line_name}_zdcf.pdf``
       - A figure showing the ZDCF (see the pyZDCF tutorial).
       - PDF
@@ -163,7 +163,7 @@ Module: PLIKE
 If PLIKE is run under the pyZDCF module, its results will be stored in the ``pyzdcf/`` directory for a given line. It will add the following additional files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -180,17 +180,17 @@ If PLIKE is run under the pyZDCF module, its results will be stored in the ``pyz
 
 
 
-Module: JAVELIN 
+Module: JAVELIN
 ---------------
 
 Unlike the other modules, the layout of the output directiry and the structure of the files depends on multiple parameters, in particular ``together``, ``rm_type``, and ``fixed/p_fix``.
 
-If :python:`together=True`, the output directory for all lines will be ``output_directory/javelin/``. If :python:`together=False`, each line will have it's JAVELIN results in its own subdirectory, labeled ``javelin/``. 
+If :python:`together=True`, the output directory for all lines will be ``output_directory/javelin/``. If :python:`together=False`, each line will have it's JAVELIN results in its own subdirectory, labeled ``javelin/``.
 
 If :python:`together=True`, the output directory will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -216,7 +216,7 @@ If :python:`together=True`, the output directory will contain the following file
     * - ``logp_cont.txt``
       - The log-probability for the initial continuum fit.
       - ASCII
-      - 
+      -
     * - ``logp_rmap.txt``
       - The log-probability for the total JAVELIN fit.
       - ASCII
@@ -224,15 +224,15 @@ If :python:`together=True`, the output directory will contain the following file
     * - ``cont_lcfile.dat``
       - The continuum light curve in JAVELIN format.
       - ASCII
-      - 
+      -
     * - ``tot_lcfile.dat``
       - All light curves in JAVELIN format.
       - ASCII
-      - 
+      -
     * - ``{line_name}_lc_fits.dat``
       - The best-fit light curves for each line. There will be one file for each line.
       - CSV
-      - time, value, uncertainty 
+      - time, value, uncertainty
     * - ``javelin_histogram.pdf``
       - A figure showing the histograms of the MCMC chains for each parameter.
       - PDF
@@ -252,7 +252,7 @@ If :python:`together=True`, the output directory will contain the following file
 If :python:`together=False`, the output directory for each line will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -278,7 +278,7 @@ If :python:`together=False`, the output directory for each line will contain the
     * - ``logp_cont.txt``
       - The log-probability for the initial continuum fit.
       - ASCII
-      - 
+      -
     * - ``logp_rmap.txt``
       - The log-probability for the total JAVELIN fit.
       - ASCII
@@ -286,15 +286,15 @@ If :python:`together=False`, the output directory for each line will contain the
     * - ``cont_lcfile.dat``
       - The continuum light curve in JAVELIN format.
       - ASCII
-      - 
+      -
     * - ``tot_lcfile.dat``
       - All light curves in JAVELIN format.
       - ASCII
-      - 
+      -
     * - ``{line_name}_lc_fits.dat``
       - The best-fit light curves for the line.
       - CSV
-      - time, value, uncertainty 
+      - time, value, uncertainty
     * - ``javelin_histogram.pdf``
       - A figure showing the histograms of the MCMC chains for each parameter.
       - PDF
@@ -314,8 +314,8 @@ If :python:`together=False`, the output directory for each line will contain the
 
 .. note:: If any parameters are fixed, there will not be a ``javelin_corner.pdf`` file.
 
-The number of tophat parameters in the ``burn`` and ``chain`` files depends on the ``rm_type`` argument. If :python:`rm_type="spec"`, there will be 3 tophat parameters for each line (t, w, s). 
-If :python:`rm_type="phot"`, there will be 2 tophat parameters for each line (t, w, s, :math:`\alpha`). 
+The number of tophat parameters in the ``burn`` and ``chain`` files depends on the ``rm_type`` argument. If :python:`rm_type="spec"`, there will be 3 tophat parameters for each line (t, w, s).
+If :python:`rm_type="phot"`, there will be 2 tophat parameters for each line (t, w, s, :math:`\alpha`).
 
 If :python:`together=True`, the tophat parameters will be grouped by line in order. For example, if :python:`rm_type="spec"`, the columns of the ``chain`` and ``burn`` files will be
 :math:`\log(\sigma_{\rm DRW}), \log(\tau_{\rm DRW}), t_1, w_1, s_1, t_2, w_2, s_2, ...`.
@@ -331,7 +331,7 @@ The output of the weighting module depends on if the pyCCF and JAVELIN modules a
 If the pyCCF module is run, the ``weights/`` subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -340,17 +340,17 @@ If the pyCCF module is run, the ``weights/`` subdirectory will contain the follo
       - Columns
     * - ``pyccf_weights.dat``
       - The distributions needed to weight the CCCD for the line.
-      - CSV 
+      - CSV
       - lags :math:`\tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed CCCD, smoothed weighted CCCD
     * - ``pyccf_weighted_cccd.dat``
       - The downsampled CCCD after weighting and finding the primary peak.
-      - CSV 
-      - 
+      - CSV
+      -
 
 If the JAVELIN module is run, the ``weights/`` subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -359,11 +359,11 @@ If the JAVELIN module is run, the ``weights/`` subdirectory will contain the fol
       - Columns
     * - ``javelin_weights.dat``
       - The distributions needed to weight the JAVELIN lag distribution :math:`t` for the line.
-      - CSV 
+      - CSV
       - lags :math:`\tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed :math:`t`, smoothed weighted :math:`t`
     * - ``javelin_weighted_lag_dist.dat``
       - The downsampled :math:`t` after weighting and finding the primary peak.
-      - CSV 
+      - CSV
       -
 
 
@@ -371,7 +371,7 @@ If the JAVELIN module is run, the ``weights/`` subdirectory will contain the fol
 In addition, the weighting module will always output the following files in the ``weights/`` subdirectory:
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -380,7 +380,7 @@ In addition, the weighting module will always output the following files in the 
       - Columns
     * - ``{line_name}_weights.pdf``
       - A figure showing the distributions needed to weight the CCCD or JAVELIN lag distribution.
-      - PDF 
+      - PDF
       -
     * - ``weight_summary.txt``
       - The results of the weighting and auxiliary information from the weighting.
@@ -432,7 +432,7 @@ In addition, the following files will be placed in the main ``output_directory/`
 
 
 .. list-table::
-    :widths: 30 30 10 30 
+    :widths: 30 30 10 30
     :header-rows: 1
 
     * - Filename
@@ -441,10 +441,9 @@ In addition, the following files will be placed in the main ``output_directory/`
       - Columns
     * - ``pyccf_weights_res.pdf``
       - A figure showing the output of the weighting process for the CCCD.
-      - PDF 
-      -     
+      - PDF
+      -
     * - ``javelin_weights_res.pdf``
       - A figure showing the output of the weighting process for the JAVELIN lag distribution.
-      - PDF 
+      - PDF
       -
-

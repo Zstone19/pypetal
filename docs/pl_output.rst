@@ -2,7 +2,7 @@ pyPetal Output
 ===============
 
 Each module run in pyPetal has its own output, most of which are dictionaries with a variety of keys. These keys lead to the different output data from each module. Here we provide an in-depth description of all output and how to access them.
-Firstly, the output from the pipeline itself (i.e. from ``pyPetal.pipeline.run_pipeline``) will be a dictionary, containing the output dictionaries for each module (except the detrending module). 
+Firstly, the output from the pipeline itself (i.e. from ``pyPetal.pipeline.run_pipeline``) will be a dictionary, containing the output dictionaries for each module (except the detrending module).
 The key referencing each output will be labeled ``(name)_res``, where ``(name)`` is the name of the module, in addition to the output from PLIKE (if it is run). Therefore, the possible keys for the output are:
 
 * ``drw_rej_res``
@@ -19,7 +19,7 @@ Module: DRW Rejection
 The output dictionary from this module differs from the other modules. Each value (except ``reject_data``) in the dictionary is a list of outputs, one for each line in which :python:`reject_data=True`. These will be in the same order as the input light curves.
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Key
@@ -30,7 +30,7 @@ The output dictionary from this module differs from the other modules. Each valu
       - list of :python:`bool`
     * - ``reject_data``
       - A copy of the input ``reject_data`` argument.
-      - list of :python:`bool` 
+      - list of :python:`bool`
     * - ``taus``
       - A list of the MCMC samples for :math:`\tau_{\rm DRW}`.
       - list of :python:`float`
@@ -48,7 +48,7 @@ Module: PyCCF
 The output pyCCF module will be a list of dictionaries, one for each line, with the line specified in each dictionary. These will be in the same order as the input light curves.
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Key
@@ -98,7 +98,7 @@ The pyZDCF can have one or two outputs, depending on the value of ``run_plike``.
 The pyZDCF output will be a list of ``pandas.DataFrame`` objects, which are output from pyZDCF itself. These will be in the same order as the input light curves. These ``DataFrame`` objects have the following columns:
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Column
@@ -109,7 +109,7 @@ The pyZDCF output will be a list of ``pandas.DataFrame`` objects, which are outp
       - :python:`float`
     * - ``-sig(tau)``
       - The lower error on the time lag.
-      - :python:`float` 
+      - :python:`float`
     * - ``+sig(tau)``
       - The upper error on the time lag.
       - :python:`float`
@@ -130,7 +130,7 @@ The pyZDCF output will be a list of ``pandas.DataFrame`` objects, which are outp
 The PLIKE output will be a list of dictionaries, one for each line. Each dictionary will contain an ``astropy.table.Table`` object under the ``output``, which contain the output from PLIKE, read from the output file. Each table will have the following columns:
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Column
@@ -141,13 +141,13 @@ The PLIKE output will be a list of dictionaries, one for each line. Each diction
       - :python:`float`
     * - ``r``
       - The ZDCF value at that lag.
-      - :python:`float`   
+      - :python:`float`
     * - ``-dr``
       - The lower error on the ZDCF.
       - :python:`float`
     * - ``+dr``
       - The upper error on the ZDCF.
-      - :python:`float`     
+      - :python:`float`
     * - ``likelihood``
       - The likelihood value at that lag.
       - :python:`float`
@@ -156,7 +156,7 @@ The PLIKE output will be a list of dictionaries, one for each line. Each diction
 Each dictionary will have the following keys:
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Key
@@ -184,7 +184,7 @@ The JAVELIN module's output will have a different structure depending on the val
 The output dictionary(ies) will have the following keys:
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Key
@@ -201,7 +201,7 @@ The output dictionary(ies) will have the following keys:
       - list of :python:`float`
     * - ``tophat_params``
       - The list of MCMC samples for the tophat parameters. These tophat parameters will be ordered in the same way as the input light curves.
-      - list of :python:`float`   
+      - list of :python:`float`
     * - ``hpd``
       - The HPD interval for the combined fit. The first column corresponds to :math:`\sigma_{\rm DRW}`, the second corresponds to :math:`\tau_{\rm DRW}`, and the rest are the tophat parameters, in the same order as described in ``tophat_params``.
       - list of :python:`float`
@@ -237,7 +237,7 @@ Similar to the DRW Rejection module, the values for the keys will be lists of re
 For the pyCCF dictionary, the keys will be:
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Key
@@ -245,25 +245,25 @@ For the pyCCF dictionary, the keys will be:
       - Type
     * - ``centroid``
       - The median of the downsampled CCCD and its uncertainties, given as [lower error, value, upper error].
-      - list of :python:`float`    
+      - list of :python:`float`
     * - ``bounds``
       - The bounds and lag value of the primary peak, given as [lower bound, peak, upper bound].
       - list of :python:`float`
     * - ``acf``
       - The ACF of the continuum light curve.
-      - list of :python:`float` 
+      - list of :python:`float`
     * - ``lags``
       - The lags that the weighting distributions are computed on.
       - list of :python:`float`
     * - ``weight_dist``
-      - The weight distribution :math:`w(\tau)` 
+      - The weight distribution :math:`w(\tau)`
       - list of :python:`float`
     * - ``smooth_dist``
       - The smoothed :math:`w(\tau)`.
       - list of :python:`float`
     * - ``ntau``
       - The number of overlapping points at a given lag :math:`N(\tau)`.
-      - list of :python:`float`  
+      - list of :python:`float`
     * - ``downsampled_CCCD``
       - The downsampled CCCD.
       - list of :python:`float`
@@ -275,7 +275,7 @@ For the pyCCF dictionary, the keys will be:
 Similarly, for the JAVELIN dictionary:
 
 .. list-table::
-    :widths: 20 60 20 
+    :widths: 20 60 20
     :header-rows: 1
 
     * - Key
@@ -283,25 +283,25 @@ Similarly, for the JAVELIN dictionary:
       - Type
     * - ``tophat_lag``
       - The median of the JAVELIN lag and its uncertainties, given as [lower error, value, upper error].
-      - list of :python:`float`    
+      - list of :python:`float`
     * - ``bounds``
       - The bounds and lag value of the primary peak, given as [lower bound, peak, upper bound].
       - list of :python:`float`
     * - ``acf``
       - The ACF of the continuum light curve.
-      - list of :python:`float` 
+      - list of :python:`float`
     * - ``lags``
       - The lags that the weighting distributions are computed on.
       - list of :python:`float`
     * - ``weight_dist``
-      - The weight distribution :math:`w(\tau)` 
+      - The weight distribution :math:`w(\tau)`
       - list of :python:`float`
     * - ``smooth_dist``
       - The smoothed :math:`w(\tau)`.
       - list of :python:`float`
     * - ``ntau``
       - The number of overlapping points at a given lag :math:`N(\tau)`.
-      - list of :python:`float`  
+      - list of :python:`float`
     * - ``downsampled_lag_dist``
       - The downsampled JAVELIN lag distribution.
       - list of :python:`float`

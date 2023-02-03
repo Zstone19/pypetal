@@ -8,7 +8,7 @@ External requirements (not installed by ``pip`` or ``setup.py``):
 
 
 pyPetal is available on PyPI and can be installed with pip:
-:: 
+::
     pip install pypetal
 
 

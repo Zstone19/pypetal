@@ -1,7 +1,7 @@
 import pypetal.pipeline as pl
 from pypetal.load import read_weighting_summary
 from pypetal.weighting import prob_tau
-import numpy as np 
+import numpy as np
 
 import glob
 import os
@@ -13,7 +13,7 @@ class TestWeighting(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -45,7 +45,7 @@ class TestWeighting(unittest.TestCase):
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
                             run_pyccf=True, pyccf_params=pyccf_params,
-                            run_javelin=True, javelin_params=javelin_params, 
+                            run_javelin=True, javelin_params=javelin_params,
                             run_weighting=True, weighting_params=weighting_params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii')
@@ -59,10 +59,10 @@ class TestWeighting(unittest.TestCase):
 
     #Make sure the lengths and keys of each of the resulting arrays are correct
     def test_res(self):
-        
-        pyccf_keys = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist', 
+
+        pyccf_keys = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_CCCD', 'frac_rejected']
-        javelin_keys = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist', 
+        javelin_keys = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_lag_dist', 'frac_rejected']
 
         #Make sure the keys of the output are correct
@@ -87,7 +87,7 @@ class TestWeighting(unittest.TestCase):
                     else:
                         self.assertIs( type(self.res['weighting_res'][module][key][i]), float )
 
-        
+
         #Make sure lengths of arrays are correct
         for key in pyccf_keys:
             self.assertEqual( len(self.res['weighting_res']['pyccf'][key]), len(self.filenames)-1 )
@@ -156,7 +156,7 @@ class TestWeighting(unittest.TestCase):
         for fdir, name in zip(subdirs[1:], self.line_names[1:]):
             for subdir in ['pyccf', 'javelin', 'weights']:
                 self.assertIn( '.tmp/' + name + '/' + subdir, glob.glob( fdir + '*' ) )
-                
+
         #Make sure continuum has no files
         self.assertEqual( len(glob.glob('.tmp/continuum/*')), 0 )
 
@@ -177,7 +177,7 @@ class TestWeighting(unittest.TestCase):
 
             self.assertIn( fdir + 'weights/' + self.line_names[i] + '_weights.pdf', files )
 
-        
+
 
 
     def test_res_file_match(self):
@@ -204,7 +204,7 @@ class TestWeighting(unittest.TestCase):
             self.assertListEqual( list(self.res['weighting_res']['pyccf']['ntau'][i-1]), list(ntau) )
             self.assertListEqual( list(self.res['weighting_res']['pyccf']['weight_dist'][i-1]), list(weight_dist) )
             self.assertListEqual( list(self.res['weighting_res']['pyccf']['acf'][i-1]), list(acf) )
-            self.assertListEqual( list(self.res['weighting_res']['pyccf']['smoothed_dist'][i-1]), list(smooth_weight_dist) )       
+            self.assertListEqual( list(self.res['weighting_res']['pyccf']['smoothed_dist'][i-1]), list(smooth_weight_dist) )
 
 
 
@@ -271,4 +271,3 @@ class TestWeighting(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

@@ -1,7 +1,7 @@
 import pypetal.pipeline as pl
 from pypetal.load import read_weighting_summary
 from pypetal.weighting import prob_tau
-import numpy as np 
+import numpy as np
 
 import glob
 import os
@@ -13,7 +13,7 @@ class TestWeighting(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -76,4 +76,3 @@ class TestWeighting(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

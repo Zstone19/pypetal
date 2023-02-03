@@ -1,5 +1,5 @@
 import pypetal.pipeline as pl
-import numpy as np 
+import numpy as np
 
 import javelin.lcmodel
 import javelin.zylc
@@ -14,7 +14,7 @@ class TestJAVELIN(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -35,7 +35,7 @@ class TestJAVELIN(unittest.TestCase):
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
                             run_javelin=True,
-                            javelin_params=params, 
+                            javelin_params=params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii')
 
@@ -48,7 +48,7 @@ class TestJAVELIN(unittest.TestCase):
 
     #Make sure the lengths and keys of each of the resulting arrays are correct
     def test_res(self):
-        
+
         expected_keys = ['cont_hpd', 'tau', 'sigma', 'tophat_params', 'hpd',
                          'cont_model', 'rmap_model', 'cont_dat', 'tot_dat', 'bestfit_model']
 
@@ -66,7 +66,7 @@ class TestJAVELIN(unittest.TestCase):
 
         #Make sure data types are correct
         for i in range(num_dicts):
-    
+
             for j, key in enumerate(expected_keys):
 
                 if key == 'cont_model':
@@ -78,7 +78,7 @@ class TestJAVELIN(unittest.TestCase):
                 else:
                     self.assertIs( self.res['javelin_res'][i][key].dtype.type, np.float64 )
 
-        
+
         #Make sure lengths of arrays are correct
         for i in range(num_dicts):
             self.assertEqual( len(self.res['javelin_res'][i]['tau']), mc_length )
@@ -93,7 +93,7 @@ class TestJAVELIN(unittest.TestCase):
             self.assertEqual( len(self.res['javelin_res'][i]['cont_hpd'][0]), 2 )
 
             self.assertEqual( len(self.res['javelin_res'][i]['hpd']), 3 )
-            self.assertEqual( len(self.res['javelin_res'][i]['hpd'][0]), 5 ) 
+            self.assertEqual( len(self.res['javelin_res'][i]['hpd'][0]), 5 )
 
 
         #Make sure that the LC objetcs have the right light curves
@@ -201,7 +201,7 @@ class TestJAVELIN(unittest.TestCase):
             self.assertIn( fdir + 'javelin/' + self.line_names[i] + '_lc_fits.dat', files )
 
             self.assertIn( fdir + 'javelin/cont_lcfile.dat', files )
-            self.assertIn( fdir + 'javelin/tot_lcfile.dat', files )            
+            self.assertIn( fdir + 'javelin/tot_lcfile.dat', files )
 
             self.assertIn( fdir + 'javelin/javelin_bestfit.pdf', files )
             self.assertIn( fdir + 'javelin/javelin_corner.pdf', files )
@@ -220,7 +220,7 @@ class TestJAVELIN(unittest.TestCase):
             jav_yerr = cont_dat.elist[0]
 
             self.assertListEqual( list(xcont), list(cont_dat.jlist[0]) )
-            self.assertListEqual( list(ycont), list(cont_dat.mlist[0] + cont_dat.blist[0]) )            
+            self.assertListEqual( list(ycont), list(cont_dat.mlist[0] + cont_dat.blist[0]) )
             for j in range(len(ycont)):
                 self.assertAlmostEqual( ycont[j], jav_y[j], places=6 )
 
@@ -261,12 +261,12 @@ class TestJAVELIN(unittest.TestCase):
         for name in self.line_names:
             self.assertIn( '.tmp/light_curves/' + name + '.dat', lc_files )
 
-        
+
 
 
     def test_res_file_match(self):
 
-        #Match dists        
+        #Match dists
         for i in range(2):
 
             file_sig, file_tau, t, w, s = np.loadtxt( '.tmp/' + self.line_names[i+1] + '/javelin/chain_rmap.txt', unpack=True )
@@ -283,4 +283,3 @@ class TestJAVELIN(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

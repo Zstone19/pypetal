@@ -2,7 +2,7 @@ import pypetal.pipeline as pl
 from pypetal.load import read_weighting_summary
 from pypetal.weighting import prob_tau
 
-import numpy as np 
+import numpy as np
 import pandas as pd
 
 import javelin.lcmodel
@@ -44,7 +44,7 @@ class TestAll(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -101,7 +101,7 @@ class TestAll(unittest.TestCase):
                             run_pyccf=True, pyccf_params=pyccf_params,
                             run_pyzdcf=True, pyzdcf_params=pyzdcf_params,
                             run_javelin=True, javelin_params=params,
-                            run_weighting=True, weighting_params=weighting_params, 
+                            run_weighting=True, weighting_params=weighting_params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii',
                             time_unit='d',
@@ -109,7 +109,7 @@ class TestAll(unittest.TestCase):
 
         self.filenames = filenames
         self.line_names = line_names
-        self.res = res 
+        self.res = res
 
         self.drw_mc = drw_rej_params['nchain'] * drw_rej_params['nwalker']
         self.drw_burn = drw_rej_params['nburn'] * drw_rej_params['nwalker']
@@ -142,7 +142,7 @@ class TestAll(unittest.TestCase):
                 self.assertIn( '.tmp/' + name + '/' + subdir, glob.glob( fdir + '*' ) )
 
         self.assertIn( '.tmp/continuum/drw_rej', glob.glob( subdirs[0] + '*' ) )
-        self.assertNotIn( '.tmp/yelm/drw_rej', glob.glob( subdirs[1] + '*' ) ) 
+        self.assertNotIn( '.tmp/yelm/drw_rej', glob.glob( subdirs[1] + '*' ) )
         self.assertIn( '.tmp/zing/drw_rej', glob.glob( subdirs[2] + '*' )  )
 
 
@@ -277,10 +277,10 @@ class TestAll(unittest.TestCase):
                         'cont_model', 'rmap_model', 'cont_dat', 'tot_dat', 'bestfit_model']
 
         weight_keys = ['pyccf', 'javelin']
-        weight_keys1 = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist', 
+        weight_keys1 = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_CCCD', 'frac_rejected',
                         'CCCD']
-        weight_keys2 = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist', 
+        weight_keys2 = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_lag_dist', 'frac_rejected',
                         'lag_dist']
 
@@ -358,18 +358,18 @@ class TestAll(unittest.TestCase):
 
         #pyZDCF
         for i in range(len(self.line_names[1:])):
-            self.assertIs( type(self.res['pyzdcf_res'][i]), pd.DataFrame )           
+            self.assertIs( type(self.res['pyzdcf_res'][i]), pd.DataFrame )
 
 
         #Javelin
         for key in [ 'tau', 'sigma' ]:
             self.assertIs( type(self.res['javelin_res'][key][0]), np.float64 )
-        
+
         for key in ['tophat_params', 'hpd']:
             self.assertIs( type(self.res['javelin_res'][key][0][0]), np.float64 )
 
 
-        self.assertEqual( len(self.res['javelin_res']['tau']), self.javelin_mc )            
+        self.assertEqual( len(self.res['javelin_res']['tau']), self.javelin_mc )
         self.assertEqual( len(self.res['javelin_res']['sigma']), self.javelin_mc )
 
         self.assertEqual( len(self.res['javelin_res']['tophat_params']), 3*len(self.line_names[1:]) )
@@ -384,7 +384,7 @@ class TestAll(unittest.TestCase):
 
         self.assertIs( self.res['javelin_res']['cont_model'], None )
         self.assertIs( type(self.res['javelin_res']['rmap_model']), javelin.lcmodel.Rmap_Model )
-        
+
         for key in ['cont_dat', 'tot_dat', 'bestfit_model']:
             self.assertIs( type(self.res['javelin_res'][key]), javelin.zylc.LightCurve )
 
@@ -404,7 +404,7 @@ class TestAll(unittest.TestCase):
 
                 if mod == 'pyccf':
                     self.assertIs( type(self.res['weighting_res']['pyccf']['downsampled_CCCD'][i][0]), np.float64 )
-                
+
                     self.assertEqual( len(self.res['weighting_res'][mod]['centroid'][i]), 3 )
                     self.assertIs( type(self.res['weighting_res'][mod]['centroid'][i][0]), np.float64 )
 
@@ -511,7 +511,7 @@ class TestAll(unittest.TestCase):
             #Read the res DF with the proper formatting
             res_df = self.res['pyzdcf_res'][i].copy(deep=True)
             for col in df_cols:
-                if col != '#bin':                
+                if col != '#bin':
                     res_df[col] = list(map( format_float, res_df[col] ))
                 else:
                     res_df[col] = list(map( format_int, res_df[col] ))
@@ -553,15 +553,15 @@ class TestAll(unittest.TestCase):
         self.assertListEqual(file_cont.jlist[0].tolist(), self.res['javelin_res']['cont_dat'].jlist[0].tolist() )
         self.assertListEqual(file_ydat.tolist(), res_ydat.tolist() )
         self.assertListEqual(file_cont.elist[0].tolist(), self.res['javelin_res']['cont_dat'].elist[0].tolist() )
-        self.assertListEqual(file_cont.ilist[0].tolist(), self.res['javelin_res']['cont_dat'].ilist[0].tolist() ) 
- 
+        self.assertListEqual(file_cont.ilist[0].tolist(), self.res['javelin_res']['cont_dat'].ilist[0].tolist() )
+
         for j in range(len(file_cont.jlist[0])):
             file_ydat = file_cont.mlist[0][j] + file_cont.blist[0]
             res_ydat = self.res['javelin_res']['cont_dat'].mlist[0][j] + self.res['javelin_res']['cont_dat'].blist[0]
             self.assertAlmostEqual(file_cont.jlist[0][j], self.res['javelin_res']['tot_dat'].jlist[0][j], places=4 )
             self.assertAlmostEqual(file_ydat, res_ydat, places=4 )
             self.assertAlmostEqual(file_cont.elist[0][j], self.res['javelin_res']['tot_dat'].elist[0][j], places=4 )
-            self.assertAlmostEqual(file_cont.ilist[0][j], self.res['javelin_res']['tot_dat'].ilist[0][j], places=4 ) 
+            self.assertAlmostEqual(file_cont.ilist[0][j], self.res['javelin_res']['tot_dat'].ilist[0][j], places=4 )
 
                 #Tot
         self.assertEqual(file_tot.nlc, self.res['javelin_res']['tot_dat'].nlc)
@@ -572,7 +572,7 @@ class TestAll(unittest.TestCase):
                 self.assertAlmostEqual(file_tot.jlist[j][k], self.res['javelin_res']['tot_dat'].jlist[j][k], places=3 )
                 self.assertAlmostEqual(file_ydat, res_ydat, places=3 )
                 self.assertAlmostEqual(file_tot.elist[j][k], self.res['javelin_res']['tot_dat'].elist[j][k], places=3 )
-                self.assertAlmostEqual(file_tot.ilist[j][k], self.res['javelin_res']['tot_dat'].ilist[j][k], places=3 ) 
+                self.assertAlmostEqual(file_tot.ilist[j][k], self.res['javelin_res']['tot_dat'].ilist[j][k], places=3 )
 
 
 
@@ -606,7 +606,7 @@ class TestAll(unittest.TestCase):
             self.assertListEqual( list(self.res['weighting_res']['pyccf']['ntau'][i]), list(ntau) )
             self.assertListEqual( list(self.res['weighting_res']['pyccf']['weight_dist'][i]), list(weight_dist) )
             self.assertListEqual( list(self.res['weighting_res']['pyccf']['acf'][i]), list(acf) )
-            self.assertListEqual( list(self.res['weighting_res']['pyccf']['smoothed_dist'][i]), list(smooth_weight_dist) )       
+            self.assertListEqual( list(self.res['weighting_res']['pyccf']['smoothed_dist'][i]), list(smooth_weight_dist) )
 
 
 
@@ -661,7 +661,7 @@ class TestAll(unittest.TestCase):
             #Rmax
             self.assertEqual( weight_dict['rmax'], self.res['weighting_res']['rmax'][i] )
 
-    
+
             #Frac rejected
             cccd = self.res['weighting_res']['pyccf']['CCCD'][i]
             lag_dist = self.res['weighting_res']['javelin']['lag_dist'][i]
@@ -679,5 +679,3 @@ class TestAll(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-
-

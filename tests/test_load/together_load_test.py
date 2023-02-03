@@ -1,6 +1,6 @@
 import pypetal.pipeline as pl
 import pypetal.load as load
-import numpy as np 
+import numpy as np
 
 import os
 import glob
@@ -13,7 +13,7 @@ class TestLoad(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -70,7 +70,7 @@ class TestLoad(unittest.TestCase):
                             run_pyccf=True, pyccf_params=pyccf_params,
                             run_pyzdcf=True, pyzdcf_params=pyzdcf_params,
                             run_javelin=True, javelin_params=params,
-                            run_weighting=True, weighting_params=weighting_params, 
+                            run_weighting=True, weighting_params=weighting_params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii',
                             time_unit='d',
@@ -78,7 +78,7 @@ class TestLoad(unittest.TestCase):
 
         self.filenames = filenames
         self.line_names = line_names
-        self.res = res 
+        self.res = res
 
         self.loaded_res = load('.tmp/')
         self.reject_data = drw_rej_params['reject_data']
@@ -163,12 +163,12 @@ class TestLoad(unittest.TestCase):
             self.assertListEqual(res_cols, load_cols)
 
             for col in res_cols:
-                if col == 'tau':         
+                if col == 'tau':
                     for j in range(len(self.res['pyzdcf_res'][i][col])):
                         res_int = int(self.res['pyzdcf_res'][i][col].iloc[j])
                         load_int = int(self.loaded_res['pyzdcf_res'][i]['output'][col].iloc[j])
                         self.assertLessEqual( np.abs( res_int - load_int ), 1 )
-                
+
                 elif col in ['-sig(tau)', '+sig(tau)']:
                     for j in range(len(self.res['pyzdcf_res'][i][col])):
                         res_val = self.res['pyzdcf_res'][i][col].iloc[j]
@@ -188,7 +188,7 @@ class TestLoad(unittest.TestCase):
 
     def test_match_javelin(self):
 
-        jav_keys = ['tau', 'sigma', 'tophat_params', 
+        jav_keys = ['tau', 'sigma', 'tophat_params',
                     'cont_fit_x', 'cont_fit_y', 'cont_fit_yerr']
         res_keys = list(self.res['javelin_res'].keys())
         load_keys = list(self.loaded_res['javelin_res'].keys())
@@ -208,11 +208,11 @@ class TestLoad(unittest.TestCase):
             elif key == 'tophat_params':
                 for j in range(6):
                     self.assertListEqual(self.res['javelin_res'][key][j].tolist(), self.loaded_res['javelin_res'][key][j].tolist())
-            
-                
-        c_xfit, c_yfit, c_yerrfit = np.loadtxt( '.tmp/javelin/continuum_lc_fits.dat', unpack=True, delimiter=',' )        
+
+
+        c_xfit, c_yfit, c_yerrfit = np.loadtxt( '.tmp/javelin/continuum_lc_fits.dat', unpack=True, delimiter=',' )
         self.assertListEqual(c_xfit.tolist(), self.loaded_res['javelin_res']['cont_fit_x'].tolist() )
-        self.assertListEqual(c_yfit.tolist(), self.loaded_res['javelin_res']['cont_fit_y'].tolist() )                
+        self.assertListEqual(c_yfit.tolist(), self.loaded_res['javelin_res']['cont_fit_y'].tolist() )
         self.assertListEqual(c_yerrfit.tolist(), self.loaded_res['javelin_res']['cont_fit_yerr'].tolist() )
 
 
@@ -234,9 +234,9 @@ class TestLoad(unittest.TestCase):
             self.assertIn(key, load_keys)
 
 
-        weight_keys1 = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist', 
+        weight_keys1 = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_CCCD', 'frac_rejected']
-        weight_keys2 = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist', 
+        weight_keys2 = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_lag_dist', 'frac_rejected']
 
 
@@ -272,4 +272,3 @@ class TestLoad(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

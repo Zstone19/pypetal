@@ -660,18 +660,18 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
                        (-3., 0.), (.1, 5.)]).T
     p0 = [np.nanmax(bin_vals), f, 0., 2.]
 
-    fit_vals, fit_err = psd_sbpl(binCenters[1:-4], bin_vals[1:-4], 
+    fit_vals, fit_err = psd_sbpl(binCenters[1:-4], bin_vals[1:-4],
                                  None, p0, bounds)
 
     return fLS, powerLS, f_eval, psd_credint, \
            bin_vals, bin_err, binCenters, lower_err, \
            fit_vals, fit_err
-    
-    
-    
 
 
-def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0, 
+
+
+
+def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
                  target=None, show_mean=True,
                  filename=None, jitter=True, show=False):
 
@@ -680,7 +680,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
 
     Parameters
     ----------
-    
+
     x : list of astropy.units.Quantity
         The times of the light curve.
 
@@ -700,7 +700,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         The unit of the light curve.
 
     nsig : int, optional
-        The number of standard deviations away from the mean DRW fit at which to 
+        The number of standard deviations away from the mean DRW fit at which to
         consider a point an outlier. Default is 0 (i.e. no points are outliers).
 
     target : str, optional
@@ -716,7 +716,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         Whether or not the jitter term was included in the DRW fit. Default is True.
 
     show : bool, optional
-        Whether or not to show the image. Default is False.       
+        Whether or not to show the image. Default is False.
 
 
 
@@ -759,13 +759,13 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
         n=3
         jitter_vals = np.exp(samples[:, 2])
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals), np.log10(jitter_vals) )).T
-        labels = [r'$\log_{10}\ (\sigma_{\rm DRW})$', 
-                  r'$\log_{10}\ (\tau_{\rm DRW})$', 
+        labels = [r'$\log_{10}\ (\sigma_{\rm DRW})$',
+                  r'$\log_{10}\ (\tau_{\rm DRW})$',
                   r'$\log_{10}\ (\sigma_n)$']
     else:
         n=2
         sample_vals = np.vstack((np.log10(sig_vals), np.log10(tau_vals) )).T
-        labels = [r'$\log_{10}\ (\sigma_{\rm DRW})$', 
+        labels = [r'$\log_{10}\ (\sigma_{\rm DRW})$',
                   r'$\log_{10}\ (\tau_{\rm DRW})$']
 
 
@@ -774,26 +774,26 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     fig, axs = plt.subplots(n,n, figsize=(5,5))
 
     titles = []
-                                                            
+
     sig = np.log10(np.median(sig_vals))
-    sig_err_l = sig - np.log10( np.percentile(sig_vals,16) ) 
+    sig_err_l = sig - np.log10( np.percentile(sig_vals,16) )
     sig_err_u = np.log10( np.percentile(sig_vals,84) ) - sig
     sig_title = r'$' + '{:.2f}'.format(sig) + '^{' + ' +{:.2f}'.format(sig_err_u) +  '}_{' + '-{:.2f}'.format(sig_err_l) + '}$'
     titles.append(sig_title)
 
     tau = np.log10(np.median(tau_vals))
-    tau_err_l = tau - np.log10( np.percentile(tau_vals,16) ) 
+    tau_err_l = tau - np.log10( np.percentile(tau_vals,16) )
     tau_err_u = np.log10( np.percentile(tau_vals,84) ) - tau
     tau_title = r'$' + '{:.2f}'.format(tau) + '^{' + ' +{:.2f}'.format(tau_err_u) +  '}_{' + '-{:.2f}'.format(tau_err_l) + '}$'
     titles.append(tau_title)
 
     if jitter is True:
         jit = np.log10(np.median(jitter_vals))
-        jit_err_l = jit - np.log10( np.percentile(jitter_vals,16) ) 
+        jit_err_l = jit - np.log10( np.percentile(jitter_vals,16) )
         jit_err_u = np.log10( np.percentile(jitter_vals,84) ) - jit
         jit_title = r'$' + '{:.2f}'.format(jit) + '^{' + ' +{:.2f}'.format(jit_err_u) +  '}_{' + '-{:.2f}'.format(jit_err_l) + '}$'
         titles.append(jit_title)
-                                                            
+
 
     #Make corner plot
     fig = corner.corner(sample_vals, labels=labels,
@@ -847,16 +847,16 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     t = np.linspace(x[0].value - extra_t, x[-1].value+extra_t, 1000)
     mu, var = gp.predict(y.value, t, return_var=True)
     std = np.sqrt(var)
-    
+
     mu_flag, var_flag = gp.predict(y.value, x.value, return_var=True)
     std_flag = np.sqrt(var_flag)
 
     flag_mask = np.abs(y.value - mu_flag) > nsig*std_flag
-    ax1.errorbar( (x.value - x[0].value)[flag_mask], 
-                 y.value[flag_mask], yerr.value[flag_mask], 
+    ax1.errorbar( (x.value - x[0].value)[flag_mask],
+                 y.value[flag_mask], yerr.value[flag_mask],
                  fmt='.', color='DodgerBlue', capsize=1., alpha=.4, ms=7)
-    ax1.errorbar( (x.value - x[0].value)[~flag_mask], 
-                y.value[~flag_mask], yerr.value[~flag_mask], 
+    ax1.errorbar( (x.value - x[0].value)[~flag_mask],
+                y.value[~flag_mask], yerr.value[~flag_mask],
                 fmt='.k', capsize=1., alpha=.7, ms=8)
 
 
@@ -899,19 +899,19 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     #Get PSD from the celerite posterior dist
 
     #Fill the PSD b/w the 16th and 84th percentiles
-    ax2.fill_between(f_eval, psd_credint[:, 2], psd_credint[:, 0], 
+    ax2.fill_between(f_eval, psd_credint[:, 2], psd_credint[:, 0],
                      alpha=0.3, label='Model PSD', color='orange')
 
     #--------------------------------------------------------------------------
     #Bin Lomb Scargle
 
-    ax2.errorbar(binCenters, bin_vals, yerr=(lower_err, bin_err), 
-                 marker=None, drawstyle='steps-mid', color='k', 
+    ax2.errorbar(binCenters, bin_vals, yerr=(lower_err, bin_err),
+                 marker=None, drawstyle='steps-mid', color='k',
                  linewidth=1.0, capsize=3, label='Binned PSD')
     ax2.legend(loc='upper right', fontsize=15)
 
     #--------------------------------------------------------------------------
-    #Fit PSD to a smoothly broken power law    
+    #Fit PSD to a smoothly broken power law
 
     sbpl_dat = smoothly_broken_power_law(fLS.value, fit_vals[0], fit_vals[1], fit_vals[2], fit_vals[3])
     ax2.plot(fLS.value, sbpl_dat, color='red', label='SBPL Fit')
@@ -925,12 +925,12 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     f_br_plus = f_br + f_br_err
     f_br_minus = f_br - f_br_err
 
-    if f_br_minus < 0.0 and np.isfinite(f_br_plus) is True:    
+    if f_br_minus < 0.0 and np.isfinite(f_br_plus) is True:
         ls_diff = np.log10(f_br_plus) - np.log10(f_br)
         f_br_minus = 10**( np.log10(f_br) - ls_diff )
 
 
-    f_br_val = psd_credint[:, 2][0]   
+    f_br_val = psd_credint[:, 2][0]
 
     if np.isfinite(f_br_plus) is True:
         #Dat for f_br line
@@ -940,7 +940,7 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
 
         arrow_head = (f_br, 10**(np.log10(f_br_val)+.2) )
         arrow_base = (f_br, 10**(np.log10(f_br_val)+.6) )
-        ax2.errorbar([f_br], [arrow_base[1]], yerr=[arrow_base[1] - arrow_head[1]], 
+        ax2.errorbar([f_br], [arrow_base[1]], yerr=[arrow_base[1] - arrow_head[1]],
                      uplims=True, color='red', elinewidth=2, capthick=2)
 
     #--------------------------------------------------------------------------

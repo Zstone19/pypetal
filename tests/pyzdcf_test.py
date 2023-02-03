@@ -1,5 +1,5 @@
 import pypetal.pipeline as pl
-import numpy as np 
+import numpy as np
 import pandas as pd
 
 import glob
@@ -20,7 +20,7 @@ class TestPyZDCF(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -40,7 +40,7 @@ class TestPyZDCF(unittest.TestCase):
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
                             run_pyzdcf=True,
-                            pyzdcf_params=params, 
+                            pyzdcf_params=params,
                             file_fmt='ascii')
 
         self.filenames = filenames
@@ -49,7 +49,7 @@ class TestPyZDCF(unittest.TestCase):
 
     #Make sure the lengths and keys of each of the resulting arrays are correct
     def test_res(self):
-        
+
         df_cols = ['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', '#bin' ]
 
         num_df = len(self.line_names) - 1
@@ -117,11 +117,11 @@ class TestPyZDCF(unittest.TestCase):
         for i in range(len(self.line_names) - 1):
             file_df = np.loadtxt('.tmp/' + self.line_names[i+1] + '/pyzdcf/' + self.line_names[i+1] + '_myname.dcf')
             file_df = pd.DataFrame(file_df, columns=df_cols)
-            
+
             res_df = self.res['pyzdcf_res'][i].copy(deep=True)
-            
+
             for col in df_cols:
-                if col != '#bin':                
+                if col != '#bin':
                     res_df[col] = list(map( format_float, res_df[col] ))
                 else:
                     res_df[col] = list(map( format_int, res_df[col] ))
@@ -135,4 +135,3 @@ class TestPyZDCF(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

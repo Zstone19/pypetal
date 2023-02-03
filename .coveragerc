@@ -1,6 +1,6 @@
 [run]
 branch = True
-omit = 
+omit =
     */.local/*
     /usr/*
     docs/*

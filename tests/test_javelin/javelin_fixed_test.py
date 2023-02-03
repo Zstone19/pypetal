@@ -1,5 +1,5 @@
 import pypetal.pipeline as pl
-import numpy as np 
+import numpy as np
 
 import os
 import glob
@@ -12,7 +12,7 @@ class TestJAVELIN(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -69,4 +69,3 @@ class TestJAVELIN(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

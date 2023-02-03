@@ -9,14 +9,14 @@ import itertools
 
 #For multiprocessing
 def mp_map(func, arg, threads):
-    
+
     if threads > 1:
         pool = mp.Pool(threads)
         res = pool.map(func, arg)
-        
+
         pool.close()
         pool.join()
-        
+
     else:
         res = list(map(func, arg))
 
@@ -25,13 +25,13 @@ def mp_map(func, arg, threads):
 
 def corsig(r, v):
     '''
-    Calculate the p value that a random uncorrelated sample can yield a 
-    correlation coefficient as large as or larger than the observed absolute 
-    value of r, where r is the correlation coefficient of the data (using 
+    Calculate the p value that a random uncorrelated sample can yield a
+    correlation coefficient as large as or larger than the observed absolute
+    value of r, where r is the correlation coefficient of the data (using
     t test, valid if v>=4)
     Ref1: http://janda.org/c10/Lectures/topic06/L24-significanceR.htm
     Ref2: http://vassarstats.net/textbook/ch4apx.html
-    
+
     Inputs:
         r -- the correlation coefficient of the data
         v -- degree of freedom when calculating r: N-2 (hence N>2!!!)
@@ -40,20 +40,20 @@ def corsig(r, v):
     '''
     r = float(r)
     v = float(v)
-    
+
     r2 = r*r
     tst = r*np.sqrt(v/(1-r2))
     pvalue = sst.t.sf(tst, v) # sf: survival function -- 1-CDF
     return pvalue
-    
+
 
 
 
 def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
     '''
-    Calculate cross-correlation function for unevenly 
+    Calculate cross-correlation function for unevenly
     sampling data.
-    
+
     Inputs:
         t1 -- time for light curve 1, assume increase;
         y1 -- flux for light curve 1;
@@ -62,10 +62,10 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
         tlagmin -- minimum time lag;
         tlagmax -- maximum time lag;
         tunit -- tau step;
-        imode -- cross-correlation mode: 0, twice (default); 
+        imode -- cross-correlation mode: 0, twice (default);
                  1, interpolate light curve 1;
                  2, interpolate light curve 2.
-        
+
     Outputs:
         ccf -- correlation coefficient;
         tlag -- time lag (t2 - t1); positive values mean second
@@ -98,13 +98,13 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
         knot = np.sum(selin)  # number of datapoints used
         if knot>0:
             y2new = np.interp(t2new[selin], t2, y2)
-            
+
             y1sum = np.sum(y1[selin])
             y1sqsum = np.sum(y1[selin]*y1[selin])
             y2sum = np.sum(y2new)
             y2sqsum = np.sum(y2new*y2new)
             y1y2sum = np.sum(y1[selin]*y2new)
-            
+
             fn = float(knot)
             rd1_sq = fn*y2sqsum - y2sum*y2sum
             rd2_sq = fn*y1sqsum - y1sum*y1sum
@@ -116,7 +116,7 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
                 rd2 = np.sqrt(rd2_sq)
             else:
                 rd2 = 0.0
-            
+
             if rd1*rd2==0.0:
                 r = 0.0
             else:
@@ -136,13 +136,13 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
         knot = np.sum(selin)  # number of datapoints used
         if knot>0:
             y1new = np.interp(t1new[selin], t1, y1)
-            
+
             y2sum = np.sum(y2[selin])
             y2sqsum = np.sum(y2[selin]*y2[selin])
             y1sum = np.sum(y1new)
             y1sqsum = np.sum(y1new*y1new)
             y1y2sum = np.sum(y1new*y2[selin])
-            
+
             fn = float(knot)
             rd1_sq = fn*y2sqsum - y2sum*y2sum
             rd2_sq = fn*y1sqsum - y1sum*y1sum
@@ -154,7 +154,7 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
                 rd2 = np.sqrt(rd2_sq)
             else:
                 rd2 = 0.0
-            
+
             if rd1*rd2==0.0:
                 r = 0.0
             else:
@@ -163,7 +163,7 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
             taulist21.append(tau)
             npts21.append(knot)
         tau += tunit
-    
+
     # return results according to imode
     taulist12 = np.asarray(taulist12)
     npts12 = np.asarray(npts12)
@@ -191,7 +191,7 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
         ccf = ccf12 + 0.0
         taulist = taulist12 + 0.0
         npts = npts12 + 0.0
-    
+
     return ccf, taulist, npts
 
 
@@ -199,9 +199,9 @@ def xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode=0):
 
 def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, imode=0, sigmode = 0.2):
     '''
-    Calculate peak time lag and centroid based on the cross-correlation 
+    Calculate peak time lag and centroid based on the cross-correlation
     function for unevenly sampling data.
-    
+
     Inputs:
         t1 -- time for light curve 1, assume increase;
         y1 -- flux for light curve 1;
@@ -210,18 +210,18 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
         tlagmin -- minimum time lag;
         tlagmax -- maximum time lag;
         tunit -- tau step;
-        thres -- lower limit of correlation coefficient when 
+        thres -- lower limit of correlation coefficient when
                  calculate centroid, default is 0.8;
-        siglevel -- the required significant level of the 
+        siglevel -- the required significant level of the
                  correlation coefficient;
-        imode -- cross-correlation mode: 0, twice (default); 
+        imode -- cross-correlation mode: 0, twice (default);
                  1, interpolate light curve 1;
                  2, interpolate light curve 2.
         sigmode -- how to deal with significance:
                 Will use r = input value as the minimum correlation coefficient to consider (default = 0.2).
                 0: Will use a p-test to assign significance to peak and discard peaks that are below
-                the significance threshold (depends on number of points included and r). 
-        
+                the significance threshold (depends on number of points included and r).
+
     Outputs:
         tlag_peak -- time lag based on the peak argument;
         status_peak -- peak status (1, constrained; 0, unconstrained);
@@ -229,7 +229,7 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
         status_centroid -- centroid status (1, constrained; 0, unconstrained);
     '''
     alpha = 1.0 - siglevel  # probability threshold to reject: no correlation hypothesis
-    
+
     ccf_pack = xcor(t1, y1, t2, y2, tlagmin, tlagmax, tunit, imode)
     max_indx = np.argmax(ccf_pack[0])
     max_rval = ccf_pack[0][max_indx]
@@ -237,11 +237,11 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
         peak_pvalue = corsig(ccf_pack[0][max_indx], float(ccf_pack[2][max_indx]-2.0))
     else:
         peak_pvalue = 1.0 # significance level
-    # ccf peaks --- excluding all with r < 0.2 instead of using p-value test. 
+    # ccf peaks --- excluding all with r < 0.2 instead of using p-value test.
     if sigmode > 0:
-        #print 'Using minimum r coefficient instead of significance test.'        
-        #Check and see if the max r is on the edge of the CCF. Fail it if so. 
-        if max_rval >= sigmode and ccf_pack[1][max_indx] > tlagmin and ccf_pack[1][max_indx] < tlagmax: 
+        #print 'Using minimum r coefficient instead of significance test.'
+        #Check and see if the max r is on the edge of the CCF. Fail it if so.
+        if max_rval >= sigmode and ccf_pack[1][max_indx] > tlagmin and ccf_pack[1][max_indx] < tlagmax:
             tlag_peak = ccf_pack[1][max_indx]
             max_rval = max_rval
             status_peak = 1
@@ -256,8 +256,8 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
             status_rval = 0
             status_centroid = 0
     else:
-        # ccf peaks-- Eric's method using a p-value test (usually not using) 
-        #Check and see if the max r is on the edge of the CCF. Fail it if so. 
+        # ccf peaks-- Eric's method using a p-value test (usually not using)
+        #Check and see if the max r is on the edge of the CCF. Fail it if so.
         if peak_pvalue<alpha and ccf_pack[1][max_indx] > tlagmin and ccf_pack[1][max_indx] < tlagmax:
             tlag_peak = ccf_pack[1][max_indx]
             max_rval = max_rval
@@ -284,7 +284,7 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
             tlag_left = tlag_peak - np.min(tlag_leftall) # the left edge of the centroid around the primary peak
             tlag_right = tlag_peak + np.min(tlag_rightall) # the right edge of the centroid around the primary peak
             if tlag_left>=np.min(ccf_pack[1]) and tlag_right<=np.max(ccf_pack[1]):
-                # centroids 
+                # centroids
                 selcen = np.where((ccf_pack[1]>tlag_left)&(ccf_pack[1]<tlag_right),True,False)
                 if np.sum(selcen)>0:
                     tlag_centroid = np.sum(ccf_pack[0][selcen]*ccf_pack[1][selcen])/np.sum(ccf_pack[0][selcen])
@@ -295,16 +295,16 @@ def peakcent(t1, y1, t2, y2, tlagmin, tlagmax, tunit, thres=0.8, siglevel=0.95, 
         status_peak = 0
         tlag_peak = -9999.0
         max_rval = -9999.0
-        status_rval = 0 
+        status_rval = 0
     #print tlag_peak, status_peak, tlag_centroid, status_centroid, max_rval, status_rval
     return tlag_peak, status_peak, tlag_centroid, status_centroid, ccf_pack, max_rval, status_rval, peak_pvalue
 
 
 
 
-def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
+def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
                  numt1, numt2,
-                 thres=0.8, siglevel=0.95, 
+                 thres=0.8, siglevel=0.95,
                  imode=0, sigmode=0.2):
 
     if mcmode!=2:
@@ -330,18 +330,18 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
             if len(t2_rss)>1:
                 # keep running unless len(t2_rss)>1
                 mycheck = False
-        
+
     else:
         # do not apply RSS resample, rss light curve equals to original one
         t1_rss = t1 + 0.0
         y1_rss = y1 + 0.0
         dy1_rss = dy1 + 0.0
-        
+
         t2_rss = t2 + 0.0
         y2_rss = y2 + 0.0
         dy2_rss = dy2 + 0.0
-        
-    
+
+
     if mcmode!=1:
         # measurement error perturbation
         t1_fr = t1_rss + 0.0
@@ -354,10 +354,10 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
         y1_fr = y1_rss + 0.0
         t2_fr = t2_rss + 0.0
         y2_fr = y2_rss + 0.0
-    
+
     # perform CCF
     pc_pack = peakcent(t1_fr, y1_fr, t2_fr, y2_fr, tlagmin, tlagmax, tunit, thres, siglevel, imode, sigmode = sigmode)
-    
+
     # ccf peaks
     if pc_pack[1] == 1:
         tau_peak = pc_pack[0]
@@ -367,8 +367,8 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
         tau_peak = np.nan
         pval = np.nan
         succcess_peak = False
-        
-    
+
+
     # ccf centroids
     if pc_pack[3] == 1:
         tau_centroid = pc_pack[2]
@@ -376,8 +376,8 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
     else:
         tau_centroid = np.nan
         success_centroid = False
-    
-        
+
+
     # max_rvalues
     if pc_pack[6] == 1:
         max_rval = pc_pack[5]
@@ -391,12 +391,12 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
 
 
 
-def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit, 
-            thres=0.8, siglevel=0.95, imode=0, nsim=2048, mcmode=0, 
+def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
+            thres=0.8, siglevel=0.95, imode=0, nsim=2048, mcmode=0,
             sigmode=0.2, threads=1, verbose=True):
     '''
     Calculate the uncertainty for the cross-correlation peak.
-    
+
     Inputs:
         t1 -- time for light curve 1, assume increase;
         y1 -- flux for light curve 1;
@@ -407,11 +407,11 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
         tlagmin -- minimum time lag;
         tlagmax -- maximum time lag;
         tunit -- tau step;
-        thres -- lower limit of correlation coefficient when 
+        thres -- lower limit of correlation coefficient when
                  calculate centroid, default is 0.8;
-        siglevel -- the required significant level of the 
+        siglevel -- the required significant level of the
                  correlation coefficient;
-        imode -- cross-correlation mode: 0, twice (default); 
+        imode -- cross-correlation mode: 0, twice (default);
                  1, interpolate light curve 1;
                  2, interpolate light curve 2.
         nsim -- MC simulation trials;
@@ -419,9 +419,9 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
                   1, RSS only
                   2, FR only
         sigmode -- How to exclude non-significant peaks:
-                  Will exclude all peaks with r < input value 
-                  0 will exclude all peaks based on p-value significance test. 
-        
+                  Will exclude all peaks with r < input value
+                  0 will exclude all peaks based on p-value significance test.
+
     Outputs:
         tlags_peak -- tlag of peak distribution;
         tlags_centroid -- tlag of centroid distribution;
@@ -436,36 +436,36 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
     numt2 = len(t2)
     if numt1<2 or numt2<2:
         raise Exception("The light curve should contain at least 2 data points!!!")
-    
+
     pyccf_func = partial( xcor_mc_loop,
                          t1=t1, y1=y1, dy1=dy1, t2=t2, y2=y2, dy2=dy2,
                          tlagmin=tlagmin, tlagmax=tlagmax, tunit=tunit,
                          numt1=numt1, numt2=numt2,
-                         thres=thres, siglevel=siglevel, 
+                         thres=thres, siglevel=siglevel,
                          imode=imode, sigmode=sigmode)
 
 
     arg = np.full(nsim, mcmode)
     res = mp_map( pyccf_func, arg, threads )
-    
+
     tlags_peak, pvals, success_peak, tlags_centroid, success_centroid, max_rvals, success_rval = np.array(res).T
-    
+
     nsuccess_peak = len( np.argwhere( success_peak ).T[0] )
     nfail_peak = len( np.argwhere( success_peak == False ).T[0] )
 
     nsuccess_centroid = len( np.argwhere( success_centroid ).T[0] )
     nfail_centroid = len( np.argwhere( success_centroid == False ).T[0] )
-    
+
     nsuccess_rvals = len( np.argwhere( success_rval ).T[0] )
     nfail_rvals = len( np.argwhere( success_rval == False ).T[0] )
-    
 
-    
+
+
     tlags_peak = np.asarray(tlags_peak)
     tlags_centroid = np.asarray(tlags_centroid)
-    
+
     if verbose:
         print( 'Failed centroids: ', nfail_centroid )
         print( 'Failed peaks: ', nfail_peak )
-    
+
     return tlags_peak, tlags_centroid, nsuccess_peak, nfail_peak, nsuccess_centroid, nfail_centroid, max_rvals, nfail_rvals, pvals

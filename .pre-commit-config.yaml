@@ -1,0 +1,29 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: no-commit-to-branch
+        args: [--branch, rtd]
+    -   id: check-docstring-first
+    -   id: requirements-txt-fixer
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+
+# - repo: https://github.com/Lucas-C/pre-commit-hooks-markup
+#   rev: v1.0.1
+#   hooks:
+#   - id: rst-linter
+
+# -   repo: https://github.com/pycqa/isort
+#     rev: 5.11.2
+#     hooks:
+#     -   id: sort
+#         name: isort (python)
+
+# -   repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit
+#     rev: v0.6.6
+#     hooks:
+#       - id: clevercsv-standardize
+
+exclude: examples/., .coverage, docs/notebooks/.

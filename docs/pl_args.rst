@@ -110,12 +110,12 @@ Module: DRW Rejection (``run_drw_rej``)
       - 32
     * - ``clip``
       - ``Celerite`` will use a prior for the characteristic DRW timescale :math:`\tau_{\rm DRW}`, spanning the minimum cadence to the baseline of the input light curve. If :python:`clip=True` for a given light curve, instead of using the minimum difference between times given for the light curve, it will clip these differences for values below :math:`10^{-8}`. If one value is given, it will be assumed for all light curves.
-      - :python:`bool`, list of :python:`bool` 
+      - :python:`bool`, list of :python:`bool`
       - :python:`True`
     * - ``reject_data``
       - If :python:`reject_data=True` for a given light curve, it will be fit and its values will be rejected based on the value of ``nsig``. If :python:`reject_data=False` for a given light curve, it will not be fit to a DRW. If one value is given, it will be assumed for all light curves.
       - :python:`bool`, list of :python:`bool`
-      - :python:`True` for the continuum, :python:`False` for all lines   
+      - :python:`True` for the continuum, :python:`False` for all lines
     * - ``use_for_javelin``
       - If :python:`True`, the resulting DRW parameters :math:`(\sigma_{\rm DRW}, $\tau_{\rm DRW})`, will used as input to the JAVELIN module of pyPetal. The DRW parameters in each fit will be fixed to the results obtained in this module.
       - :python:`bool`
@@ -168,7 +168,7 @@ Module: pyCCF (``run_pyccf``)
       - :python:`int`
       - 3000
     * - ``interp``
-      - The time interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise. If set to :python:`None`, ``interp`` will be set to half of the average cadence of the light curves. 
+      - The time interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise. If set to :python:`None`, ``interp`` will be set to half of the average cadence of the light curves.
       - :python:`float`, :python:`None`
       - 2.0
     * - ``mcmode``
@@ -176,11 +176,11 @@ Module: pyCCF (``run_pyccf``)
       - :python:`int`
       - 0
     * - ``sigmode``
-      - The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the interval (0,1). All peaks and centroids with correlation coefficient :math:`r_{\rm max} \leq` ``sigmode`` will be considered as “failed”. If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation). 
+      - The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the interval (0,1). All peaks and centroids with correlation coefficient :math:`r_{\rm max} \leq` ``sigmode`` will be considered as “failed”. If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation).
       - :python:`float`
       - 0.2
     * - ``thres``
-      - The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within the interval (0,1). 
+      - The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within the interval (0,1).
       - :python:`float`
       - 0.8
 
@@ -201,7 +201,7 @@ Module: pyZDCF (``run_pyzdcf``)
       - :python:`int`
       - 1000
     * - ``minpts``
-      - The minimum number of points to use in each bin when computing the ZDCF. Must be larger than 11. If set to 0, it will be set to 11. 
+      - The minimum number of points to use in each bin when computing the ZDCF. Must be larger than 11. If set to 0, it will be set to 11.
       - :python:`int`
       - 0
     * - ``uniform_sampling``
@@ -213,11 +213,11 @@ Module: pyZDCF (``run_pyzdcf``)
       - :python:`bool`
       - :python:`True`
     * - ``sparse``
-      - Determines whether to use a sparse matrix implementation for reduced RAM usage. This feature is suitable for longer light curves (> 3000 data points). If True, will use sparse matrix implementation. If set to "auto", will use sparse matrix implementation if there are more than 3000 data points per light curve. 
+      - Determines whether to use a sparse matrix implementation for reduced RAM usage. This feature is suitable for longer light curves (> 3000 data points). If True, will use sparse matrix implementation. If set to "auto", will use sparse matrix implementation if there are more than 3000 data points per light curve.
       - :python:`bool`, :python:`str`
       - :python:`"auto"`
     * - ``prefix``
-      - Prefix to the output ZDCF file. 
+      - Prefix to the output ZDCF file.
       - :python:`str`
       - :python:`"zdcf"`
     * - ``run_plike``
@@ -258,7 +258,7 @@ Module: JAVELIN (``run_javelin``)
       - :python:`int`
       - 100
     * - ``rm_type``
-      - The type of reverberation mapping (RM) analysis to use when running JAVELIN. Can either be set to "spec" for spectroscopic RM, or "phot" for photometric RM. 
+      - The type of reverberation mapping (RM) analysis to use when running JAVELIN. Can either be set to "spec" for spectroscopic RM, or "phot" for photometric RM.
       - :python:`str`
       - :python:`"spec"`
     * - ``together``
@@ -266,7 +266,7 @@ Module: JAVELIN (``run_javelin``)
       - :python:`bool`
       - :python:`False`
     * - ``lagtobaseline``
-      - A log prior is used to logarithmically penalizes lag values larger than `x`*baseline, where `x` is the value of this parameter. 
+      - A log prior is used to logarithmically penalizes lag values larger than `x`*baseline, where `x` is the value of this parameter.
       - :python:`float`
       - 0.3
     * - ``fixed``
@@ -308,7 +308,7 @@ Determining the number of parameters in the JAVELIN model:
     * - :python:`"spec"`
       - :python:`True`
       - :math:`2 + 3 \cdot ({\rm number of light curves})`
-      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t_1`, :math:`w_1`, :math:`s_1`, :math:`t_2`, ... 
+      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t_1`, :math:`w_1`, :math:`s_1`, :math:`t_2`, ...
     * - :python:`"spec"`
       - :python:`False`
       - 5 per line

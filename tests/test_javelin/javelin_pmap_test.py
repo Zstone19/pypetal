@@ -12,7 +12,7 @@ class TestJAVELIN(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -35,7 +35,7 @@ class TestJAVELIN(unittest.TestCase):
 
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
-                            run_javelin=True, javelin_params=params, 
+                            run_javelin=True, javelin_params=params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii')
 
@@ -43,7 +43,7 @@ class TestJAVELIN(unittest.TestCase):
         self.line_names = line_names
         self.res = res
 
-        self.mc_length = params['nchain'] * params['nwalker'] 
+        self.mc_length = params['nchain'] * params['nwalker']
 
 
 
@@ -66,4 +66,3 @@ class TestJAVELIN(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

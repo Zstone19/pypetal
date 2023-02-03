@@ -1,8 +1,8 @@
 # PLIKE V4.0 ZDCF peak likelihood analysis
 # for file /home/stone28/projects/petl_mock/test_repo/plike_output/H-alpha/pyzdcf/H-alpha_pyzdcf.dcf
 #
-# num      lag         r         -dr        +dr    likelihood 
-# ---- ---------- ---------- ---------- ---------- ---------- 
+# num      lag         r         -dr        +dr    likelihood
+# ---- ---------- ---------- ---------- ---------- ----------
      1 -4.990E+02  5.720E-02  4.465E-02  4.453E-02  0.000E+00
      2 -4.960E+02  4.004E-02  4.457E-02  4.449E-02  0.000E+00
      3 -4.930E+02  3.685E-02  4.445E-02  4.437E-02  0.000E+00

@@ -1,5 +1,5 @@
 import pypetal.pipeline as pl
-import numpy as np 
+import numpy as np
 
 import os
 import glob
@@ -12,7 +12,7 @@ class TestDrwRej(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -49,7 +49,7 @@ class TestDrwRej(unittest.TestCase):
 
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
-                            run_drw_rej=True, drw_rej_params=drw_rej_params, 
+                            run_drw_rej=True, drw_rej_params=drw_rej_params,
                             run_javelin=True, javelin_params=javelin_params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii')
@@ -77,4 +77,3 @@ class TestDrwRej(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-

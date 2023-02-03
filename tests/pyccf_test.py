@@ -1,5 +1,5 @@
 import pypetal.pipeline as pl
-import numpy as np 
+import numpy as np
 
 import glob
 import os
@@ -11,7 +11,7 @@ class TestPyCCF(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -33,7 +33,7 @@ class TestPyCCF(unittest.TestCase):
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
                             run_pyccf=True,
-                            pyccf_params=params, 
+                            pyccf_params=params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii')
 
@@ -43,7 +43,7 @@ class TestPyCCF(unittest.TestCase):
 
     #Make sure the lengths and keys of each of the resulting arrays are correct
     def test_res(self):
-        
+
         expected_keys = ['CCF', 'CCF_lags', 'centroid', 'centroid_err_lo', 'centroid_err_hi',
                             'peak', 'peak_err_lo', 'peak_err_hi', 'CCCD_lags', 'CCPD_lags', 'name']
 
@@ -67,14 +67,14 @@ class TestPyCCF(unittest.TestCase):
         array_mask = [True, True, False, False, False, False, False, False, True, True, False]
         data_type = [np.float64, np.float64, np.float64, np.float64, np.float64, np.float64, np.float64, np.float64, np.float64, np.float64, str]
         for i in range(num_dicts):
-    
+
             for j, key in enumerate(expected_keys):
                 if array_mask[j]:
                     self.assertIs( type(self.res['pyccf_res'][i][key][0]), data_type[j] )
                 else:
                     self.assertIs( type(self.res['pyccf_res'][i][key]), data_type[j] )
 
-        
+
         #Make sure lengths of arrays are correct
         for i in range(num_dicts):
             self.assertEqual( len(self.res['pyccf_res'][i]['CCCD_lags']), mc_length )
@@ -142,7 +142,7 @@ class TestPyCCF(unittest.TestCase):
         for name in self.line_names:
             self.assertIn( '.tmp/light_curves/' + name + '.dat', lc_files )
 
-        
+
 
 
     def test_res_file_match(self):
@@ -168,4 +168,3 @@ class TestPyCCF(unittest.TestCase):
     def tearDown(self):
         if os.path.exists('.tmp/') and os.path.isdir('.tmp/'):
             shutil.rmtree('.tmp/')
-
