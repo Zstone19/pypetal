@@ -192,7 +192,7 @@ The output dictionary(ies) will have the following keys:
       - Type
     * - ``cont_hpd``
       - The highest posterior density (HPD) interval for the initial continuum fit. If both DRW parameters are fixed, this will be None. The first column corresponds to :math:`\sigma_{\rm DRW}`, and the second corresponds to :math:`\tau_{\rm DRW}`.
-      - list of :python:`float`
+      - list of :python:`float`, :python:`None`
     * - ``tau``
       - The list of MCMC samples for :math:`\tau_{\rm DRW}`.
       - list of :python:`float`
@@ -207,7 +207,7 @@ The output dictionary(ies) will have the following keys:
       - list of :python:`float`
     * - ``cont_model``
       - The output ``javelin.lcmodel`` object for the initial continuum fit.
-      - ``javelin.lcmodel.Rmap_Model``, ``javelin.lcmodel.Pmap_Model``
+      - ``javelin.lcmodel.Cont_Model``, :python:`None`
     * - ``rmap_model``
       - The output ``javelin.lcmodel`` object for the final fit.
       - ``javelin.lcmodel.Rmap_Model``, ``javelin.lcmodel.Pmap_Model``
@@ -218,8 +218,14 @@ The output dictionary(ies) will have the following keys:
       - All light curves (continuum +lines) in a ``javelin.zylc.LightCurve`` object.
       - ``javelin.zylc.LightCurve``
     * - ``bestfit_model``
-      - The best-fit ``javelin.lcmodel`` object for the light curves.
-      - ``javelin.lcmodel.Rmap_Model``, ``javelin.lcmodel.Pmap_Model``
+      - The ``javelin.zylc.LightCurve`` object for the JAVELIN fit to the light curves.
+      - ``javelin.zylc.LightCurve``
+
+
+.. note:: If both of the DRW parameters (i.e. the first two parameters) are fixed, the continuum will not be fit to get an estimate on :math:`\sigma_{\rm DRW}` and :math:`\tau_{\rm DRW}`. In this case, the ``cont_hpd`` and ``cont_model`` keys will be :python:`None`.
+
+.. note:: If :python:`rm_type="spec"`, then the ``rmap_model`` key will be a ``javelin.lcmodel.Rmap_Model`` object. If :python:`rm_type="phot"`, then the ``rmap_model`` key will be a ``javelin.lcmodel.Pmap_Model`` object.
+
 
 
 Module: Weighting
