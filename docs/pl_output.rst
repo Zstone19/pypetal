@@ -32,7 +32,7 @@ The output dictionary from this module differs from the other modules. Each valu
       - A copy of the input ``reject_data`` argument.
       - list of :python:`bool` 
     * - ``taus``
-      - A list of the MCMC samples for :math:`tau_{\rm DRW}`.
+      - A list of the MCMC samples for :math:`\tau_{\rm DRW}`.
       - list of :python:`float`
     * - ``sigmas``
       - A list of the MCMC samples for :math:`\sigma_{\rm DRW}`.

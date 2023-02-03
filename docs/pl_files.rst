@@ -59,7 +59,7 @@ The DRW Rejection module file output is unique in that it depends on the user's 
 This subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -69,7 +69,7 @@ This subdirectory will contain the following files:
     * - ``{line_name}_chain.dat``
       - The MCMC chains for the DRW parameters from the fit.
       - CSV
-      - :math:`tau_{\rm DRW}, \sigma_{\rm DRW}, \sigma_n`
+      - :math:`\tau_{\rm DRW}, \sigma_{\rm DRW}, \sigma_n`
     * - ``{line_name}_drw_fit.dat``
       - The DRW fit to the light curve.
       - CSV
@@ -110,7 +110,7 @@ Module: PyCCF
 Each line subdirectory (excluding the continuum) will contain a subdirectory ``pyccf/`` for all results from the pyCCF module. This subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -138,7 +138,7 @@ Module: pyZDCF
 Each line subdirectory (excluding the continuum) will contain a subdirectory ``pyzdcf/`` for all results from the pyZDCF module. This subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -163,7 +163,7 @@ Module: PLIKE
 If PLIKE is run under the pyZDCF module, its results will be stored in the ``pyzdcf/`` directory for a given line. It will add the following additional files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -190,7 +190,7 @@ If :python:`together=True`, the output directory for all lines will be ``output_
 If :python:`together=True`, the output directory will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -252,7 +252,7 @@ If :python:`together=True`, the output directory will contain the following file
 If :python:`together=False`, the output directory for each line will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -331,7 +331,7 @@ The output of the weighting module depends on if the pyCCF and JAVELIN modules a
 If the pyCCF module is run, the ``weights/`` subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -341,7 +341,7 @@ If the pyCCF module is run, the ``weights/`` subdirectory will contain the follo
     * - ``pyccf_weights.dat``
       - The distributions needed to weight the CCCD for the line.
       - CSV 
-      - lags :math:`tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed CCCD, smoothed weighted CCCD
+      - lags :math:`\tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed CCCD, smoothed weighted CCCD
     * - ``pyccf_weighted_cccd.dat``
       - The downsampled CCCD after weighting and finding the primary peak.
       - CSV 
@@ -350,7 +350,7 @@ If the pyCCF module is run, the ``weights/`` subdirectory will contain the follo
 If the JAVELIN module is run, the ``weights/`` subdirectory will contain the following files:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -360,7 +360,7 @@ If the JAVELIN module is run, the ``weights/`` subdirectory will contain the fol
     * - ``javelin_weights.dat``
       - The distributions needed to weight the JAVELIN lag distribution :math:`t` for the line.
       - CSV 
-      - lags :math:`tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed :math:`t`, smoothed weighted :math:`t`
+      - lags :math:`\tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed :math:`t`, smoothed weighted :math:`t`
     * - ``javelin_weighted_lag_dist.dat``
       - The downsampled :math:`t` after weighting and finding the primary peak.
       - CSV 
@@ -371,7 +371,7 @@ If the JAVELIN module is run, the ``weights/`` subdirectory will contain the fol
 In addition, the weighting module will always output the following files in the ``weights/`` subdirectory:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
@@ -387,10 +387,12 @@ In addition, the weighting module will always output the following files in the 
       - Text
       - See below
 
+
+
 The ``weight_summary.txt`` file contains the following information:
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 30
     :header-rows: 1
 
     * - Name
@@ -430,7 +432,7 @@ In addition, the following files will be placed in the main ``output_directory/`
 
 
 .. list-table::
-    :widths: 25 25 25 25 
+    :widths: 30 30 10 30 
     :header-rows: 1
 
     * - Filename
