@@ -26,4 +26,4 @@ repos:
 #     hooks:
 #       - id: clevercsv-standardize
 
-exclude: examples/., .coverage, docs/notebooks/.
+exclude: ^examples/, .coverage, ^docs/notebooks/
