@@ -8,9 +8,16 @@ repos:
     -   id: check-docstring-first
     -   id: requirements-txt-fixer
     -   id: end-of-file-fixer
-        exclude: ^examples/, .coverage, ^docs/notebooks/
+        exclude: |
+          ^examples/
+          .coverage
+          ^docs/notebooks/
     -   id: trailing-whitespace
-        exclude: ^examples/, .coverage, ^docs/notebooks/
+        exclude: |
+          ^examples/
+          .coverage
+          ^docs/notebooks/
+
 
 # - repo: https://github.com/Lucas-C/pre-commit-hooks-markup
 #   rev: v1.0.1
@@ -23,7 +30,11 @@ repos:
 #     hooks:
 #     -   id: sort
 #         name: isort (python)
-#         exclude: ^examples/, .coverage, ^docs/notebooks/
+#        exclude: |
+#          ^examples/
+#          .coverage
+#          ^docs/notebooks/
+
 
 
 # -   repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit
