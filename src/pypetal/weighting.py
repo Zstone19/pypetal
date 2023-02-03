@@ -607,22 +607,13 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
             
             
             #Write diagnostic info
-            if not together:
-                write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ], 
-                            output_dir + line_names[i+1] + '/weights/javelin_weights.dat',
-                            '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
-                
-                write_data( downsampled_dist, 
-                        output_dir + line_names[i+1] + '/weights/javelin_weighted_lag_dist.dat')
-            
-            else:
-                write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ], 
-                        output_dir + 'javelin/' + line_names[i+1] + '_javelin_weights.dat',
+            write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ], 
+                        output_dir + line_names[i+1] + '/weights/javelin_weights.dat',
                         '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
             
-                write_data( downsampled_dist, 
-                        output_dir + 'javelin/' + line_names[i+1] + '_javelin_weighted_lag_dist.dat')           
-        
+            write_data( downsampled_dist, 
+                    output_dir + line_names[i+1] + '/weights/javelin_weighted_lag_dist.dat')
+                    
         
             #Output results
             output['javelin']['tophat_lag'].append( [lag_err_lo, med_lag, lag_err_hi] )

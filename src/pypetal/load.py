@@ -17,9 +17,15 @@ def get_line_names(main_dir):
         dirs.remove(main_dir + 'processed_lcs/')
         
     if main_dir + 'javelin/' in dirs:
-        dirs.remove(main_dir + 'javelin/' )
-        
-    line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
+        if len(dirs) > 2:
+            dirs.remove(main_dir + 'javelin/' )
+            line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
+        else:
+            fits_files = glob.glob(main_dir + 'javelin/*_lc_fits.dat')
+            line_names = [ os.path.basename(x[:-12]) for x in fits_files ]
+
+    else:
+        line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
     
     return line_names
 
@@ -104,18 +110,19 @@ def get_modules(main_dir):
     if main_dir + 'javelin/' in dirs_tot:
         run_javelin = True
         
-    has_javelin = np.zeros( len(line_names), dtype=bool )
-    for i,dir_i in enumerate(line_dirs): 
-        subdirs = glob.glob(dir_i + '*/')
-        
-        if dir_i + 'javelin/' in subdirs:
-            has_javelin[i] = True
-            
-    n_javelin = len( np.argwhere(has_javelin).T[0] )
-    if ( n_javelin != n_lnc ) & ( n_javelin > 0 ):
-        print('JAVELIN was not completed for all lines, so will assume run_javelin=False')
     else:
-        run_javelin = np.any( has_javelin )
+        has_javelin = np.zeros( len(line_names), dtype=bool )
+        for i,dir_i in enumerate(line_dirs): 
+            subdirs = glob.glob(dir_i + '*/')
+            
+            if dir_i + 'javelin/' in subdirs:
+                has_javelin[i] = True
+                
+        n_javelin = len( np.argwhere(has_javelin).T[0] )
+        if ( n_javelin != n_lnc ) & ( n_javelin > 0 ):
+            print('JAVELIN was not completed for all lines, so will assume run_javelin=False')
+        else:
+            run_javelin = np.any( has_javelin )
         
         
         
@@ -200,22 +207,34 @@ def get_cont_name(main_dir):
         
         cont_name = os.path.basename(  os.path.dirname( dirs_tot[ind] )  )
         
+
     elif run_javelin:
         together = get_javelin_together(main_dir)
         
-        dirs_tot = glob.glob( main_dir + '*/')
-        
-        dirs_tot.remove( main_dir + 'light_curves/')
+        dirs_tot = glob.glob( main_dir + '*/')        
+
+        processed = False
         if main_dir + 'processed_lcs/' in dirs_tot:
             dirs_tot.remove( main_dir + 'processed_lcs/')
-            
+            processed = True            
         
         if together:
-            line_names = np.array([ os.path.basename( os.path.dirname(x) ) for x in dirs_tot ])
+            dirs_tot.remove( main_dir + 'javelin/' )
 
-            #NEED TO FIGURE OUT
-        
-        
+            lc_files = glob.glob( main_dir + 'light_curves/*.dat' )
+            cont_dat = get_data( main_dir + 'javelin/cont_lcfile.dat' )
+
+            xcont = cont_dat.jlist[0]
+            ycont = cont_dat.mlist[0] + cont_dat.blist[0]
+            yerrcont = cont_dat.elist[0]
+            for f in lc_files:
+                xline, yline, yerrline = np.loadtxt(f, unpack=True, delimiter=',', usecols=[0,1,2])
+
+                if np.all( xline == xcont ) & np.all( yline == ycont ) & np.all( yerrline == yerrcont ):
+                    cont_name = os.path.basename(f)[:-4]
+                    break
+
+
         else:
             
             has_javelin = np.zeros( len(dirs_tot), dtype=bool )
@@ -230,9 +249,8 @@ def get_cont_name(main_dir):
         
         
         
-        
     elif run_drw_rej:
-        line_names, reject_data = get_reject_data(main_dir)
+        line_names, reject_data = get_reject_data(main_dir, ordered=False)
         
         if np.all(~reject_data):
             cont_name = line_names[0]
@@ -296,9 +314,13 @@ def get_line_data(main_dir):
 #######################################################################
 
 
-def get_reject_data(main_dir):
-    line_names = get_ordered_line_names(main_dir)
-    
+def get_reject_data(main_dir, ordered=True):
+
+    if ordered:
+        line_names = get_ordered_line_names(main_dir)
+    else:
+        line_names = get_line_names(main_dir)
+
     reject_data = np.zeros( len(line_names), dtype=bool )
     for i, name in enumerate(line_names):
         dir_i = main_dir + name + r'/'
@@ -329,7 +351,7 @@ def load_drw_rej(dir_loc):
     res_dict['fit_err'] = []
     
     res_dict['masks'] = []
-    res_dict['reject_data'] = get_reject_data(dir_loc)[0]
+    res_dict['reject_data'] = get_reject_data(dir_loc)[1]
     res_dict['names'] = []    
     
     for i, dir_i in enumerate(line_dirs):
@@ -365,14 +387,14 @@ def load_drw_rej(dir_loc):
             
             res_dict['fit_x'].append(None)
             res_dict['fit_y'].append(None)
-            res_dict['fit_yerr'].append(None)
+            res_dict['fit_err'].append(None)
             
             
             x, y, yerr = np.loadtxt( dir_loc + 'light_curves/' + line_names[i] + '.dat', unpack=True, delimiter=',', usecols=[0,1,2] )
             res_dict['masks'].append( np.zeros( len(x), dtype=bool ) )
             res_dict['names'].append(line_names[i])
     
-        return res_dict
+    return res_dict
     
     
 #######################################################################
@@ -499,11 +521,10 @@ def load_javelin(dir_loc):
 
         javelin_dir = dir_loc + 'javelin/'
 
-
-        sig, tau, tophat = np.loadtxt( javelin_dir + 'chain_rmap.txt', unpack=True )
-        res_dict['tau'] = np.exp(tau)
-        res_dict['sigma'] = np.exp(sig)
-        res_dict['tophat_params'] = tophat
+        chains = np.loadtxt( javelin_dir + 'chain_rmap.txt', unpack=True )
+        res_dict['tau'] = np.exp(chains[1])
+        res_dict['sigma'] = np.exp(chains[0])
+        res_dict['tophat_params'] = chains[2:]
         
         x, y, yerr = np.loadtxt(javelin_dir + line_names[0] + '_lc_fits.dat', unpack=True, delimiter=',', usecols=[0,1,2])
         res_dict['cont_fit_x'] = x
@@ -682,6 +703,9 @@ def load_weighting(main_dir):
         javelin_files = glob.glob( weight_dir + 'javelin*' )
         pyccf_files = glob.glob( weight_dir + 'pyccf*' )
         
+        jweight = False
+        pweight = False
+
         if len(javelin_files) > 0:
             jweight = True
         if len(pyccf_files) > 0:

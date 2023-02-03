@@ -599,6 +599,7 @@ together: {}
                 input_laglimit = [laglimit[i]]
             
             res = utils.run_javelin(cont_fname, line_fnames[i], names_i, 
+                                    rm_type=rm_type,
                                     output_dir=output_dir + names_i[1] + r'/javelin/', 
                                     lagtobaseline=lagtobaseline, laglimit=input_laglimit,
                                     fixed=fixed[i], p_fix=p_fix[i], subtract_mean=subtract_mean,

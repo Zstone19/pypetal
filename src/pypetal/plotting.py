@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
 
+import javelin.lcmodel
+
 from matplotlib.colors import ListedColormap
 import palettable
 
@@ -478,9 +480,17 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
     
     """
 
+
+    if type(res['rmap_model']) == javelin.lcmodel.Rmap_Model:
+        rm_type = 'spec'
+        Ncol = 3
+    elif type(res['rmap_model']) == javelin.lcmodel.Pmap_Model:
+        rm_type = 'phot'
+        Ncol = 4
+
+
     time_unit_txt = '[' + str(time_unit) + ']'
 
-    Ncol = 3
     Nrow = len(res['tophat_params'])//3 + 1
 
     names = res['tot_dat'].names[1:]
@@ -527,6 +537,8 @@ def plot_javelin_hist(res, fixed=None, nbin=50,
                 ax[i,j].set_xlabel(r'w$_{' + names[i-1] + '}$ ' + time_unit_txt, fontsize=22)
             if j == 2:
                 ax[i,j].set_xlabel(r's$_{' + names[i-1] + '}$', fontsize=22)  
+            if j == 3:
+                ax[i,j].set_xlabel(r'$\alpha_{' + names[i-1] + '}$', fontsize=22)
                 
     for i in range(Nrow):
         ax[i, 0].set_ylabel('N', fontsize=19)
@@ -586,6 +598,11 @@ def javelin_corner(res, nbin=20, fname=None):
     
     """
     
+    if type(res['rmap_model']) == javelin.lcmodel.Rmap_Model:
+        rm_type = 'spec'
+    elif type(res['rmap_model']) == javelin.lcmodel.Pmap_Model:
+        rm_type = 'phot'
+
     
     labels = []
     labels.append( r'$\log_{10} (\sigma_{\rm DRW})$' )
@@ -595,10 +612,14 @@ def javelin_corner(res, nbin=20, fname=None):
         labels.append( r'$t_{' + res['tot_dat'].names[i+1] + '}$' )
         labels.append( r'$w_{' + res['tot_dat'].names[i+1] + '}$' )
         labels.append( r'$s_{' + res['tot_dat'].names[i+1] + '}$' )
-    
+
+        if rm_type == 'phot':
+            labels.append( r'$\alpha_{' + res['tot_dat'].names[i+1] + '}$' )
+
 
     #Plot original output with weighted output superposed on histograms
     corner_dat = np.vstack( [np.log10(res['sigma']), np.log10(res['tau']),  res['tophat_params']]).T
+
     fig = corner.corner( corner_dat,
                 labels=labels, show_titles=False, bins=nbin,
                 label_kwargs={'fontsize': 20} )

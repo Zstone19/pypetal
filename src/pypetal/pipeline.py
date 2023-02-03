@@ -135,10 +135,18 @@ def run_pipeline(output_dir, arg2,
 
     #Get "reject_data" and "together"    
     _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)
-    _, fixed, p_fix, _, _, _, _, _, _, _, _, _, _, together, _ = defaults.set_javelin(javelin_params, fnames)   
+    _, fixed, p_fix, _, _, _, _, _, _, _, _, _, _, together, rm_type = defaults.set_javelin(javelin_params, fnames)   
     
     javelin_params['fixed'] = fixed
     javelin_params['p_fix'] = p_fix
+
+    if rm_type == 'spec':
+        if together:
+            nfixed = 2 + 3*( len(fnames)-1 )
+        else:
+            nfixed = 5
+    elif rm_type == 'phot':
+        nfixed = 6
 
     
     
@@ -244,8 +252,8 @@ def run_pipeline(output_dir, arg2,
                     javelin_params['p_fix'][0] = np.log(sig_cont)
                     javelin_params['p_fix'][1] = np.log(tau_cont)
                 else:                        
-                    javelin_params['fixed'] = np.ones( 2 + 3*len(line_fnames) )
-                    javelin_params['p_fix'] = np.zeros( 2 + 3*len(line_fnames) )
+                    javelin_params['fixed'] = np.ones( nfixed )
+                    javelin_params['p_fix'] = np.zeros( nfixed )
                 
                     javelin_params['fixed'][0] = 0
                     javelin_params['fixed'][1] = 0
@@ -259,12 +267,12 @@ def run_pipeline(output_dir, arg2,
                         javelin_params['fixed'][i][0] = 0
                         javelin_params['fixed'][i][1] = 0
                         
-                        javelin_params['p_fix'][i][0] = np.log(tau_cont)
-                        javelin_params['p_fix'][i][1] = np.log(sig_cont)
+                        javelin_params['p_fix'][i][0] = np.log(sig_cont)
+                        javelin_params['p_fix'][i][1] = np.log(tau_cont)
                         
                     else:
-                        javelin_params['fixed'][i] = np.ones(5)
-                        javelin_params['p_fix'][i] = np.zeros(5)
+                        javelin_params['fixed'][i] = np.ones(nfixed)
+                        javelin_params['p_fix'][i] = np.zeros(nfixed)
 
                         javelin_params['fixed'][i][0] = 0
                         javelin_params['fixed'][i][1] = 0

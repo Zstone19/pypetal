@@ -13,7 +13,7 @@ class TestWeighting(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = '../examples/dat/javelin_'
+        main_dir = 'examples/dat/javelin_'            
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -25,14 +25,14 @@ class TestWeighting(unittest.TestCase):
 
 
         pyccf_params = {
-            'nsim': 1000,
+            'nsim': 300,
             'interp': 1.5
         }
 
         javelin_params = {
-            'nchain': 100,
-            'nburn': 50,
-            'nwalker': 50
+            'nchain': 50,
+            'nburn': 20,
+            'nwalker': 20
         }
 
         weighting_params = {

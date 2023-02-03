@@ -1,0 +1,15 @@
+[run]
+branch = True
+omit = 
+    */.local/*
+    /usr/*
+    docs/*
+    examples/*
+    .gitignore
+    .readthedocs.yml
+    build_plike.sh
+    plike_v4/*
+    LICENSE
+    MANIFEST.in
+    README.md
+    requirements.txt
