@@ -122,6 +122,9 @@ The pyZDCF output will be a list of ``pandas.DataFrame`` objects, which are outp
     * - ``+err(dcf)``
       - The upper error on the ZDCF value.
       - :python:`float`
+    * - ``#bin``
+      - The number of points in the given :math:`tau` bin.
+      - :python:`int`
 
 
 The PLIKE output will be a list of dictionaries, one for each line. Each dictionary will contain an ``astropy.table.Table`` object under the ``output``, which contain the output from PLIKE, read from the output file. Each table will have the following columns:
