@@ -23,15 +23,14 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install pytest-cov
-        python -m pip install numpy
+        python -m pip install -U pip
+        python -m pip install -U pytest-cov numpy
         
 #     - name: Build package
 #       run: |
@@ -39,9 +38,9 @@ jobs:
 #         sudo apt install gfortran
 #         sh build_plike.sh
     
-#     - name: Test with pytest-cov
-#       run: |
-#         pytest tests/ --cov=pypetal --cov-report=xml --cov-report=html
+    - name: Test with pytest-cov
+      run: |
+        pytest tests/ --cov=pypetal
         
 #     - name: Upload pytest results
 #       uses: actions/upload-artifact@v3
