@@ -3,6 +3,8 @@ pyPETaL: A Pipeline for Estimating AGN Time Lags
 
 [![Documentation Status](https://readthedocs.org/projects/pypetal/badge/?version=latest)](https://pypetal.readthedocs.io/en/latest/?badge=latest)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![Workflow Status](https://img.shields.io/github/actions/workflow/status/Zstone19/pypetal/python-package.yml)](https://img.shields.io/github/actions/workflow/status/Zstone19/pypetal/python-package.yml)
+[![License] (https://img.shields.io/github/license/Zstone19/pypetal) ](https://img.shields.io/github/license/Zstone19/pypetal)
 
 
 Installation
