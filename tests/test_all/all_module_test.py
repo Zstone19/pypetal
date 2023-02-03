@@ -105,8 +105,7 @@ class TestAll(unittest.TestCase):
                             lag_bounds=lag_bounds,
                             file_fmt='ascii',
                             time_unit='d',
-                            lc_unit=['Jy', 'mJy', 'mJy'],
-                            threads=45)
+                            lc_unit=['Jy', 'mJy', 'mJy'])
 
         self.filenames = filenames
         self.line_names = line_names

@@ -44,7 +44,7 @@ class TestAll(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'test_repo/pypetal/examples/dat/javelin_'            
+        main_dir = 'examples/dat/javelin_'            
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -105,8 +105,7 @@ class TestAll(unittest.TestCase):
                             lag_bounds=lag_bounds,
                             file_fmt='ascii',
                             time_unit='d',
-                            lc_unit=['Jy', 'mJy', 'mJy'],
-                            threads=45)
+                            lc_unit=['Jy', 'mJy', 'mJy'])
 
         self.filenames = filenames
         self.line_names = line_names
