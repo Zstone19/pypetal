@@ -30,7 +30,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install -U pip
-        python -m pip install -U pytest-cov numpy
+        python -m pip install -U pytest-cov 
+        python -m pip install -U numpy --upgrade
         
     - name: Build package
       run: |
