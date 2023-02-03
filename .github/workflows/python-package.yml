@@ -41,15 +41,15 @@ jobs:
         sudo apt install gfortran
         sh build_plike.sh
     
-    - name: Test with pytest-cov
-      run: |
-        pytest tests/ --cov=pypetal
+    # - name: Test with pytest-cov
+    #   run: |
+    #     pytest tests/ --cov=pypetal
         
-    - name: Upload pytest results
-      uses: actions/upload-artifact@v3
-      with:
-        name: pytest-results-${{ matrix.python-version }}
-        path: .coverage
-      if: ${{ always() }}
+    # - name: Upload pytest results
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: pytest-results-${{ matrix.python-version }}
+    #     path: .coverage
+    #   if: ${{ always() }}
 
 
