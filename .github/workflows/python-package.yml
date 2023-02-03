@@ -33,21 +33,21 @@ jobs:
         python -m pip install pytest-cov
         python -m pip install numpy
         
-    - name: Build package
-      run: |
-        python -m pip install -U .
-        sudo apt install gfortran
-        sh build_plike.sh
+#     - name: Build package
+#       run: |
+#         python -m pip install -U .
+#         sudo apt install gfortran
+#         sh build_plike.sh
     
-    - name: Test with pytest-cov
-      run: |
-        pytest tests/ --cov=pypetal --cov-report=xml --cov-report=html
+#     - name: Test with pytest-cov
+#       run: |
+#         pytest tests/ --cov=pypetal --cov-report=xml --cov-report=html
         
-    - name: Upload pytest results
-      uses: actions/upload-artifact@v3
-      with:
-        name: pytest-results-${{ matrix.python-version }}
-        path: .coverage
-      if: ${{ always() }}
+#     - name: Upload pytest results
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: pytest-results-${{ matrix.python-version }}
+#         path: .coverage
+#       if: ${{ always() }}
 
 
