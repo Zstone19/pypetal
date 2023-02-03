@@ -371,7 +371,7 @@ class TestAll(unittest.TestCase):
             self.assertEqual( len(self.res['javelin_res'][i]['sigma']), self.javelin_mc )
 
             self.assertEqual( len(self.res['javelin_res'][i]['tophat_params']), 4 )
-            for j in range(3):
+            for j in range(4):
                 self.assertEqual( len(self.res['javelin_res'][i]['tophat_params'][j]), self.javelin_mc)
 
             self.assertIs( self.res['javelin_res'][i]['cont_hpd'], None )
