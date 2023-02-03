@@ -298,7 +298,7 @@ Module: JAVELIN (``run_javelin``)
 Determining the number of parameters in the JAVELIN model:
 
 .. list-table::
-    :widths: 25 25 25 25
+    :widths: 20 20 25 35
     :header-rows: 1
 
     * - :python:`rm_type`
@@ -307,7 +307,7 @@ Determining the number of parameters in the JAVELIN model:
       - Parameter Names
     * - :python:`"spec"`
       - :python:`True`
-      - 2 + 3*(number of light curves)
+      - :math:`2 + 3 \cdot ({\rm number of light curves})`
       - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t_1`, :math:`w_1`, :math:`s_1`, :math:`t_2`, ... 
     * - :python:`"spec"`
       - :python:`False`
@@ -316,7 +316,7 @@ Determining the number of parameters in the JAVELIN model:
     * - :python:`"phot"`
       - :python:`True`
       - 6 per line
-      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t`, :math:`w`, :math:`s`, :math:`alpha`
+      - :math:`\log(\sigma_{\rm DRW})`, :math:`\log(\tau_{\rm DRW})`, :math:`t`, :math:`w`, :math:`s`, :math:`\alpha`
 
 
 .. note:: If :python:`use_for_javelin=True` in the DRW Rejection module, and ``fixed/p_fix`` are set in the JAVELIN module, the DRW fitting results will be used instead of the input fixed parameter values.
