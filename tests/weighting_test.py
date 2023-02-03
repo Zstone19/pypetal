@@ -48,8 +48,7 @@ class TestWeighting(unittest.TestCase):
                             run_javelin=True, javelin_params=javelin_params, 
                             run_weighting=True, weighting_params=weighting_params,
                             lag_bounds=lag_bounds,
-                            file_fmt='ascii',
-                            threads=45)
+                            file_fmt='ascii')
 
         self.filenames = filenames
         self.line_names = line_names

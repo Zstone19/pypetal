@@ -40,6 +40,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, and JAVELIN 
 
    pl_args
    pl_output
+   pl_files
    python/drw_rej
    python/detrending
    python/pyccf
