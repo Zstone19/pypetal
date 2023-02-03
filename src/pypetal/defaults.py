@@ -273,17 +273,6 @@ def set_javelin(input_args, fnames):
         else:
             nfixed = 5
 
-    if isinstance(fixed, list):
-        if len(fixed) == len(fnames) - 1:
-            if isinstance(fixed[0], list):
-                for i in range(len(fixed)):
-                    assert len(fixed[i]) == nfixed
-                    assert len(p_fix[i]) == nfixed
-        else:
-            assert len(fixed) == nfixed
-            assert len(p_fix) == nfixed
-
-
 
     if not together:
 
