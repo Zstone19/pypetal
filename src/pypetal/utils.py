@@ -239,7 +239,7 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
 
     exec_str =  r"./plike <<< $'" + dcf_fname + r"\n" + str(lag_bounds[0]) + r"\n" +  str(lag_bounds[1]) + r"'"
     # exec_str = shlex.split(exec_str)
-    res = subprocess.check_output(exec_str, shell=False, stderr=subprocess.PIPE)
+    res = subprocess.check_output(exec_str, shell=True, stderr=subprocess.PIPE)
 
     # output, error = res.communicate()
 
