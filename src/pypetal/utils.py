@@ -237,7 +237,7 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
         print('Executing PLIKE')
 
     exec_str =  r"./plike <<< $'" + dcf_fname + r"\n" + str(lag_bounds[0]) + r"\n" +  str(lag_bounds[1]) + r"'"
-    res = subprocess.check_output(exec_str, shell=True)
+    res = subprocess.Popen(exec_str, shell=True, stdout=PIPE).stdout
 
     #Make sure plike.out exists
     while not ( plike_dir + 'plike.out' in glob.glob(plike_dir + '*.out') ):
