@@ -4,7 +4,8 @@ pyPetal Output Files and Directories
 Depending on the modules the user chooses to run, and the parameters chosen for each module, the output diagnostic information from pyPetal, and the structure of the output directiry will be different.
 In general, running all of the modules with three lines (named "cont", "line1", and "line2") will produce the following directory structure:
 
-```
+.. code-block:: none
+
     output_directory/
     ├── cont/
     │   ├── drw_rej/
@@ -27,7 +28,8 @@ In general, running all of the modules with three lines (named "cont", "line1", 
     ├── light_curves/
     ├── pyccf_weights_res.pdf
     └── javelin_weights_res.pdf
-```
+
+
 
 Each line will have its own subdirectory labeled with the same names given in the ``line_names`` argument for ``pyPetal.pipeline.run_pipeline``. Each of these line subdirectories will have multiple subdirectories for each module, depending on
 which modules are run.
@@ -173,7 +175,7 @@ If PLIKE is run under the pyZDCF module, its results will be stored in the ``pyz
     * - ``{line_name}_plike.out``
       - The PLIKE results.
       - ASCII
-      - num, tau, -dr, +dr, r, likelihood
+      - num, lag, -dr, +dr, r, likelihood
 
 
 
