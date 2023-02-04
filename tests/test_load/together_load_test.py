@@ -87,7 +87,12 @@ class TestLoad(unittest.TestCase):
 
 
 
-    def test_match_drw_rej(self):
+    def test_match(self):
+
+        ###############################################################################################
+        # DRW REJECTION
+        ###############################################################################################
+
         res_keys = list(self.res['drw_rej_res'].keys())
         load_keys = list(self.loaded_res['drw_rej_res'].keys())
 
@@ -137,7 +142,9 @@ class TestLoad(unittest.TestCase):
             self.assertListEqual( list(yerrfit), list(self.loaded_res['drw_rej_res']['fit_err'][i]) )
 
 
-    def test_match_pyccf(self):
+        ###############################################################################################
+        # PYCCF
+        ###############################################################################################
 
         for i, name in enumerate(['continuum', 'zing']):
             res_keys = list(self.res['pyccf_res'][i].keys())
@@ -153,7 +160,10 @@ class TestLoad(unittest.TestCase):
                 self.assertListEqual(self.res['pyccf_res'][i][key].tolist(), self.loaded_res['pyccf_res'][i][key].tolist())
 
 
-    def test_match_pyzdcf(self):
+        ###############################################################################################
+        # PYZDCF
+        ###############################################################################################
+
         for i in range(len(self.filenames[1:])):
             load_keys = list(self.loaded_res['pyzdcf_res'][i].keys())
             self.assertListEqual(load_keys, ['output', 'name'])
@@ -186,7 +196,9 @@ class TestLoad(unittest.TestCase):
 
 
 
-    def test_match_javelin(self):
+        ###############################################################################################
+        # JAVELIN
+        ###############################################################################################
 
         jav_keys = ['tau', 'sigma', 'tophat_params',
                     'cont_fit_x', 'cont_fit_y', 'cont_fit_yerr']
@@ -225,7 +237,10 @@ class TestLoad(unittest.TestCase):
 
 
 
-    def test_match_weighting(self):
+        ###############################################################################################
+        # WEIGHTING
+        ###############################################################################################
+
         res_keys = list(self.res['weighting_res'].keys())
         load_keys = list(self.loaded_res['weighting_res'].keys())
 
