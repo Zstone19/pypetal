@@ -136,7 +136,7 @@ The PLIKE output will be a list of dictionaries, one for each line. Each diction
     * - Column
       - Description
       - Type
-    * - ``tau``
+    * - ``lag``
       - The time lag.
       - :python:`float`
     * - ``r``

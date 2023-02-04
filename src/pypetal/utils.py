@@ -1,5 +1,6 @@
 import glob
 import os
+import shlex
 import subprocess
 import time
 
@@ -237,6 +238,7 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
         print('Executing PLIKE')
 
     exec_str =  r"./plike <<< $'" + dcf_fname + r"\n" + str(lag_bounds[0]) + r"\n" +  str(lag_bounds[1]) + r"'"
+    exec_str = shex.split(exec_str)
     res = subprocess.Popen(exec_str, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     output, error = res.communicate()
