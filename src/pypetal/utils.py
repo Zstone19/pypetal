@@ -242,7 +242,7 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
     output, error = res.communicate()
 
     #Make sure plike.out exists
-    if process.returncode != 0:
+    if res.returncode != 0:
         raise Exception("File handling failed %d %s %s" % (res.returncode, output, error))
 
     os.chdir(cwd)
