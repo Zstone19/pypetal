@@ -336,45 +336,6 @@ def get_zdcf(input_dir, fname1, fname2, out_dir, prefix='zdcf', num_MC=500, minp
 
     return dcf_df
 
-
-
-def get_zdcf_ml_lag(fname1, fname2, temp_dir, plike_dir, lag_bounds, sep=','):
-
-    input_dir = os.path.dirname( os.path.realpath(fname1) )
-    assert os.path.dirname( os.path.realpath(fname2) ) == input_dir
-
-    input_dir += r'/'
-
-    lc_name1 = os.path.basename(fname1)
-    lc_name2 = os.path.basename(fname2)
-
-    dcf_df = get_zdcf(input_dir, lc_name1, lc_name2, temp_dir, sep=sep)
-    dcf_fname = os.path.join(temp_dir, 'zdcf.dcf')
-
-    run_plike(dcf_fname, lag_bounds, plike_dir)
-    plike_fname = os.path.join(plike_dir, 'plike.out')
-
-    plike_dat =  Table.read( plike_fname, format='ascii',
-                             names=['num', 'lag', 'r', '-dr', '+dr', 'likelihood'])
-
-
-    #Get peak likelihood lag
-    file = open(plike_fname, 'r')
-    output_str = list(file)[-3:]
-
-    ml_lag = float( output_str[1].split()[7] )
-    ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
-    ml_lag_err_lo = np.abs( float( output_str[1].split()[9] )  )
-
-
-    return {
-        'output': plike_dat,
-        'ML_lag': ml_lag,
-        'ML_lag_err_hi': ml_lag_err_hi,
-        'ML_lag_err_lo': ml_lag_err_lo
-    }
-
-
 ##############################################################
 ######################### pyCCF ##############################
 ##############################################################
