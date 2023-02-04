@@ -237,11 +237,13 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
         print('Executing PLIKE')
 
     exec_str =  r"./plike <<< $'" + dcf_fname + r"\n" + str(lag_bounds[0]) + r"\n" +  str(lag_bounds[1]) + r"'"
-    res = subprocess.Popen(exec_str, shell=True, stdout=subprocess.PIPE).stdout
+    res = subprocess.Popen(exec_str, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    output, error = res.communicate()
 
     #Make sure plike.out exists
-    while not ( plike_dir + 'plike.out' in glob.glob(plike_dir + '*.out') ):
-        time.sleep(1)
+    if process.returncode != 0:
+        raise Exception("File handling failed %d %s %s" % (process.returncode, output, error))
 
     os.chdir(cwd)
 
