@@ -45,10 +45,12 @@ class TestLoad(unittest.TestCase):
         pyzdcf_params = {
             'nsim': 100,
             'minpts': 12,
-            'prefix': 'myname'
+            'prefix': 'myname',
+            'run_plike': True,
+            'plike_dir': 'plike_v4/'
         }
 
-        params = {
+        javelin_params = {
             'nchain': 40,
             'nburn': 20,
             'nwalker': 20,
@@ -69,7 +71,7 @@ class TestLoad(unittest.TestCase):
                             run_detrend=True, detrend_params=detrend_params,
                             run_pyccf=True, pyccf_params=pyccf_params,
                             run_pyzdcf=True, pyzdcf_params=pyzdcf_params,
-                            run_javelin=True, javelin_params=params,
+                            run_javelin=True, javelin_params=javelin_params,
                             run_weighting=True, weighting_params=weighting_params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii',
@@ -194,6 +196,32 @@ class TestLoad(unittest.TestCase):
                 else:
                     self.assertListEqual( list(self.res['pyzdcf_res'][i][col]), list(self.loaded_res['pyzdcf_res'][i]['output'][col]) )
 
+
+        ###############################################################################################
+        # PLIKE
+        ###############################################################################################
+
+        for i in range(len(self.filenames[1:])):
+            plike_cols = ['num', 'lag', 'r', '-dr', '+dr', 'likelihood']
+
+            plike_keys = ['output', 'ML_lag', 'ML_lag_err_lo', 'ML_lag_err_hi', 'name']
+            res_keys = list(self.res['plike_res'][i].keys())
+            load_keys = list(self.loaded_res['plike_res'][i].keys())
+
+            self.assertIn( 'name', load_keys )
+            for key in plike_keys[:-1]:
+                self.assertIn(key, load_keys)
+                self.assertIn(key, res_keys)
+
+            self.assertEqual( self.line_names[i+1], self.loaded_res['plike_res'][i]['name'] )
+
+            for key in plike_keys[1:]:
+                self.assertEqual( self.res['plike_res'][i][key], self.loaded_res['plike_res'][i][key] )
+
+            self.assertListEqual( list(self.res['plike_res'][i]['output'].colnames), plike_cols )
+            self.assertListEqual( list(self.loaded_res['plike_res'][i]['output'].colnames), plike_cols )
+            for col in plike_cols:
+                self.assertListEqual( list(self.res['plike_res'][i]['output'][col]), list(self.loaded_res['plike_res'][i]['output'][col]) )
 
 
         ###############################################################################################

@@ -146,12 +146,6 @@ class TestPLIKE(unittest.TestCase):
 
             res_df = self.res['plike_res'][i]['output']
 
-            # for col in df_cols:
-            #     if col != '#bin':
-            #         res_df[col] = list(map( format_float, res_df[col] ))
-            #     else:
-            #         res_df[col] = list(map( format_int, res_df[col] ))
-
             for col in df_cols:
                 self.assertListEqual( list(res_df[col]), list(file_df[col]) )
 

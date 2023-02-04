@@ -74,10 +74,12 @@ class TestAll(unittest.TestCase):
         pyzdcf_params = {
             'nsim': 100,
             'minpts': 12,
-            'prefix': 'myname'
+            'prefix': 'myname',
+            'run_plike': True,
+            'plike_dir': 'plike_v4/'
         }
 
-        params = {
+        javelin_params = {
             'nchain': 40,
             'nburn': 20,
             'nwalker': 20,
@@ -97,7 +99,7 @@ class TestAll(unittest.TestCase):
                             run_detrend=True, detrend_params=detrend_params,
                             run_pyccf=True, pyccf_params=pyccf_params,
                             run_pyzdcf=True, pyzdcf_params=pyzdcf_params,
-                            run_javelin=True, javelin_params=params,
+                            run_javelin=True, javelin_params=javelin_params,
                             run_weighting=True, weighting_params=weighting_params,
                             lag_bounds=lag_bounds,
                             file_fmt='ascii',
@@ -117,6 +119,8 @@ class TestAll(unittest.TestCase):
 
         self.javelin_mc = params['nchain'] * params['nwalker']
         self.javelin_burn = params['nburn'] * params['nwalker']
+
+        self.lag_bounds = lag_bounds
 
 
 
@@ -212,6 +216,17 @@ class TestAll(unittest.TestCase):
                 self.assertIn( pyzdcf_dir + name + suffix, glob.glob( pyzdcf_dir + '*' ) )
 
 
+        #PLIKE
+        plike_suffix = ['_plike.out']
+        for name in self.line_names[1:]:
+            subdir = '.tmp/' + name + r'/'
+            pyzdcf_dir = subdir + 'pyzdcf/'
+            self.assertIn(plike_dir, glob.glob( subdir + '*/' ) )
+
+            for suffix in plike_suffix:
+                self.assertIn( plike_dir + name + suffix, glob.glob( pyzdcf_dir + '*' ) )
+
+
         #Javelin
         types = ['cont', 'rmap']
         javelin_suffix1 = ['burn_', 'chain_', 'logp_']
@@ -276,9 +291,15 @@ class TestAll(unittest.TestCase):
 
 
         drw_rej_keys = ['masks', 'reject_data', 'taus', 'sigmas', 'jitters']
+
         pyccf_keys = ['CCF', 'CCF_lags', 'centroid', 'centroid_err_lo', 'centroid_err_hi',
                         'peak', 'peak_err_lo', 'peak_err_hi', 'CCCD_lags', 'CCPD_lags', 'name']
+
         pyzdcf_cols = ['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', '#bin' ]
+
+        plike_keys = ['output', 'ML_lag', 'ML_lag_err_lo', 'ML_lag_err_hi']
+        plike_cols = ['num', 'lag', 'r', '-dr', '+dr', 'likelihood']
+
         javelin_keys = ['cont_hpd', 'tau', 'sigma', 'tophat_params', 'hpd',
                         'cont_model', 'rmap_model', 'cont_dat', 'tot_dat', 'bestfit_model']
 
@@ -291,10 +312,10 @@ class TestAll(unittest.TestCase):
                         'lag_dist']
 
 
-        keys_tot = [drw_rej_keys, pyccf_keys, None, None, None, weight_keys]
+        keys_tot = [drw_rej_keys, pyccf_keys, None, plike_keys, None, weight_keys]
 
 
-        #DRW Rej, pyCCF
+        #DRW Rej, pyCCF, PLIKE
         for i, key in enumerate(general_keys):
             self.assertIn(key, self.res.keys())
 
@@ -303,7 +324,7 @@ class TestAll(unittest.TestCase):
 
             for k in keys_tot[i]:
 
-                if i in [1, 4]:
+                if i in [1, 3, 4]:
                     for j in range(len(self.line_names[1:])):
                         self.assertIn(k, list(self.res[key][j].keys()) )
                 else:
@@ -314,7 +335,8 @@ class TestAll(unittest.TestCase):
             self.assertListEqual( pyzdcf_cols, list(self.res['pyzdcf_res'][i].columns) )
 
         #PLIKE
-        self.assertEqual( len(self.res['plike_res']), 0 )
+        for i in range(len(self.line_names[1:])):
+            self.assertListEqual( plike_cols, list(self.res['plike_res'][i]['output'].colnames) )
 
         #JAVELIN
         for i, key in enumerate(javelin_keys):
@@ -368,6 +390,16 @@ class TestAll(unittest.TestCase):
         for i in range(len(self.line_names[1:])):
             self.assertIs( type(self.res['pyzdcf_res'][i]), pd.DataFrame )
 
+        #PLIKE
+        for i in range(len(self.line_names[1:])):
+            self.assertIs( type(self.res['plike_res'][i]['output']), Table )
+
+            for key in ['ML_lag', 'ML_lag_err_lo', 'ML_lag_err_hi']:
+                self.assertIn( type(self.res['plike_res'][i][key]), [float, np.float64] )
+
+            self.assertGreaterEqual( np.min(self.res['plike_res'][i]['output']['lag']), self.lag_bounds[i][0] )
+            self.assertLessEqual( np.max(self.res['plike_res'][i]['output']['lag']), self.lag_bounds[i][1] )
+
 
         #Javelin
         for key in [ 'tau', 'sigma' ]:
@@ -395,6 +427,11 @@ class TestAll(unittest.TestCase):
 
         for key in ['cont_dat', 'tot_dat', 'bestfit_model']:
             self.assertIs( type(self.res['javelin_res'][key]), javelin.zylc.LightCurve )
+
+        for j in range(len(self.line_names[1:])):
+            self.assertGreaterEqual( np.min(self.res['javelin_res']['tophat_params'][4*j]), self.lag_bounds[i][0] )
+            self.assertLessEqual( np.max(self.res['javelin_res']['tophat_params'][4*j]), self.lag_bounds[i][1] )
+
 
 
         #Weighting
@@ -528,6 +565,33 @@ class TestAll(unittest.TestCase):
 
             for col in df_cols:
                 self.assertListEqual( list(file_df[col]), list(res_df[col]) )
+
+
+
+        #PLIKE
+        df_cols = ['num', 'lag', 'r', '-dr', '+dr', 'likelihood']
+        for i in range(len(self.line_names[1:])):
+            file_df = Table.read('.tmp/' + self.line_names[i+1] + '/pyzdcf/' + self.line_names[i+1] + '_plike.out',
+                                 format='ascii',
+                                 names=['num', 'lag', 'r', '-dr', '+dr', 'likelihood'])
+
+            res_df = self.res['plike_res'][i]['output']
+
+            for col in df_cols:
+                self.assertListEqual( list(res_df[col]), list(file_df[col]) )
+
+
+            with open('.tmp/' + self.line_names[i+1] + '/pyzdcf/' + self.line_names[i+1] + '_plike.out', 'r') as f:
+                output_str = list(f)[-3:]
+
+                ml_lag = float( output_str[1].split()[7] )
+                ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
+                ml_lag_err_lo = np.abs( float( output_str[1].split()[9] )  )
+
+
+            self.assertEqual( ml_lag, self.res['plike_res'][i]['ML_lag'] )
+            self.assertEqual( ml_lag_err_hi, self.res['plike_res'][i]['ML_lag_err_hi'] )
+            self.assertEqual( ml_lag_err_lo, self.res['plike_res'][i]['ML_lag_err_lo'] )
 
 
 
