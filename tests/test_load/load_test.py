@@ -202,7 +202,7 @@ class TestLoad(unittest.TestCase):
                 if key in ['tau','sigma']:
                     self.assertListEqual(self.res['javelin_res'][i][key].tolist(), self.loaded_res['javelin_res'][i][key].tolist())
                 elif key == 'tophat_params':
-                    for j in range(3):
+                    for j in range(4):
                         self.assertListEqual(self.res['javelin_res'][i][key][j].tolist(), self.loaded_res['javelin_res'][i][key][j].tolist())
 
 
