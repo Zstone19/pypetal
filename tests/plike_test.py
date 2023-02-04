@@ -20,7 +20,7 @@ class TestPLIKE(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'test_repo/pypetal/examples/dat/javelin_'
+        main_dir = 'examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
@@ -36,7 +36,7 @@ class TestPLIKE(unittest.TestCase):
             'minpts': 12,
             'prefix': 'myname',
             'run_plike': True,
-            'plike_dir': 'test_repo/pypetal/plike_v4/'
+            'plike_dir': 'plike_v4/'
         }
 
         lag_bounds = [-500, 500]
