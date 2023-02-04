@@ -120,7 +120,11 @@ class TestAll(unittest.TestCase):
 
 
 
-    def test_file_layout(self):
+    def test_all(self):
+
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
 
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
@@ -157,7 +161,9 @@ class TestAll(unittest.TestCase):
 
 
 
-    def test_individual_files_exist(self):
+        #################################################################################################
+        # INDIVIDUAL FILES EXIST
+        #################################################################################################
 
         #DRW rejection
         drw_suffix = ['_chain.dat', '_drw_fit.dat', '_mask.dat', '_drw_fit.pdf']
@@ -259,7 +265,9 @@ class TestAll(unittest.TestCase):
 
 
 
-    def test_res_keys(self):
+        #################################################################################################
+        # RES KEYS
+        #################################################################################################
 
         general_keys = ['drw_rej_res', 'pyccf_res', 'pyzdcf_res', 'plike_res', 'javelin_res', 'weighting_res']
 
@@ -313,8 +321,11 @@ class TestAll(unittest.TestCase):
 
 
 
-    #Test lengths of arrays and their types
-    def test_res_values(self):
+
+        #################################################################################################
+        # RES VALUES
+        #################################################################################################
+        #Test lengths of arrays and their types
 
         #DRW rejection
         for key in ['taus', 'sigmas', 'jitters']:
@@ -461,7 +472,9 @@ class TestAll(unittest.TestCase):
 
 
 
-    def test_individual_files_content(self):
+        #################################################################################################
+        # INDIVIDUAL FILE CONTENT
+        #################################################################################################
 
         #DRW rejection
         for i in range(len(self.line_names)):

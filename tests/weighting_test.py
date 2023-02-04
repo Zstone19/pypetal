@@ -57,9 +57,13 @@ class TestWeighting(unittest.TestCase):
 
 
 
+    def test_all(self):
 
-    #Make sure the lengths and keys of each of the resulting arrays are correct
-    def test_res(self):
+        #################################################################################################
+        # RES
+        #################################################################################################
+        #Make sure the lengths and keys of each of the resulting arrays are correct
+
 
         pyccf_keys = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_CCCD', 'frac_rejected']
@@ -143,8 +147,11 @@ class TestWeighting(unittest.TestCase):
 
 
 
-    #Make sure the layout of the files is correct
-    def test_file_layout(self):
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
+        #Make sure the layout of the files is correct
+
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
 
@@ -180,8 +187,9 @@ class TestWeighting(unittest.TestCase):
 
 
 
-
-    def test_res_file_match(self):
+        #################################################################################################
+        # FILE RES MATCH
+        #################################################################################################
 
         #Match output files
         for i, name in zip([1,2], self.line_names[1:]):

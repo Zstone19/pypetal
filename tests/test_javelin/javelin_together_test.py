@@ -47,8 +47,12 @@ class TestJavelinTogether(unittest.TestCase):
 
 
 
-    #Make sure the lengths and keys of each of the resulting arrays are correct
-    def test_res(self):
+    def test_all(self):
+
+        #################################################################################################
+        # RES
+        #################################################################################################
+        #Make sure the lengths and keys of each of the resulting arrays are correct
 
         expected_keys = ['cont_hpd', 'tau', 'sigma', 'tophat_params', 'hpd',
                          'cont_model', 'rmap_model', 'cont_dat', 'tot_dat', 'bestfit_model']
@@ -182,8 +186,11 @@ class TestJavelinTogether(unittest.TestCase):
 
 
 
-    #Make sure the layout of the files is correct
-    def test_file_layout(self):
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
+         #Make sure the layout of the files is correct
+
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
 
@@ -281,7 +288,9 @@ class TestJavelinTogether(unittest.TestCase):
 
 
 
-    def test_res_file_match(self):
+        #################################################################################################
+        # RES FILE MATCH
+        #################################################################################################
 
         #Match dists
         file_sig, file_tau, t1, w1, s1, t2, w2, s2 = np.loadtxt( '.tmp/javelin/chain_rmap.txt', unpack=True )

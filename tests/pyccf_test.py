@@ -42,8 +42,13 @@ class TestPyCCF(unittest.TestCase):
         self.line_names = line_names
         self.res = res
 
-    #Make sure the lengths and keys of each of the resulting arrays are correct
-    def test_res(self):
+    def test_all(self):
+
+        #################################################################################################
+        # RES
+        #################################################################################################
+        #Make sure the lengths and keys of each of the resulting arrays are correct
+
 
         expected_keys = ['CCF', 'CCF_lags', 'centroid', 'centroid_err_lo', 'centroid_err_hi',
                             'peak', 'peak_err_lo', 'peak_err_hi', 'CCCD_lags', 'CCPD_lags', 'name']
@@ -103,9 +108,11 @@ class TestPyCCF(unittest.TestCase):
 
 
 
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
+        #Make sure the layout of the files is correct
 
-    #Make sure the layout of the files is correct
-    def test_file_layout(self):
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
 
@@ -146,7 +153,9 @@ class TestPyCCF(unittest.TestCase):
 
 
 
-    def test_res_file_match(self):
+        #################################################################################################
+        # RES FILE MATCH
+        #################################################################################################
 
         #Match CCF
         for i, name in enumerate(self.line_names[1:]):

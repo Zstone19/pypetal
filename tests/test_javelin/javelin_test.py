@@ -46,8 +46,12 @@ class TestJAVELIN(unittest.TestCase):
 
 
 
-    #Make sure the lengths and keys of each of the resulting arrays are correct
-    def test_res(self):
+    def test_all(self):
+
+        #################################################################################################
+        # RES
+        #################################################################################################
+        #Make sure the lengths and keys of each of the resulting arrays are correct
 
         expected_keys = ['cont_hpd', 'tau', 'sigma', 'tophat_params', 'hpd',
                          'cont_model', 'rmap_model', 'cont_dat', 'tot_dat', 'bestfit_model']
@@ -167,9 +171,11 @@ class TestJAVELIN(unittest.TestCase):
             self.assertLessEqual( np.max(self.res['javelin_res'][i]['tophat_params'][0]), lag_bounds[i][1] )
 
 
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
+        #Make sure the layout of the files is correct
 
-    #Make sure the layout of the files is correct
-    def test_file_layout(self):
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
 
@@ -264,7 +270,9 @@ class TestJAVELIN(unittest.TestCase):
 
 
 
-    def test_res_file_match(self):
+        #################################################################################################
+        # RES FILE MATCH
+        #################################################################################################
 
         #Match dists
         for i in range(2):

@@ -47,8 +47,14 @@ class TestPyZDCF(unittest.TestCase):
         self.line_names = line_names
         self.res = res
 
-    #Make sure the lengths and keys of each of the resulting arrays are correct
-    def test_res(self):
+
+
+    def test_all(self):
+
+        #################################################################################################
+        # RES
+        #################################################################################################
+        #Make sure the lengths and keys of each of the resulting arrays are correct
 
         df_cols = ['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', '#bin' ]
 
@@ -73,9 +79,11 @@ class TestPyZDCF(unittest.TestCase):
 
 
 
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
+        #Make sure the layout of the files is correct
 
-    #Make sure the layout of the files is correct
-    def test_file_layout(self):
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
 
@@ -110,7 +118,9 @@ class TestPyZDCF(unittest.TestCase):
 
 
 
-    def test_res_file_match(self):
+        #################################################################################################
+        # RES FILE MATCH
+        #################################################################################################
 
         df_cols = ['tau', '-sig(tau)', '+sig(tau)', 'dcf', '-err(dcf)', '+err(dcf)', '#bin' ]
 

@@ -57,8 +57,12 @@ class TestDrwRej(unittest.TestCase):
 
 
 
-    #Make sure the lengths and keys of each of the resulting arrays are correct
-    def test_res(self):
+    def test_all(self):
+
+        #################################################################################################
+        # RES
+        #################################################################################################
+        #Make sure the lengths and keys of each of the resulting arrays are correct
 
         expected_keys = ['masks', 'reject_data', 'taus', 'sigmas', 'jitters']
         expected_lengths = np.full( len(expected_keys), 3 )
@@ -99,9 +103,11 @@ class TestDrwRej(unittest.TestCase):
 
 
 
+        #################################################################################################
+        # FILE LAYOUT
+        #################################################################################################
+         #Make sure the layout of the files is correct
 
-    #Make sure the layout of the files is correct
-    def test_file_layout(self):
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/zing/']
 
@@ -162,7 +168,9 @@ class TestDrwRej(unittest.TestCase):
 
 
 
-    def test_res_file_match(self):
+        #################################################################################################
+        # RES FILE MATCH
+        #################################################################################################
 
         #Match chains
         for i, name in zip([0,2], ['continuum', 'zing']):
