@@ -234,18 +234,28 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
         print('Lag bounds: ', lag_bounds)
         raise ValueError('Must provide two lag bounds.')
 
+
+    #Make file with the arguments to pass to plike
+    with open('args.txt', 'w') as f:
+        f.write(dcf_fname + '\n')
+        f.write(str(lag_bounds[0]) + '\n')
+        f.write(str(lag_bounds[1]))
+
+
     if verbose:
         print('Executing PLIKE')
 
-    exec_str =  r"./plike <<< $'" + dcf_fname + r"\n" + str(lag_bounds[0]) + r"\n" +  str(lag_bounds[1]) + r"'"
-    # exec_str = shlex.split(exec_str)
-    res = subprocess.check_output(exec_str, shell=True, stderr=subprocess.PIPE)
+    exec_str = './plike < args.txt'
+    res = subprocess.Popen(exec_str, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # output, error = res.communicate()
+    output, error = res.communicate()
+    if res.returncode != 0:
+        raise Exception("File handling failed %d %s %s" % (res.returncode, output, error))
 
-    # #Make sure plike.out exists
-    # if res.returncode != 0:
-    #     raise Exception("File handling failed %d %s %s" % (res.returncode, output, error))
+
+    #Delete args.txt
+    os.remove('args.txt')
+
 
     os.chdir(cwd)
 
