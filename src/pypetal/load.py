@@ -273,41 +273,6 @@ def get_ordered_line_names(main_dir):
     return line_names_tot
 
 
-def get_line_data_dir(main_dir):
-    dirs = glob.glob( main_dir + '*/')
-
-    if main_dir + 'processed_lcs/' in dirs:
-        line_dir = main_dir + 'processed_lcs/'
-    else:
-        line_dir = main_dir + 'light_curves/'
-
-    return line_dir
-
-
-def get_line_data(main_dir):
-    dirs = glob.glob( main_dir + '*/')
-
-    if main_dir + 'processed_lcs/' in dirs:
-        line_dir = main_dir + 'processed_lcs/'
-    else:
-        line_dir = main_dir + 'light_curves/'
-
-    line_names = get_ordered_line_names(main_dir)
-
-    x_tot = []
-    y_tot = []
-    yerr_tot = []
-
-    for i in range(len(line_names)):
-        x, y, yerr = np.loadtxt( line_dir + line_nams[i] + '.dat', unpack=True, delimiter=',', usecols=[0,1,2] )
-
-        x_tot.append(x)
-        y_tot.append(y)
-        yerr_tot.append(yerr)
-
-    return x_tot, y_tot, yerr_tot
-
-
 #######################################################################
 #                            DRW REJECTION
 #######################################################################
