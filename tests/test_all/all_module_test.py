@@ -7,6 +7,7 @@ import javelin.lcmodel
 import javelin.zylc
 import numpy as np
 import pandas as pd
+from astropy.table import Table
 from javelin.zylc import get_data
 
 import pypetal.pipeline as pl
