@@ -221,10 +221,10 @@ class TestAll(unittest.TestCase):
         for name in self.line_names[1:]:
             subdir = '.tmp/' + name + r'/'
             pyzdcf_dir = subdir + 'pyzdcf/'
-            self.assertIn(plike_dir, glob.glob( subdir + '*/' ) )
+            self.assertIn(pyzdcf_dir, glob.glob( subdir + '*/' ) )
 
             for suffix in plike_suffix:
-                self.assertIn( plike_dir + name + suffix, glob.glob( pyzdcf_dir + '*' ) )
+                self.assertIn( pyzdcf_dir + name + suffix, glob.glob( pyzdcf_dir + '*' ) )
 
 
         #Javelin
