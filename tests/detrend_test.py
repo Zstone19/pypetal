@@ -20,10 +20,6 @@ class TestWeighting(unittest.TestCase):
         output_dir = '.tmp/'
         line_names = ['continuum', 'yelm', 'zing']
 
-
-        if os.path.exists(output_dir) and os.path.isdir(output_dir):
-            shutil.rmtree(output_dir)
-
         detrend_params = {
             'K': 2
         }

@@ -32,10 +32,6 @@ class TestDrwRej(unittest.TestCase):
         output_dir = '.tmp/'
         line_names = ['continuum', 'yelm', 'zing']
 
-        if os.path.exists(output_dir):
-            shutil.rmtree(output_dir)
-
-
         params = {
             'nchain': 100,
             'nburn': 50,

@@ -20,11 +20,6 @@ class TestJAVELIN(unittest.TestCase):
         output_dir = '.tmp/'
         line_names = ['continuum', 'yelm', 'zing']
 
-
-        if os.path.exists(output_dir) and os.path.isdir(output_dir):
-            shutil.rmtree(output_dir)
-
-
         params = {
             'nchain': 20,
             'nburn': 10,

@@ -19,9 +19,6 @@ class TestLoad(unittest.TestCase):
         output_dir = '.tmp/'
         line_names = ['continuum', 'yelm', 'zing']
 
-        if os.path.exists(output_dir):
-            shutil.rmtree(output_dir)
-
         drw_rej_params = {
             'nchain': 100,
             'nburn': 50,

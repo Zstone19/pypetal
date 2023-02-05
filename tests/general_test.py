@@ -19,9 +19,6 @@ class TestGeneral1(unittest.TestCase):
         output_dir = '.tmp/'
         line_names = ['continuum', 'yelm', 'zing']
 
-        if os.path.exists(output_dir):
-            shutil.rmtree(output_dir)
-
         #Run pypetal
         res = pl.run_pipeline(output_dir, filenames, line_names,
                               file_fmt='ascii')
