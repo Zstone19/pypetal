@@ -117,8 +117,8 @@ class TestAll(unittest.TestCase):
         self.pyccf_mc = pyccf_params['nsim']
         self.pyzdcf_mc = pyzdcf_params['nsim']
 
-        self.javelin_mc = params['nchain'] * params['nwalker']
-        self.javelin_burn = params['nburn'] * params['nwalker']
+        self.javelin_mc = javelin_params['nchain'] * javelin_params['nwalker']
+        self.javelin_burn = javelin_params['nburn'] * javelin_params['nwalker']
 
         self.lag_bounds = lag_bounds
 

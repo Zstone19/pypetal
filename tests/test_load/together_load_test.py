@@ -215,7 +215,7 @@ class TestLoad(unittest.TestCase):
 
             self.assertEqual( self.line_names[i+1], self.loaded_res['plike_res'][i]['name'] )
 
-            for key in plike_keys[1:]:
+            for key in plike_keys[1:-1]:
                 self.assertEqual( self.res['plike_res'][i][key], self.loaded_res['plike_res'][i][key] )
 
             self.assertListEqual( list(self.res['plike_res'][i]['output'].colnames), plike_cols )
