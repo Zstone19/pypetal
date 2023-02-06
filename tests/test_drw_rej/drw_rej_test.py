@@ -62,7 +62,7 @@ class TestDrwRej(unittest.TestCase):
         #################################################################################################
         #Make sure the lengths and keys of each of the resulting arrays are correct
 
-        expected_keys = ['masks', 'reject_data', 'taus', 'sigmas', 'jitters']
+        expected_keys = ['masks', 'reject_data', 'taus', 'sigmas']
         expected_lengths = np.full( len(expected_keys), 3 )
 
         lc_lengths = []
@@ -77,6 +77,8 @@ class TestDrwRej(unittest.TestCase):
         for key in expected_keys:
             self.assertIn( key, res_keys )
 
+        self.assertNotIn( 'jitters', res_keys )
+
 
         #Make sure lengths of key values are correct
         for key in expected_keys:
@@ -87,7 +89,7 @@ class TestDrwRej(unittest.TestCase):
         self.assertEqual( np.all(self.res['drw_rej_res']['masks'][1]), False )
 
         #Make sure yelm tau, sig, and jitter are None
-        for key in['taus', 'sigmas', 'jitters']:
+        for key in['taus', 'sigmas']:
             self.assertIs( self.res['drw_rej_res'][key][1], None )
 
         #Make sure lengths of masks are correct
@@ -98,10 +100,6 @@ class TestDrwRej(unittest.TestCase):
         for key in ['taus', 'sigmas']:
             for i in [0,2]:
                 self.assertEqual( len(self.res['drw_rej_res'][key][i]), mc_length )
-
-        #Make sure all jitter values are None
-        for i in range(3):
-            self.assertIs( self.res['drw_rej_res']['jitters'][i], None )
 
 
         #################################################################################################
