@@ -174,11 +174,10 @@ class TestDrwRej(unittest.TestCase):
         #Match chains
         for i, name in zip([0,2], ['continuum', 'zing']):
             file_tau, file_sig = np.loadtxt('.tmp/' + name + '/drw_rej/' + name + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1])
-            res_sig, res_tau = self.res['drw_rej_res']['taus'][i], self.res['drw_rej_res']['sigmas'][i], self.res['drw_rej_res']['jitters'][i]
+            res_sig, res_tau = self.res['drw_rej_res']['taus'][i], self.res['drw_rej_res']['sigmas'][i]
 
             self.assertListEqual(list(file_tau), list(res_tau))
             self.assertListEqual(list(file_sig), list(res_sig))
-            self.assertListEqual(list(file_jit), list(res_jit))
 
 
         #Match masks
