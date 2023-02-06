@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 from astropy.table import Table
+from javelin.zylc import get_data
 
 
 def get_line_names(main_dir):
@@ -443,12 +444,12 @@ def load_pyzdcf(dir_loc):
                                   names=['num', 'lag', 'r', '-dr', '+dr', 'likelihood'])
 
 
-            file = open(plike_file, 'r')
-            output_str = list(file)[-3:]
+            with open(plike_file, 'r') as file:
+                output_str = list(file)[-3:]
 
-            ml_lag = float( output_str[1].split()[7] )
-            ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
-            ml_lag_err_lo = np.abs( float( output_str[1].split()[9] )  )
+                ml_lag = float( output_str[1].split()[7] )
+                ml_lag_err_hi = np.abs( float( output_str[1].split()[8] )  )
+                ml_lag_err_lo = np.abs( float( output_str[1].split()[9] )  )
 
 
             dict_i = {
