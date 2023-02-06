@@ -539,6 +539,24 @@ def load_javelin(dir_loc):
 #                             Weighting
 #######################################################################
 
+def str2num(str, dtype=float, arr=False):
+
+    if str == 'None':
+        return None
+
+    if dtype == float:
+        if arr:
+            return list(map(float, line))
+        else:
+            return float(str)
+
+    elif dtype == int:
+        if arr:
+            return list(map(int, line))
+        else:
+            return int(str)
+
+
 def read_weighting_summary(fname):
 
     res_dict = {}
@@ -549,70 +567,66 @@ def read_weighting_summary(fname):
 
             #Total
             if i == 0:
-                res_dict['k'] = float(line.strip('k = '))
+                res_dict['k'] = str2num(line.strip('k = '), dtype=float)
 
 
             #pyCCF
             if i == 4:
-                res_dict['pyccf_n0'] = int(line.strip('n0 = '))
+                res_dict['pyccf_n0'] = str2num(line.strip('n0 = '), dtype=int)
 
             if i == 5:
                 line = line.strip('peak bounds = [ ]')
                 line = line.split(',')
 
-                bounds = list(map(float, line))
-                res_dict['pyccf_lag_bounds'] = bounds
+                res_dict['pyccf_lag_bounds'] = str2num(line, dtype=float, arr=True)
 
             if i == 6:
-                res_dict['pyccf_peak'] = float(line.strip('peak = '))
+                res_dict['pyccf_peak'] = str2num(line.strip('peak = '), dtype=float)
 
             if i == 7:
-                res_dict['pyccf_lag_value'] = float(line.strip('lag value = '))
+                res_dict['pyccf_lag_value'] = str2num(line.strip('lag value = '), dtype=float)
 
             if i == 8:
                 line = line.strip('lag uncertainty = [ ]')
                 line = line.split(',')
 
-                bounds = list(map(float, line))
-                res_dict['pyccf_lag_uncertainty'] = bounds
+                res_dict['pyccf_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
 
             if i == 9:
-                res_dict['pyccf_frac_rejected'] = float(line.strip('fraction rejected = '))
+                res_dict['pyccf_frac_rejected'] = str2num(line.strip('fraction rejected = '), dtype=float)
 
 
 
             #JAVELIN
             if i == 13:
-                res_dict['javelin_n0'] = int(line.strip('n0 = '))
+                res_dict['javelin_n0'] = str2num(line.strip('n0 = '), dtype=int)
 
             if i == 14:
                 line = line.strip('peak bounds = [ ]')
                 line = line.split(',')
 
-                bounds = list(map(float, line))
-                res_dict['javelin_lag_bounds'] = bounds
+                res_dict['javelin_lag_bounds'] = str2num(line, dtype=float, arr=True)
 
             if i == 15:
-                res_dict['javelin_peak'] = float(line.strip('peak = '))
+                res_dict['javelin_peak'] = str2num(line.strip('peak = '), dtype=float)
 
             if i == 16:
-                res_dict['javelin_lag_value'] = float(line.strip('lag value = '))
+                res_dict['javelin_lag_value'] = str2num(line.strip('lag value = '), dtype=float)
 
             if i == 17:
                 line = line.strip('lag uncertainty = [ ]')
                 line = line.split(',')
 
-                bounds = list(map(float, line))
-                res_dict['javelin_lag_uncertainty'] = bounds
+                res_dict['javelin_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
 
             if i == 18:
-                res_dict['javelin_frac_rejected'] = float(line.strip('fraction rejected = '))
+                res_dict['javelin_frac_rejected'] = str2num(line.strip('fraction rejected = '), dtype=float)
 
 
 
             #Total
             if i == 22:
-                res_dict['rmax'] = float(line.strip('rmax = '))
+                res_dict['rmax'] = str2num(line.strip('rmax = '), dtype=float)
 
 
     return res_dict
