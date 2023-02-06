@@ -544,6 +544,11 @@ def str2num(string, dtype=float, arr=False):
     if string == 'None':
         return None
 
+    if arr:
+        string = string.strip('[ ]')
+        string = string.split(',')
+
+
     if dtype == float:
         if arr:
             return list(map(float, string))
@@ -555,6 +560,8 @@ def str2num(string, dtype=float, arr=False):
             return list(map(int, string))
         else:
             return int(string)
+
+
 
 
 def read_weighting_summary(fname):
@@ -575,7 +582,7 @@ def read_weighting_summary(fname):
                 res_dict['pyccf_n0'] = str2num(line.strip('n0 = '), dtype=int)
 
             if i == 5:
-                line = line.strip('peak bounds = [ ]')
+                line = line.strip('peak bounds = ')
                 line = line.split(',')
 
                 res_dict['pyccf_lag_bounds'] = str2num(line, dtype=float, arr=True)
@@ -587,7 +594,7 @@ def read_weighting_summary(fname):
                 res_dict['pyccf_lag_value'] = str2num(line.strip('lag value = '), dtype=float)
 
             if i == 8:
-                line = line.strip('lag uncertainty = [ ]')
+                line = line.strip('lag uncertainty = ')
                 line = line.split(',')
 
                 res_dict['pyccf_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
@@ -602,7 +609,7 @@ def read_weighting_summary(fname):
                 res_dict['javelin_n0'] = str2num(line.strip('n0 = '), dtype=int)
 
             if i == 14:
-                line = line.strip('peak bounds = [ ]')
+                line = line.strip('peak bounds = ')
                 line = line.split(',')
 
                 res_dict['javelin_lag_bounds'] = str2num(line, dtype=float, arr=True)
@@ -614,7 +621,7 @@ def read_weighting_summary(fname):
                 res_dict['javelin_lag_value'] = str2num(line.strip('lag value = '), dtype=float)
 
             if i == 17:
-                line = line.strip('lag uncertainty = [ ]')
+                line = line.strip('lag uncertainty = ')
                 line = line.split(',')
 
                 res_dict['javelin_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
