@@ -38,7 +38,8 @@ class TestDrwRej(unittest.TestCase):
             'nwalker': 20,
             'reject_data': [True, False, True],
             'nsig': 1.0,
-            'jitter': False
+            'jitter': False,
+            'clip': True
         }
 
 

@@ -12,13 +12,13 @@ import pypetal.pipeline as pl
 class TestLoad(unittest.TestCase):
 
     def setUp(self):
-        main_dir = 'test_repo/pypetal/examples/dat/javelin_'
+        main_dir = 'examples/dat/javelin_'
         self.filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         self.output_dir = '.tmp/'
         self.line_names = ['continuum', 'yelm', 'zing']
 
-        self.plike_dir = 'test_repo/pypetal/plike_v4/'
+        self.plike_dir = 'plike_v4/'
 
 
 

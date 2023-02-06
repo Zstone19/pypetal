@@ -102,6 +102,8 @@ class TestAll(unittest.TestCase):
                             file_fmt='ascii',
                             time_unit='d',
                             lc_unit=['Jy', 'mJy', 'mJy'],
+                            verbose=True,
+                            plot=True,
                             threads=4)
 
         self.filenames = filenames
