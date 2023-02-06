@@ -583,8 +583,6 @@ def read_weighting_summary(fname):
 
             if i == 5:
                 line = line.strip('peak bounds = ')
-                line = line.split(',')
-
                 res_dict['pyccf_lag_bounds'] = str2num(line, dtype=float, arr=True)
 
             if i == 6:
@@ -595,8 +593,6 @@ def read_weighting_summary(fname):
 
             if i == 8:
                 line = line.strip('lag uncertainty = ')
-                line = line.split(',')
-
                 res_dict['pyccf_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
 
             if i == 9:
@@ -610,8 +606,6 @@ def read_weighting_summary(fname):
 
             if i == 14:
                 line = line.strip('peak bounds = ')
-                line = line.split(',')
-
                 res_dict['javelin_lag_bounds'] = str2num(line, dtype=float, arr=True)
 
             if i == 15:
@@ -622,8 +616,6 @@ def read_weighting_summary(fname):
 
             if i == 17:
                 line = line.strip('lag uncertainty = ')
-                line = line.split(',')
-
                 res_dict['javelin_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
 
             if i == 18:
