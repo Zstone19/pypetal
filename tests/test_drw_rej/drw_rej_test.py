@@ -37,7 +37,8 @@ class TestDrwRej(unittest.TestCase):
             'nburn': 50,
             'nwalker': 20,
             'reject_data': [True, False, True],
-            'nsig': 1.0
+            'nsig': 1.0,
+            'jitter': False
         }
 
 
@@ -93,10 +94,13 @@ class TestDrwRej(unittest.TestCase):
             self.assertEqual( len(self.res['drw_rej_res']['masks'][i]), lc_lengths[i] )
 
         #Make sure MCMC lengths are correct
-        for key in ['taus', 'sigmas', 'jitters']:
+        for key in ['taus', 'sigmas']:
             for i in [0,2]:
                 self.assertEqual( len(self.res['drw_rej_res'][key][i]), mc_length )
 
+        #Make sure all jitter values are None
+        for i in range(3):
+            self.assertIs( self.res['drw_rej_res']['jitters'][i], None )
 
 
         #################################################################################################
@@ -139,7 +143,7 @@ class TestDrwRej(unittest.TestCase):
 
 
             #Make sure the chain file has the correct number of lines
-            taus, sigs, jits = np.loadtxt(fdir + 'drw_rej/' + self.line_names[i] + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1,2])
+            taus, sigs = np.loadtxt(fdir + 'drw_rej/' + self.line_names[i] + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1])
             self.assertEqual( len(taus), 100*20 )
 
 
@@ -170,8 +174,8 @@ class TestDrwRej(unittest.TestCase):
 
         #Match chains
         for i, name in zip([0,2], ['continuum', 'zing']):
-            file_tau, file_sig, file_jit = np.loadtxt('.tmp/' + name + '/drw_rej/' + name + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1,2])
-            res_sig, res_tau, res_jit = self.res['drw_rej_res']['taus'][i], self.res['drw_rej_res']['sigmas'][i], self.res['drw_rej_res']['jitters'][i]
+            file_tau, file_sig = np.loadtxt('.tmp/' + name + '/drw_rej/' + name + '_chain.dat', unpack=True, delimiter=',', usecols=[0,1])
+            res_sig, res_tau = self.res['drw_rej_res']['taus'][i], self.res['drw_rej_res']['sigmas'][i], self.res['drw_rej_res']['jitters'][i]
 
             self.assertListEqual(list(file_tau), list(res_tau))
             self.assertListEqual(list(file_sig), list(res_sig))
