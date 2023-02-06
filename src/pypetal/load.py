@@ -539,22 +539,22 @@ def load_javelin(dir_loc):
 #                             Weighting
 #######################################################################
 
-def str2num(str, dtype=float, arr=False):
+def str2num(string, dtype=float, arr=False):
 
-    if str == 'None':
+    if string == 'None':
         return None
 
     if dtype == float:
         if arr:
-            return list(map(float, line))
+            return list(map(float, string))
         else:
-            return float(str)
+            return float(string)
 
     elif dtype == int:
         if arr:
-            return list(map(int, line))
+            return list(map(int, string))
         else:
-            return int(str)
+            return int(string)
 
 
 def read_weighting_summary(fname):
