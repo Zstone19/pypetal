@@ -254,7 +254,7 @@ def get_cont_name(main_dir):
         if np.all(~reject_data):
             cont_name = line_names[0]
         else:
-            possible_names = line_names[reject_data]
+            possible_names = np.array(line_names)[reject_data]
 
             cont_name = possible_names[0]
 

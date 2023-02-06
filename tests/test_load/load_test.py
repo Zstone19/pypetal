@@ -143,18 +143,18 @@ class TestLoad(unittest.TestCase):
         ###############################################################################################
 
 
-        for i, name in enumerate(['continuum', 'zing']):
+        for i, name in enumerate(self.line_names[1:]):
             res_keys = list(self.res['pyccf_res'][i].keys())
             load_keys = list(self.loaded_res['pyccf_res'][i].keys())
 
 
-        for key in load_keys:
-            self.assertIn(key, load_keys)
+            for key in load_keys:
+                self.assertIn(key, res_keys)
 
-            if key == 'name':
-                self.assertEqual(self.res['pyccf_res'][i][key], self.loaded_res['pyccf_res'][i][key])
-            else:
-                self.assertListEqual(self.res['pyccf_res'][i][key].tolist(), self.loaded_res['pyccf_res'][i][key].tolist())
+                if key == 'name':
+                    self.assertEqual(self.res['pyccf_res'][i][key], self.loaded_res['pyccf_res'][i][key])
+                else:
+                    self.assertListEqual(self.res['pyccf_res'][i][key].tolist(), self.loaded_res['pyccf_res'][i][key].tolist())
 
 
         ###############################################################################################
