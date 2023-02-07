@@ -159,11 +159,10 @@ def drw_flag(times, data, error,
     std = np.sqrt(var)
 
     mu_flag, var_flag = gp.predict(data.value, times.value, return_var=True)
-    std_flag = np.sqrt(var_flag)
 
 
     #Reject if data is beyond nsig*sig of fit mean
-    flag_mask = np.abs(data.value - mu_flag) > nsig*std_flag
+    flag_mask = np.abs(data.value - mu_flag) > nsig*error.value
 
     res = {
         'mask': flag_mask,
