@@ -52,7 +52,7 @@ class TestLoad(unittest.TestCase):
 
             for j in range(len(xdat)):
                 fit_val = interp_func(xdat[j])
-                self.assertEqual( res_mask[j], np.abs(ydat[j]-yfit[fit_ind]) > 2.5*yerrdat[j] )
+                self.assertEqual( res_mask[j], np.abs(ydat[j]-fit_val) > 2.5*yerrdat[j] )
 
 
     def tearDown(self):
