@@ -582,21 +582,21 @@ def read_weighting_summary(fname):
                 res_dict['pyccf_n0'] = str2num(line.strip('n0 = '), dtype=int)
 
             if i == 5:
-                line = line.strip('peak bounds = ')
+                line = line.split('peak bounds = ')[1]
                 res_dict['pyccf_lag_bounds'] = str2num(line, dtype=float, arr=True)
 
             if i == 6:
-                res_dict['pyccf_peak'] = str2num(line.strip('peak = '), dtype=float)
+                res_dict['pyccf_peak'] = str2num(line.split('peak = ')[1], dtype=float)
 
             if i == 7:
-                res_dict['pyccf_lag_value'] = str2num(line.strip('lag value = '), dtype=float)
+                res_dict['pyccf_lag_value'] = str2num(line.split('lag value = ')[1], dtype=float)
 
             if i == 8:
-                line = line.strip('lag uncertainty = ')
+                line = line.split('lag uncertainty = ')[1]
                 res_dict['pyccf_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
 
             if i == 9:
-                res_dict['pyccf_frac_rejected'] = str2num(line.strip('fraction rejected = '), dtype=float)
+                res_dict['pyccf_frac_rejected'] = str2num(line.split('fraction rejected = ')[1], dtype=float)
 
 
 
@@ -605,21 +605,21 @@ def read_weighting_summary(fname):
                 res_dict['javelin_n0'] = str2num(line.strip('n0 = '), dtype=int)
 
             if i == 14:
-                line = line.strip('peak bounds = ')
+                line = line.split('peak bounds = ')[1]
                 res_dict['javelin_lag_bounds'] = str2num(line, dtype=float, arr=True)
 
             if i == 15:
-                res_dict['javelin_peak'] = str2num(line.strip('peak = '), dtype=float)
+                res_dict['javelin_peak'] = str2num(line.split('peak = ')[1], dtype=float)
 
             if i == 16:
-                res_dict['javelin_lag_value'] = str2num(line.strip('lag value = '), dtype=float)
+                res_dict['javelin_lag_value'] = str2num(line.split('lag value = ')[1], dtype=float)
 
             if i == 17:
-                line = line.strip('lag uncertainty = ')
+                line = line.split('lag uncertainty = ')[1]
                 res_dict['javelin_lag_uncertainty'] = str2num(line, dtype=float, arr=True)
 
             if i == 18:
-                res_dict['javelin_frac_rejected'] = str2num(line.strip('fraction rejected = '), dtype=float)
+                res_dict['javelin_frac_rejected'] = str2num(line.split('fraction rejected = ')[1], dtype=float)
 
 
 
