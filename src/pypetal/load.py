@@ -633,15 +633,13 @@ def read_weighting_summary(fname):
 
 
 
-def load_weighting(main_dir):
+def load_weighting(main_dir, run_pyccf, run_javelin):
 
     line_names = get_ordered_line_names(main_dir)
     dirs_tot = np.array([ main_dir + x + r'/' for x in line_names ])
 
     line_dirs = dirs_tot[1:]
     cont_dir = dirs_tot[0]
-
-
 
     output = {
         'pyccf': {},
@@ -650,26 +648,32 @@ def load_weighting(main_dir):
         'names': []
     }
 
-    output['pyccf']['centroid'] = []
-    output['pyccf']['bounds'] = []
-    output['pyccf']['acf'] = []
-    output['pyccf']['lags'] = []
-    output['pyccf']['weight_dist'] = []
-    output['pyccf']['smoothed_dist'] = []
-    output['pyccf']['ntau'] = []
-    output['pyccf']['downsampled_CCCD'] = []
-    output['pyccf']['frac_rejected'] = []
+    if run_pyccf:
+        output['pyccf']['centroid'] = []
+        output['pyccf']['bounds'] = []
+        output['pyccf']['acf'] = []
+        output['pyccf']['lags'] = []
+        output['pyccf']['weight_dist'] = []
+        output['pyccf']['smoothed_dist'] = []
+        output['pyccf']['ntau'] = []
+        output['pyccf']['downsampled_CCCD'] = []
+        output['pyccf']['frac_rejected'] = []
 
 
-    output['javelin']['tophat_lag'] = []
-    output['javelin']['bounds'] = []
-    output['javelin']['acf'] = []
-    output['javelin']['lags'] = []
-    output['javelin']['weight_dist'] = []
-    output['javelin']['smoothed_dist'] = []
-    output['javelin']['ntau'] = []
-    output['javelin']['downsampled_lag_dist'] = []
-    output['javelin']['frac_rejected'] = []
+
+    if run_javelin:
+        output['javelin']['tophat_lag'] = []
+        output['javelin']['bounds'] = []
+        output['javelin']['acf'] = []
+        output['javelin']['lags'] = []
+        output['javelin']['weight_dist'] = []
+        output['javelin']['smoothed_dist'] = []
+        output['javelin']['ntau'] = []
+        output['javelin']['downsampled_lag_dist'] = []
+        output['javelin']['frac_rejected'] = []
+
+
+    output['names'] = []
 
 
     res_dicts_tot = []
@@ -678,19 +682,7 @@ def load_weighting(main_dir):
         summary_dict = read_weighting_summary(weight_dir + 'weight_summary.txt')
 
 
-        javelin_files = glob.glob( weight_dir + 'javelin*' )
-        pyccf_files = glob.glob( weight_dir + 'pyccf*' )
-
-        jweight = False
-        pweight = False
-
-        if len(javelin_files) > 0:
-            jweight = True
-        if len(pyccf_files) > 0:
-            pweight = True
-
-
-        if jweight:
+        if run_javelin:
             lag_err_lo = summary_dict['javelin_lag_uncertainty'][0]
             lag_err_hi = summary_dict['javelin_lag_uncertainty'][1]
             med_lag = summary_dict['javelin_lag_value']
@@ -713,20 +705,9 @@ def load_weighting(main_dir):
 
             output['javelin']['frac_rejected'].append( summary_dict['javelin_frac_rejected'] )
 
-        else:
-            output['javelin']['tophat_lag'].append(None)
-            output['javelin']['bounds'].append(None)
-            output['javelin']['lags'].append(None)
-            output['javelin']['ntau'].append(None)
-            output['javelin']['weight_dist'].append(None)
-            output['javelin']['acf'].append(None)
-            output['javelin']['smoothed_dist'].append(None)
-            output['javelin']['downsampled_lag_dist'].append(None)
-            output['javelin']['frac_rejected'].append(None)
 
 
-
-        if pweight:
+        if run_pyccf:
             cent_err_lo = summary_dict['pyccf_lag_uncertainty'][0]
             cent_err_hi = summary_dict['pyccf_lag_uncertainty'][1]
             med_cent = summary_dict['pyccf_lag_value']
@@ -749,19 +730,8 @@ def load_weighting(main_dir):
 
             output['pyccf']['frac_rejected'].append( summary_dict['pyccf_frac_rejected'] )
 
-        else:
-            output['pyccf']['centroid'].append(None)
-            output['pyccf']['bounds'].append(None)
-            output['pyccf']['lags'].append(None)
-            output['pyccf']['ntau'].append(None)
-            output['pyccf']['weight_dist'].append(None)
-            output['pyccf']['acf'].append(None)
-            output['pyccf']['smoothed_dist'].append(None)
-            output['pyccf']['downsampled_CCCD'].append(None)
-            output['pyccf']['frac_rejected'].append(None)
 
-
-        if jweight & pweight:
+        if run_javelin & run_pyccf:
             output['rmax'].append( summary_dict['rmax'] )
 
         output['names'].append( line_names[i+1] )
@@ -837,7 +807,7 @@ Weighting: {}
         javelin_res = load_javelin(main_dir)
 
     if run_weighting:
-        weighting_res = load_weighting(main_dir)
+        weighting_res = load_weighting(main_dir, run_pyccf, run_javelin)
 
     res_tot = {}
     res_tot['drw_rej_res'] = drw_rej_res
