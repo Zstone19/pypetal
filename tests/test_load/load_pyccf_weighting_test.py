@@ -64,7 +64,7 @@ class TestLoad(unittest.TestCase):
         self.assertEquals( len(self.loaded_res['weighting_res']['rmax']), 0 )
         self.assertEquals( len(self.loaded_res['weighting_res']['javelin'].keys()), 0 )
 
-        self.assertListEquals( self.line_names, list(self.loaded_res['weighting_res']['names']) )
+        self.assertListEqual( self.line_names, list(self.loaded_res['weighting_res']['names']) )
 
         weight_keys1 = ['centroid', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_CCCD', 'frac_rejected']
