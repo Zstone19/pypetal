@@ -366,7 +366,7 @@ def xcor_mc_loop(mcmode, t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
     else:
         tau_peak = np.nan
         pval = np.nan
-        succcess_peak = False
+        success_peak = False
 
 
     # ccf centroids
