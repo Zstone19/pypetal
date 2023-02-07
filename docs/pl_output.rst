@@ -38,7 +38,7 @@ The output dictionary from this module differs from the other modules. Each valu
       - A list of the MCMC samples for :math:`\sigma_{\rm DRW}`.
       - list of :python:`float`
     * - ``jitters``
-      - A list of the MCMC samples for the jitter term :math:`\sigma_n`. If the argument :python:`jitter=False`, this will be :python:`None`.
+      - A list of the MCMC samples for the jitter term :math:`\sigma_n`. If the argument :python:`jitter=False`, this will not be present.
       - list of :python:`float`
 
 

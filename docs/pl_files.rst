@@ -402,32 +402,32 @@ The ``weight_summary.txt`` file contains the following information:
       - Type
     * - ``k``
       - The exponent used to calculate :math:`P(\tau)`
-      - :math:`float`
+      - :python:`float`
     * - ``n0``
       - The value of :math:`N(0)`. Given for both the CCCD and :math:`t`.
-      - :math:`float`
+      - :python:`float`
     * - ``peak_bounds``
       - The bounds of the primary peak of the weighted distribution. Given as [lower bound, peak, upper bound] for both the CCCD and :math:`t`.
-      - list of :math:`float`
+      - list of :python:`float`
     * - ``peak``
       - The peak of the primary peak. Given for both the CCCD and :math:`t`.
-      - :math:`float`
+      - :python:`float`
     * - ``lag_value``
       - The median of the downsampled lag distribution. Given for both the CCCD and :math:`t`.
-      - :math:`float`
+      - :python:`float`
     * - ``lag_uncertainty``
       - The uncertainty on the lag. Given as [lower error, upper error] for both the CCCD and :math:`t`.
-      - list of :math:`float`
+      - list of :python:`float`
     * - ``fraction_rejected``
       - The fraction of the original distribution that was rejected to obtain the downsampled distribution. Given for both the CCCD and :math:`t`
-      - :math:`float`
+      - :python:`float`
     * - ``rmax``
       - The maximum value of the CCCD within the region covered by the downsampled JAVELIN lag distribution.
-      - :math:`float`
+      - :python:`float`
 
-.. note:: If either module is not run, the values in ``weight_summary.txt`` for that module will be "N/A".
+.. note:: If either module is not run, the values in ``weight_summary.txt`` for that module will be :python:`None`.
 
-.. note:: If only one of the modules is run, ``rmax`` will be "N/A".
+.. note:: If only one of the modules is run, ``rmax`` will be :python:`None`.
 
 
 In addition, the following files will be placed in the main ``output_directory/``:
