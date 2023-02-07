@@ -62,7 +62,7 @@ class TestLoad(unittest.TestCase):
         self.assertEquals( len(self.loaded_res['weighting_res']['rmax']), 0 )
         self.assertEquals( len(self.loaded_res['weighting_res']['pyccf'].keys()), 0 )
 
-        self.assertListEqual( self.line_names, list(self.loaded_res['weighting_res']['names']) )
+        self.assertListEqual( self.line_names[1:], list(self.loaded_res['weighting_res']['names']) )
 
         weight_keys2 = ['tophat_lag', 'bounds', 'acf', 'lags', 'weight_dist',
                         'smoothed_dist', 'ntau', 'downsampled_lag_dist', 'frac_rejected']
