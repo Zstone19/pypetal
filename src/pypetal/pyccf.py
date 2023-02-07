@@ -464,6 +464,19 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
     tlags_peak = np.asarray(tlags_peak)
     tlags_centroid = np.asarray(tlags_centroid)
 
+    #Get rid of NaNs
+    if np.all( np.isnan(tlags_peak) ):
+        tlags_peak = np.array([np.nan])
+    else:
+        tlags_peak = tlags_peak[~np.isnan(tlags_peak)]
+
+    if np.all( np.isnan(tlags_centroid) ):
+        tlags_centroid = np.array([np.nan])
+    else:
+        tlags_centroid = tlags_centroid[~np.isnan(tlags_centroid)]
+
+
+
     if verbose:
         print( 'Failed centroids: ', nfail_centroid )
         print( 'Failed peaks: ', nfail_peak )
