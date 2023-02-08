@@ -750,8 +750,20 @@ def plot_weights(output_dir, line_name, res, n0, k, time_unit='d', plot=False):
     probs = (ntau/n0)**k
 
     #Set all ACF values past first negative to zero
-    ind1 = np.max( np.argwhere( (acf < 0) & (lags < 0) ).T[0] )
-    ind2 = np.min( np.argwhere( (acf < 0) & (lags > 0) ).T[0] )
+        #Left side
+    left_inds = np.argwhere( (acf < 0) & (acf_lags < 0) ).T[0]
+    if len(left_inds) == 0:
+        ind1 = 0
+    else:
+        ind1 = np.max( left_inds )
+
+        #Right side
+    right_inds = np.argwhere( (acf < 0) & (acf_lags > 0) ).T[0]
+    if len(right_inds) == 0:
+        ind2 = len(acf)-1
+    else:
+        ind2 = np.min( np.argwhere( (acf < 0) & (acf_lags > 0) ).T[0] )
+
     acf_new = acf.copy()
     acf_new[:ind1+1] = 0
     acf_new[ind2:] = 0
