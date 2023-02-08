@@ -264,15 +264,6 @@ def set_javelin(input_args, fnames):
         print('Setting together=False')
         together = False
 
-    if rm_type == 'phot':
-        nfixed = 6
-
-    elif rm_type == 'spec':
-        if together:
-            nfixed = 2 + 3*( len(fnames) - 1 )
-        else:
-            nfixed = 5
-
 
     if not together:
 

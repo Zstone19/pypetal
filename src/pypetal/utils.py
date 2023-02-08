@@ -154,12 +154,20 @@ def drw_flag(times, data, error,
     baseline = times[-1] - times[0]
     extra_t = int(baseline.value//10)
 
-    t = np.linspace( times[0].value - extra_t, times[-1].value + extra_t, 1000 )
+    t = np.linspace( times[0].value - extra_t, times[-1].value + extra_t, 1000 ).tolist()
+    for i in range(len(times)):
+        t.append(times[i].value)
+
+    sort_ind = np.argsort(t)
+    t = np.array(t)[sort_ind]
+
     mu, var = gp.predict(data.value, t, return_var=True)
     std = np.sqrt(var)
 
-    mu_flag, var_flag = gp.predict(data.value, times.value, return_var=True)
-
+    mu_flag = []
+    for i in range(len(times)):
+        ind = np.argwhere(t == times[i].value).T[0][0]
+        mu_flag.append(mu[ind])
 
     #Reject if data is beyond nsig*sig of fit mean
     flag_mask = np.abs(data.value - mu_flag) > nsig*error.value
