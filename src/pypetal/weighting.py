@@ -758,7 +758,7 @@ def plot_weights(output_dir, line_name, res, n0, k, time_unit='d', plot=False):
         ind1 = np.max( left_inds )
 
         #Right side
-    right_inds = np.argwhere( (acf < 0) & (_lags > 0) ).T[0]
+    right_inds = np.argwhere( (acf < 0) & (lags > 0) ).T[0]
     if len(right_inds) == 0:
         ind2 = len(acf)-1
     else:
