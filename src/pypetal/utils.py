@@ -760,15 +760,9 @@ def run_javelin(cont_fname, line_fnames, line_names,
     rmod.get_hpd(set_verbose=False)
     rmap_hpd = rmod.hpd
 
-    #plot predicted light curves from DRW fits
-    med_params = rmap_hpd[1,:]
-    rmap_bestfit = rmod.do_pred(med_params)
-
-
     tau = np.exp( rmod.flatchain[:,1] )
     sigma = np.exp( rmod.flatchain[:,0] )
     tophat_params = rmod.flatchain[:, 2:].T
-
 
 
     return {
