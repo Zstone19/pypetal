@@ -721,12 +721,12 @@ def run_javelin(cont_fname, line_fnames, line_names,
 
         if fixed is not None:
             if fixed[0] == 0:
-                conthpd[0,0] = conthpd[1,0] - 1e-6
-                conthpd[2,0] = conthpd[1,0] + 1e-6
+                conthpd[0,0] = conthpd[1,0] - 1e-10
+                conthpd[2,0] = conthpd[1,0] + 1e-10
 
             if fixed[1] == 0:
-                conthpd[0,1] = conthpd[1,1] - 1e-6
-                conthpd[2,1] = conthpd[1,1] + 1e-6
+                conthpd[0,1] = conthpd[1,1] - 1e-10
+                conthpd[2,1] = conthpd[1,1] + 1e-10
 
         #Get histogram figure from continuum fit
         if plot:

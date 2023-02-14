@@ -456,7 +456,7 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     laglimit = general_kwargs['lag_bounds']
-    threads = general_kwargs['threads']
+    threads = 1
 
     #--------------------------------------------------
     #Read kwargs
