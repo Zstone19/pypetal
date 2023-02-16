@@ -846,9 +846,8 @@ def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
     std = np.sqrt(var)
 
     mu_flag, var_flag = gp.predict(y.value, x.value, return_var=True)
-    std_flag = np.sqrt(var_flag)
 
-    flag_mask = np.abs(y.value - mu_flag) > nsig*std_flag
+    flag_mask = np.abs(y.value - mu_flag) > nsig*yerr.value
     ax1.errorbar( (x.value - x[0].value)[flag_mask],
                  y.value[flag_mask], yerr.value[flag_mask],
                  fmt='.', color='DodgerBlue', capsize=1., alpha=.4, ms=7)
