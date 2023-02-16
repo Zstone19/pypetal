@@ -441,7 +441,7 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
 
     #---------------------------
     #JAVELIN kwargs
-    _, _, _, _, _, _, _, _, _, _, _, _, _, together, _ = defaults.set_javelin(javelin_params,
+    _, _, _, _, _, _, _, _, _, _, _, _, together, _ = defaults.set_javelin(javelin_params,
                                                                               np.hstack([ [cont_fname], line_fnames ])
                                                                               )
 
