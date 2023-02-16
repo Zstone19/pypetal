@@ -328,6 +328,7 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     lag_bounds = general_kwargs['lag_bounds']
+    threads = general_kwargs['threads']
 
     #--------------------------------------------------
     #Read kwargs
