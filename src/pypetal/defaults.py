@@ -229,7 +229,6 @@ def set_javelin(input_args, fnames):
         'nwalker': 100,
         'nburn': 100,
         'nchain': 100,
-        'threads': 1,
         'output_chains': True,
         'output_burn': True,
         'output_logp': True,
@@ -248,7 +247,6 @@ def set_javelin(input_args, fnames):
     nwalkers = params['nwalker']
     nburn = params['nburn']
     nchain = params['nchain']
-    threads = params['threads']
     output_chains = params['output_chains']
     output_burn = params['output_burn']
     output_logp = params['output_logp']
@@ -291,7 +289,7 @@ def set_javelin(input_args, fnames):
 
 
     return lagtobaseline, fixed, p_fix, subtract_mean, \
-        nwalkers, nburn, nchain, threads, output_chains, \
+        nwalkers, nburn, nchain, output_chains, \
             output_burn, output_logp, nbin, metric, together, rm_type
 
 

@@ -328,7 +328,6 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     lag_bounds = general_kwargs['lag_bounds']
-    threads = general_kwargs['threads']
 
     #--------------------------------------------------
     #Read kwargs
@@ -456,17 +455,19 @@ def javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     laglimit = general_kwargs['lag_bounds']
-    threads = 1
+    threads = general_kwargs['threads']
 
     #--------------------------------------------------
     #Read kwargs
 
     lagtobaseline, fixed, p_fix, subtract_mean, \
-        nwalkers, nburn, nchain, threads, output_chains, \
+        nwalkers, nburn, nchain, output_chains, \
             output_burn, output_logp, nbin, metric, \
                 together, rm_type = defaults.set_javelin( kwargs,
                                                          np.hstack([ [cont_fname], line_fnames ])
                                                          )
+
+    threads = 1
 
     #--------------------------------------------------
     #Account for parameters if javelin['together'] = False
