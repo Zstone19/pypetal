@@ -711,7 +711,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
 
         cmod = Cont_Model(con_dat)
         cmod.do_mcmc(fixed=fixed_cont, p_fix=p_fix_cont,
-                    nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=threads,
+                    nwalkers=nwalkers, nburn=nburn, nchain=nchain, threads=1,
                     fchain=fnames[0], fburn=fnames[1], flogp=fnames[2],
                     set_verbose=verbose)
 
@@ -753,7 +753,7 @@ def run_javelin(cont_fname, line_fnames, line_names,
 
     rmod.do_mcmc(conthpd=conthpd, fixed=fixed, p_fix=p_fix, lagtobaseline=lagtobaseline, laglimit=laglimit,
                  nwalkers=nwalkers, nburn=nburn, nchain=nchain,
-                 threads=threads, fchain=fnames[0], fburn=fnames[1], flogp=fnames[2],
+                 threads=1, fchain=fnames[0], fburn=fnames[1], flogp=fnames[2],
                  set_verbose=verbose)
 
     #Get HPD from continuum + line(s) fit
