@@ -238,10 +238,7 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
 
     #--------------------------------------------------
     #Read kwargs
-    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf(kwargs,
-                                                                    np.hstack([ [cont_fname], line_fnames ])
-                                                                    )
-
+    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf(kwargs)
 
     #-------------------------------------------
     #Run pyCCF for each line

@@ -435,9 +435,7 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
 
     #---------------------------
     # pyCCF kwargs
-    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf( pyccf_params,
-                                                                    np.hstack([ [cont_fname], line_fnames ])
-                                                                    )
+    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf(pyccf_params)
 
     #---------------------------
     #JAVELIN kwargs

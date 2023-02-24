@@ -164,7 +164,7 @@ def set_detrend(input_args):
     return K, nchain, miniter, maxiter
 
 
-def set_pyccf(input_args, fnames):
+def set_pyccf(input_args):
 
     default_kwargs = {
         'interp': 2 + 1e-10,
