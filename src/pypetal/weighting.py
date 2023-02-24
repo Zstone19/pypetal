@@ -1099,7 +1099,7 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
         ax_tot[row_ind, col_ind][0].axvspan( llim, rlim, color='k', alpha=.1 )
 
         #Write lag and error
-        peak_str = err2str( lag_value, lag_err_lo, lag_err_hi, dec=2 )
+        peak_str = err2str( lag_value, lag_err_hi, lag_err_lo, dec=2 )
         peak_str = r'$' + r'{}'.format(peak_str) + r'$' + ' ' + time_unit
 
         if loc == 1:
