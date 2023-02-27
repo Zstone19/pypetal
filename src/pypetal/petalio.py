@@ -10,8 +10,7 @@ from pypetal.load import get_modules, get_ordered_line_names
 
 def make_directories(output_dir, fnames, line_names,
                      run_drw_rej, run_pyccf, run_pyzdcf,
-                     run_javelin, run_weighting,
-                     reject_data, together):
+                     reject_data):
 
     #Create subdirectories for each line and javelin
     for i in range(len(fnames)):
@@ -25,19 +24,6 @@ def make_directories(output_dir, fnames, line_names,
             os.makedirs( output_dir + line_names[i+1] + '/pyccf', exist_ok=True )
         if run_pyzdcf:
             os.makedirs( output_dir + line_names[i+1] + '/pyzdcf', exist_ok=True )
-
-        if run_javelin:
-            if together:
-                os.makedirs( output_dir + 'javelin/', exist_ok=True )
-            else:
-                os.makedirs( output_dir + line_names[i+1] + '/javelin', exist_ok=True )
-
-        if ( (run_javelin) & (run_weighting) & (not together) ) | (run_pyccf & run_weighting):
-            os.makedirs( output_dir + line_names[i+1] + '/weights', exist_ok=True )
-
-
-    if run_javelin & together & run_weighting:
-        os.makedirs( output_dir + 'javelin/weights', exist_ok=True )
 
 
     #Make subdirectories for light curves
