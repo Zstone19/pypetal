@@ -8,9 +8,6 @@ import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
 from astropy.table import Table
-from javelin.lcio import writelc
-from javelin.lcmodel import Cont_Model, Pmap_Model, Rmap_Model
-from javelin.zylc import get_data
 from pyzdcf import pyzdcf
 
 import pypetal.drw_funcs as drw
