@@ -5,8 +5,6 @@ import astropy.units as u
 import numpy as np
 from astropy.io import fits
 
-from pypetal.load import get_modules, get_ordered_line_names
-
 
 def make_directories(output_dir, fnames, line_names,
                      run_drw_rej, run_pyccf, run_pyzdcf,
@@ -107,53 +105,176 @@ def write_data(arr, fname, header=None):
 
 
 
-def write_weight_summary(fname, res):
+def write_weighting_summary(fname, res, run_pyccf, run_javelin):
 
     k = res['k']
 
     #pyCCF
-    n0_pyccf = res['n0_pyccf']
-    peak_bounds_pyccf = res['peak_bounds_pyccf']
-    peak_pyccf = res['peak_pyccf']
-    lag_pyccf = res['lag_pyccf']
-    lag_err_pyccf = res['lag_err_pyccf']
-    frac_rejected_pyccf = res['frac_rejected_pyccf']
+    if run_pyccf:
+        n0_pyccf = res['n0_pyccf']
+        peak_bounds_pyccf = res['peak_bounds_pyccf']
+        peak_pyccf = res['peak_pyccf']
+        lag_pyccf = res['lag_pyccf']
+        lag_err_pyccf = res['lag_err_pyccf']
+        frac_rejected_pyccf = res['frac_rejected_pyccf']
+    else:
+        n0_pyccf = np.nan
+        peak_bounds_pyccf = [np.nan, np.nan]
+        peak_pyccf = np.nan
+        lag_pyccf = np.nan
+        lag_err_pyccf = [np.nan, np.nan]
+        frac_rejected_pyccf = np.nan
 
     #JAVELIN
-    n0_javelin = res['n0_javelin']
-    peak_bounds_javelin = res['peak_bounds_javelin']
-    peak_javelin = res['peak_javelin']
-    lag_javelin = res['lag_javelin']
-    lag_err_javelin = res['lag_err_javelin']
-    frac_rejected_javelin = res['frac_rejected_javelin']
+    if run_javelin:
+        n0_javelin = res['n0_javelin']
+        peak_bounds_javelin = res['peak_bounds_javelin']
+        peak_javelin = res['peak_javelin']
+        lag_javelin = res['lag_javelin']
+        lag_err_javelin = res['lag_err_javelin']
+        frac_rejected_javelin = res['frac_rejected_javelin']
+    else:
+        n0_javelin = np.nan
+        peak_bounds_javelin = [np.nan, np.nan]
+        peak_javelin = np.nan
+        lag_javelin = np.nan
+        lag_err_javelin = [np.nan, np.nan]
+        frac_rejected_javelin = np.nan
+
 
     #Total
-    rmax = res['rmax']
+    if run_pyccf & run_javelin:
+        rmax_pyccf = res['rmax_pyccf']
+        rmax_jav = res['rmax_javelin']
+    else:
+        rmax_pyccf = np.nan
+        rmax_jav = np.nan
+
+    #---------------------------
+    #Make table
+
+    k_col = fits.Column(name='k', format='E', array=[k])
+
+    n0_pyccf_col = fits.Column(name='n0_pyccf', format='E', array=[n0_pyccf])
+    peak_bounds_pyccf_col = fits.Column(name='peak_bounds_pyccf', format='2E', array=[peak_bounds_pyccf])
+    peak_pyccf_col = fits.Column(name='peak_pyccf', format='E', array=[peak_pyccf])
+    lag_pyccf_col = fits.Column(name='lag_pyccf', format='E', array=[lag_pyccf])
+    lag_err_pyccf_col = fits.Column(name='lag_err_pyccf', format='2E', array=[lag_err_pyccf])
+    frac_rejected_pyccf_col = fits.Column(name='frac_rejected_pyccf', format='E', array=[frac_rejected_pyccf])
+
+    n0_javelin_col = fits.Column(name='n0_javelin', format='E', array=[n0_javelin])
+    peak_bounds_javelin_col = fits.Column(name='peak_bounds_javelin', format='2E', array=[peak_bounds_javelin])
+    peak_javelin_col = fits.Column(name='peak_javelin', format='E', array=[peak_javelin])
+    lag_javelin_col = fits.Column(name='lag_javelin', format='E', array=[lag_javelin])
+    lag_err_javelin_col = fits.Column(name='lag_err_javelin', format='2E', array=[lag_err_javelin])
+    frac_rejected_javelin_col = fits.Column(name='frac_rejected_javelin', format='E', array=[frac_rejected_javelin])
+
+    rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=[rmax_pyccf])
+    rmax_jav_col = fits.Column(name='rmax_javelin', format='E', array=[rmax_jav])
 
 
-    with open(fname, 'w') as file:
-        file.write("k = {}\n".format(k))
-        file.write("\n")
-        file.write("pyCCF\n")
-        file.write("----------------\n")
-        file.write("n0 = {}\n".format(n0_pyccf))
-        file.write("peak bounds = {}\n".format(peak_bounds_pyccf))
-        file.write("peak = {}\n".format(peak_pyccf))
-        file.write("lag value = {}\n".format(lag_pyccf))
-        file.write("lag uncertainty = {}\n".format(lag_err_pyccf))
-        file.write("fraction rejected = {}\n".format(frac_rejected_pyccf))
-        file.write("\n")
-        file.write("JAVELIN\n")
-        file.write("----------------\n")
-        file.write("n0 = {}\n".format(n0_javelin))
-        file.write("peak bounds = {}\n".format(peak_bounds_javelin))
-        file.write("peak = {}\n".format(peak_javelin))
-        file.write("lag value = {}\n".format(lag_javelin))
-        file.write("lag uncertainty = {}\n".format(lag_err_javelin))
-        file.write("fraction rejected = {}\n".format(frac_rejected_javelin))
-        file.write("\n")
-        file.write("Total\n")
-        file.write("----------------\n")
-        file.write("rmax = {}\n".format(rmax))
+
+    cols = [k_col, 
+            n0_pyccf_col, peak_bounds_pyccf_col, peak_pyccf_col, lag_pyccf_col, lag_err_pyccf_col, frac_rejected_pyccf_col, 
+            n0_javelin_col, peak_bounds_javelin_col, peak_javelin_col, lag_javelin_col, lag_err_javelin_col, frac_rejected_javelin_col, 
+            rmax_pyccf_col, rmax_jav_col]
+    table = fits.BinTableHDU.from_columns(cols)
+    table.writeto(fname, overwrite=True)
+
+    return 
+
+
+
+def combine_weight_summary(filenames, output_fname, line_names=None):
+
+    if line_names is None:
+        line_names = []
+
+        for i in range(len(filenames)):
+            line_names.append('Line {}'.format(i+1))
+
+
+    #---------------------------
+    #Get header
+    hdr = fits.open(filenames[0]).header
+
+    #---------------------------
+    #Get data
+
+    k = np.zeros(len(filenames))
+
+    n0_pyccf = np.zeros(len(filenames))
+    peak_bounds_pyccf = np.zeros( ( len(filenames),2 ) )
+    peak_pyccf = np.zeros(len(filenames))
+    lag_pyccf = np.zeros(len(filenames))
+    lag_err_pyccf = np.zeros( ( len(filenames),2 ) )
+    frac_rejected_pyccf = np.zeros(len(filenames))
+
+    n0_javelin = np.zeros(len(filenames))
+    peak_bounds_javelin = np.zeros( (len(filenames),2) )
+    peak_javelin = np.zeros(len(filenames))
+    lag_javelin = np.zeros(len(filenames))
+    lag_err_javelin = np.zeros( (len(filenames),2) )
+    frac_rejected_javelin = np.zeros(len(filenames))
+
+    rmax_pyccf = np.zeros(len(filenames))
+    rmax_javelin = np.zeros(len(filenames))
+
+
+    for i, fname in enumerate(filenames):
+        table = Table.read(fname)
+
+        k[i] = table['k'][0]
+
+        n0_pyccf[i] = table['n0_pyccf'][0]
+        peak_bounds_pyccf[i,:] = table['peak_bounds_pyccf'][0]
+        peak_pyccf[i] = table['peak_pyccf'][0]
+        lag_pyccf[i] = table['lag_pyccf'][0]
+        lag_err_pyccf[i,:] = table['lag_err_pyccf'][0]
+        frac_rejected_pyccf[i] = table['frac_rejected_pyccf'][0]
+
+        n0_javelin[i] = table['n0_javelin'][0]
+        peak_bounds_javelin[i,:] = table['peak_bounds_javelin'][0]
+        peak_javelin[i] = table['peak_javelin'][0]
+        lag_javelin[i] = table['lag_javelin'][0]
+        lag_err_javelin[i,:] = table['lag_err_javelin'][0]
+        frac_rejected_javelin[i] = table['frac_rejected_javelin'][0]
+
+        rmax_pyccf[i] = table['rmax_pyccf'][0]
+        rmax_jav[i] = table['rmax_javelin'][0] 
+
+    #---------------------------
+    #Make columns
+
+    name_col = fits.Column(name='name', format='20A', array=line_names)
+    k_col = fits.Column(name='k', format='E', array=k)
+    
+    n0_pyccf_col = fits.Column(name='n0_pyccf', format='E', array=n0_pyccf)
+    peak_bounds_pyccf_col = fits.Column(name='peak_bounds_pyccf', format='2E', array=peak_bounds_pyccf)
+    peak_pyccf_col = fits.Column(name='peak_pyccf', format='E', array=peak_pyccf)
+    lag_pyccf_col = fits.Column(name='lag_pyccf', format='E', array=lag_pyccf)
+    lag_err_pyccf_col = fits.Column(name='lag_err_pyccf', format='2E', array=lag_err_pyccf)
+    frac_rejected_pyccf_col = fits.Column(name='frac_rejected_pyccf', format='E', array=frac_rejected_pyccf)
+
+    n0_javelin_col = fits.Column(name='n0_javelin', format='E', array=n0_javelin)
+    peak_bounds_javelin_col = fits.Column(name='peak_bounds_javelin', format='2E', array=peak_bounds_javelin)
+    peak_javelin_col = fits.Column(name='peak_javelin', format='E', array=peak_javelin)
+    lag_javelin_col = fits.Column(name='lag_javelin', format='E', array=lag_javelin)
+    lag_err_javelin_col = fits.Column(name='lag_err_javelin', format='2E', array=lag_err_javelin)
+    frac_rejected_javelin_col = fits.Column(name='frac_rejected_javelin', format='E', array=frac_rejected_javelin)
+
+    rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=rmax_pyccf)    
+    rmax_jav_col = fits.Column(name='rmax_javelin', format='E', array=rmax_jav)
+
+    cols = [name_col, k_col,
+            n0_pyccf_col, peak_bounds_pyccf_col, peak_pyccf_col, lag_pyccf_col, lag_err_pyccf_col, frac_rejected_pyccf_col,
+            n0_javelin_col, peak_bounds_javelin_col, peak_javelin_col, lag_javelin_col, lag_err_javelin_col, frac_rejected_javelin_col,
+            rmax_pyccf_col, rmax_jav_col]
+
+    #---------------------------
+    #Make table
+
+    table_hdu = fits.BinTableHDU.from_columns(cols, header=hdr)
+    table_hdu.writeto(output_fname, overwrite=True)
 
     return
