@@ -137,18 +137,6 @@ def run_pipeline(output_dir, arg2,
     _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)
     _, fixed, p_fix, _, _, _, _, _, _, _, _, _, together, rm_type = defaults.set_javelin(javelin_params, fnames)
 
-    javelin_params['fixed'] = fixed
-    javelin_params['p_fix'] = p_fix
-
-    if rm_type == 'spec':
-        if together:
-            nfixed = 2 + 3*( len(fnames)-1 )
-        else:
-            nfixed = 5
-    elif rm_type == 'phot':
-        nfixed = 6
-
-
 
     #Name lines if unnamed
     if line_names is None:
@@ -167,8 +155,7 @@ def run_pipeline(output_dir, arg2,
     #Create subdirectories for each line and module
     make_directories(output_dir, fnames, line_names,
                      run_drw_rej, run_pyccf, run_pyzdcf,
-                     run_javelin, run_weighting,
-                     reject_data, together)
+                     reject_data)
 
     if general_kwargs['file_fmt'] != 'csv':
         #Make temp directory to store csv files
@@ -239,47 +226,6 @@ def run_pipeline(output_dir, arg2,
                 line_fnames[i] = output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat'
 
 
-        if use_for_javelin:
-            tau_cont = np.median(drw_rej_res['taus'][0])
-            sig_cont = np.median(drw_rej_res['sigmas'][0])
-
-            if together:
-
-                if fixed is not None:
-                    javelin_params['fixed'][0] = 0
-                    javelin_params['fixed'][1] = 0
-
-                    javelin_params['p_fix'][0] = np.log(sig_cont)
-                    javelin_params['p_fix'][1] = np.log(tau_cont)
-                else:
-                    javelin_params['fixed'] = np.ones( nfixed )
-                    javelin_params['p_fix'] = np.zeros( nfixed )
-
-                    javelin_params['fixed'][0] = 0
-                    javelin_params['fixed'][1] = 0
-
-                    javelin_params['p_fix'][0] = np.log(sig_cont)
-                    javelin_params['p_fix'][1] = np.log(tau_cont)
-
-            else:
-                for i in range(len(line_fnames)):
-                    if fixed[i] is not None:
-                        javelin_params['fixed'][i][0] = 0
-                        javelin_params['fixed'][i][1] = 0
-
-                        javelin_params['p_fix'][i][0] = np.log(sig_cont)
-                        javelin_params['p_fix'][i][1] = np.log(tau_cont)
-
-                    else:
-                        javelin_params['fixed'][i] = np.ones(nfixed)
-                        javelin_params['p_fix'][i] = np.zeros(nfixed)
-
-                        javelin_params['fixed'][i][0] = 0
-                        javelin_params['fixed'][i][1] = 0
-
-                        javelin_params['p_fix'][i][0] = np.log(sig_cont)
-                        javelin_params['p_fix'][i][1] = np.log(tau_cont)
-
     else:
 
         #Output light curve files with masks
@@ -314,9 +260,6 @@ def run_pipeline(output_dir, arg2,
     if run_pyzdcf:
         pyzdcf_res, plike_res = modules.pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyzdcf_params)
 
-    if run_javelin:
-        javelin_res = modules.javelin_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, javelin_params)
-
     if run_weighting:
         weighting_res = weighting.run_weighting(cont_fname, line_fnames, output_dir, line_names,
                                 run_pyccf, run_javelin,
@@ -338,9 +281,6 @@ def run_pipeline(output_dir, arg2,
 
     if run_detrend:
         tot_res['detrend_res'] = detrend_res
-
-    if run_javelin:
-        tot_res['javelin_res'] = javelin_res
 
     if run_pyccf:
         tot_res['pyccf_res'] = pyccf_res

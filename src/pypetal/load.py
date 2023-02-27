@@ -4,7 +4,6 @@ import os
 import numpy as np
 import pandas as pd
 from astropy.table import Table
-from javelin.zylc import get_data
 
 
 def get_line_names(main_dir):
@@ -222,7 +221,7 @@ def get_cont_name(main_dir):
             dirs_tot.remove( main_dir + 'javelin/' )
 
             lc_files = glob.glob( main_dir + 'light_curves/*.dat' )
-            cont_dat = get_data( main_dir + 'javelin/cont_lcfile.dat' )
+            cont_dat = np.loadtxt( main_dir + 'javelin/cont_lcfile.dat', unpack=True, usecols=[0,1,2] )
 
             xcont = cont_dat.jlist[0]
             ycont = cont_dat.mlist[0] + cont_dat.blist[0]
