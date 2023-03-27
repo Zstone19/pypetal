@@ -331,7 +331,8 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
     
 
 def move_output_files(file_dir, output_dir):
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)    
+    file_dir = os.path.abspath(file_dir) + r'/'
     
     files = glob.glob(file_dir + '*.obj')
     for f in files:
