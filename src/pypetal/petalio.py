@@ -4,13 +4,14 @@ import re
 import astropy.units as u
 import numpy as np
 from astropy.io import fits
+from astropy.table import Table
 
 
 def make_directories(output_dir, fnames, line_names,
-                     run_drw_rej, run_pyccf, run_pyzdcf,
-                     reject_data):
+                     run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa,
+                     reject_data, together_pyroa):
 
-    #Create subdirectories for each line and javelin
+    #Create subdirectories for each line
     for i in range(len(fnames)):
         os.makedirs( output_dir + line_names[i], exist_ok=True )
 
@@ -22,6 +23,13 @@ def make_directories(output_dir, fnames, line_names,
             os.makedirs( output_dir + line_names[i+1] + '/pyccf', exist_ok=True )
         if run_pyzdcf:
             os.makedirs( output_dir + line_names[i+1] + '/pyzdcf', exist_ok=True )
+
+    if run_pyroa:
+        if together_pyroa:
+            os.makedirs( output_dir + 'pyroa', exist_ok=True )
+        else:
+            for i in range(len(fnames)-1):
+                os.makedirs( output_dir + line_names[i+1] + '/pyroa', exist_ok=True )
 
 
     #Make subdirectories for light curves
@@ -218,7 +226,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     frac_rejected_javelin = np.zeros(len(filenames))
 
     rmax_pyccf = np.zeros(len(filenames))
-    rmax_javelin = np.zeros(len(filenames))
+    rmax_jav = np.zeros(len(filenames))
 
 
     for i, fname in enumerate(filenames):
