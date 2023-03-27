@@ -498,7 +498,8 @@ objname: {}
                            div_mean=div_mean, add_var=add_var,
                            delay_dist=delay_dist, psi_types=psi_types,
                            objname=objname)
-
+    
+    lc_fnames = [ lc_dir + objname + '_' + x + '.dat' for x in line_names ]
 
     if together:
         pyroa.pyroa_trace_plot( res.samples, line_names, add_var=add_var,
@@ -506,15 +507,21 @@ objname: {}
                                 fname = output_dir + 'pyroa/trace_plot.pdf',
                                 show=plot)
 
+        pyroa.plot_histograms( res.samples, line_names, nburn=nburn, 
+                               add_var=add_var, delay_dist=delay_dist, 
+                               fname= output_dir + 'pyroa/histogram_plot.pdf', 
+                               show=plot)
+
         pyroa.pyroa_corner_plot( res.samples, line_names, nburn=nburn, 
                                  add_var=add_var, delay_dist=delay_dist,
                                  split=False,
                                  fname = output_dir + 'pyroa/corner_plot.pdf',
                                  show=plot)
         
-        pyroa.plot_fits( tot_fnames, line_names, res.samples, res.models,
+        pyroa.plot_fits( lc_fnames, line_names, res.samples, res.models,
                          nburn=nburn, add_var=add_var, delay_dist=delay_dist,
-                         psi_types=psi_types, time_unit=time_unit, lc_unit=lc_unit,
+                         psi_types=psi_types, delimiter=None,
+                         time_unit=time_unit, lc_unit=lc_unit,
                          output_fname = output_dir + 'pyroa/fits_plot.pdf',
                          show=plot)
 
@@ -527,15 +534,21 @@ objname: {}
                                     fname = output_dir + line_names[i+1] + '/pyroa/trace_plot.pdf',
                                     show=plot)
             
+            pyroa.plot_histograms( res_i.samples, line_names, nburn=nburn, 
+                                   add_var=add_var[i], delay_dist=delay_dist[i], 
+                                   fname= output_dir + line_names[i+1] + '/pyroa/histogram_plot.pdf', 
+                                   show=plot)
+
             pyroa.pyroa_corner_plot( res_i.samples, line_names, nburn=nburn,
                                      add_var=add_var[i], delay_dist=delay_dist[i],
                                      split=False,
                                      fname = output_dir + line_names[i+1] + '/pyroa/corner_plot.pdf',
                                      show=plot)
             
-            pyroa.plot_fits( [cont_fname, line_fnames[i]], line_names, res_i.samples, res_i.models,
+            pyroa.plot_fits( [cont_fname, lc_fnames[i+1]], line_names, res_i.samples, res_i.models,
                              nburn=nburn, add_var=add_var[i], delay_dist=delay_dist[i],
-                             psi_types=psi_types[i], time_unit=time_unit, lc_unit=lc_unit,
+                             psi_types=psi_types[i], delimiter=None,
+                             time_unit=time_unit, lc_unit=lc_unit,
                              output_fname = output_dir + line_names[i+1] + '/pyroa/fits_plot.pdf',
                              show=plot)
 
