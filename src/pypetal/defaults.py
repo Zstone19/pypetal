@@ -217,6 +217,52 @@ def set_pyzdcf(input_args, fnames):
         sparse, prefix, run_plike, plike_dir
 
 
+def set_pyroa(input_args, nlc):
+
+    default_kwargs = {
+        'nchain': 20000,
+        'nburn': 15000,
+        'init_tau': None,
+        'subtract_mean': True,
+        'div_mean': False,
+        'add_var': True,
+        'delay_dist': True,
+        'psi_types': 'Gaussian',
+        'together': True,
+        'objname': None        
+    }
+
+    params = { **default_kwargs, **input_args }
+
+    nchain = params['nchain']
+    nburn = params['nburn']
+    init_tau = params['init_tau']
+    subtract_mean = params['subtract_mean']
+    div_mean = params['div_mean']
+    add_var = params['add_var']
+    delay_dist = params['delay_dist']
+    psi_types = params['psi_types']
+    together = params['together']
+    objname = params['objname']
+    
+    if init_tau is None:
+        init_tau = [10.] * (nlc-1)
+        
+    if isinstance(psi_types, str):
+        psi_types = [psi_types] * (nlc-1)
+        
+    if not together:
+        if isinstance(delay_dist, bool):
+            delay_dist = [delay_dist] * (nlc-1)
+        if isinstance(add_var, bool):
+            add_var = [add_var] * (nlc-1)
+        
+
+    return nchain, nburn, init_tau, subtract_mean, div_mean, \
+            add_var, delay_dist, psi_types, together, objname
+
+
+
 def set_weighting(input_args):
 
     default_kwargs = {
