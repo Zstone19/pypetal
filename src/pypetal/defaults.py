@@ -248,6 +248,9 @@ def set_pyroa(input_args, nlc):
     if init_tau is None:
         init_tau = [10.] * (nlc-1)
         
+    if objname is None:
+        objname = 'pyroa'
+        
     if isinstance(psi_types, str):
         psi_types = [psi_types] * (nlc-1)
         
