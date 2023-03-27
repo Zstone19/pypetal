@@ -1,6 +1,9 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import os
+import glob
+import warnings
+
+import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1.inset_locator import (BboxConnector,
                                                    TransformedBbox, inset_axes)
@@ -8,6 +11,8 @@ from scipy.signal import peak_widths
 
 from pypetal import defaults
 from pypetal.petalio import err2str, write_data, write_weighting_summary
+from pypetal import pyccf
+from pypetal.load import get_ordered_line_names
 
 
 #############################################
