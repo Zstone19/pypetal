@@ -12,6 +12,7 @@ from astropy.table import Table
 import pypetal.defaults as defaults
 import pypetal.plotting as plotting
 import pypetal.utils as utils
+import pypetal.weighting as wt
 from pypetal.petalio import write_data
 
 #For individual functions, see utils.py
@@ -434,3 +435,55 @@ plike_dir: {}
                                      show=plot)
 
     return res_tot, plike_tot
+
+
+
+
+#################################################################
+############################ Weighting ##########################
+#################################################################
+
+
+
+def weighting_tot(output_dir, line_names,
+                  run_pyccf, run_javelin,
+                  pyccf_params, javelin_params,
+                  general_kwargs, kwargs):
+
+    nlc = len(line_names)
+
+    if run_javelin:
+        jav_chain_fnames = []
+    else:
+        jav_chain_fnames = None
+    
+    if run_pyccf:
+        pyccf_fnames1 = []
+        pyccf_fnames2 = []
+    else:
+        pyccf_fnames1 = None
+        pyccf_fnames2 = None
+
+
+    for name in line_names:
+        if run_javelin:
+            jav_chain_fnames.append(output_dir + name + r'/javelin/chain_rmap.txt')
+    
+        if run_pyccf:
+            pyccf_fnames1.append(output_dir + name + r'/pyccf/' + name + '_ccf.dat')
+            pyccf_fnames2.append(output_dir + name + r'/pyccf/' + name + '_ccf_dists.dat')
+
+
+    interp, _, _, _, _, _ = defaults.set_pyccf(pyccf_params)
+    _, _, _, _, _, _, _, _, _, _, _, _, together, _ = set_javelin(javelin_params, nlc)
+
+
+    weighting_res = wt.run_weighting_tot(output_dir, jav_chain_fnames, 
+                                         pyccf_fnames1, pyccf_fnames2,
+                                         line_names=line_names,
+                                         interp=interp, together=together,
+                                         general_kwargs=general_kwargs,
+                                         weighting_params=kwargs)
+
+
+    return weighting_res

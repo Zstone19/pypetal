@@ -1,12 +1,24 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import os
+import glob
+import warnings
+
+import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1.inset_locator import (BboxConnector,
                                                    TransformedBbox, inset_axes)
 from scipy.signal import peak_widths
 
-from pypetal import defaults, pyccf
-from pypetal.petalio import err2str, write_data, write_weight_summary
+from pypetal import defaults
+from pypetal.petalio import err2str, write_data, write_weighting_summary
+from pypetal import pyccf
+from pypetal.load import get_ordered_line_names
+
+
+#############################################
+############## UTILS ########################
+#############################################
+
 
 
 def find_overlap(x1, x2, gaps):
@@ -417,98 +429,21 @@ def get_bounds(dist, weights, lags, width=15):
 
 
 
+#############################################
+############## RUNNING ########################
+#############################################
 
 
-def run_weighting( cont_fname, line_fnames, output_dir, line_names,
-                  run_pyccf, run_javelin,
-                  pyccf_res, javelin_res,
-                  pyccf_params, javelin_params,
-                  general_kwargs, kwargs):
-
-
-    #General kwargs
-    verbose = general_kwargs['verbose']
-    plot = general_kwargs['plot']
-    time_unit = general_kwargs['time_unit']
-    lc_unit = general_kwargs['lc_unit']
-    lag_bounds = general_kwargs['lag_bounds']
-
-    #---------------------------
-    # pyCCF kwargs
-    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf(pyccf_params)
-
-    #---------------------------
-    #JAVELIN kwargs
-    _, _, _, _, _, _, _, _, _, _, _, _, together, _ = defaults.set_javelin(javelin_params,
-                                                                              np.hstack([ [cont_fname], line_fnames ])
-                                                                              )
-
-    #---------------------------
-    #Weighting kwargs
-    gap_size, k, width, zoom = defaults.set_weighting(kwargs)
-
-    #---------------------------
-
-    #Make sure number of LCs is the same
-    if run_pyccf:
-        nlc1 = len(pyccf_res)
-
-        if nlc1 != len(line_fnames):
-            raise Exception('Number of line LCs does not match number of pyCCF results')
-
-        nlc = len(line_fnames)
-
-    if run_javelin:
-        if together:
-            nlc2 = javelin_res['tot_dat'].nlc - 1
-        else:
-            nlc2 = len(javelin_res)
-
-        if nlc2 != len(line_fnames):
-            raise Exception('Number of line LCs does not match number of JAVELIN results')
-
-    if run_pyccf & run_javelin:
-        if nlc1 != nlc2:
-            raise Exception('ERROR: Number of light curves in pyCCF and JAVELIN results do not match.')
-
-    if (not run_pyccf) & (not run_javelin):
-        return {}
-
-
-
-    nlc = len(line_fnames)
-    x_cont, y_cont, yerr_cont = np.loadtxt(cont_fname, usecols=[0,1,2], unpack=True, delimiter=',')
+def combine_weight_outputs(res_arr, run_pyccf, run_javelin):
 
     output = {
         'pyccf': {},
         'javelin': {},
-        'rmax': []
+        'rmax_pyccf': [],
+        'rmax_javelin': []
     }
 
-    summary_dicts = []
-    for i in range(nlc):
 
-        x = {
-            'k': k,
-            'n0_pyccf': None,
-            'peak_bounds_pyccf': None,
-            'peak_pyccf': None,
-            'lag_pyccf': None,
-            'lag_err_pyccf': None,
-            'frac_rejected_pyccf': None,
-            'n0_javelin': None,
-            'peak_bounds_javelin': None,
-            'peak_javelin': None,
-            'lag_javelin': None,
-            'lag_err_javelin': None,
-            'frac_rejected_javelin': None,
-            'rmax': None
-        }
-
-        summary_dicts.append(x)
-
-
-    #Run weighting on pyCCF CCCDs
     if run_pyccf:
         output['pyccf']['centroid'] = []
         output['pyccf']['bounds'] = []
@@ -521,66 +456,6 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
         output['pyccf']['downsampled_CCCD'] = []
         output['pyccf']['frac_rejected'] = []
 
-
-        for i in range(nlc):
-            cccd_lags = pyccf_res[i]['CCCD_lags']
-            x_line, y_line, yerr_line = np.loadtxt(line_fnames[i], usecols=[0,1,2], unpack=True, delimiter=',')
-
-            prob_dist, lags, ntau, acf, n0 = get_weights(x_cont, y_cont, x_line, y_line,
-                                                interp=interp, lag_bounds=lag_bounds[i],
-                                                sigmode=sigmode, thres=thres,
-                                                gap_size=gap_size, k=k)
-
-            min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(cccd_lags, prob_dist, lags, width=width)
-            downsampled_cccd = cccd_lags[(cccd_lags > min_bound) & (cccd_lags < max_bound)]
-
-            med_cent = np.median(downsampled_cccd)
-            cent_err_lo = med_cent - np.percentile( downsampled_cccd, 16 )
-            cent_err_hi = np.percentile( downsampled_cccd, 84 ) - med_cent
-
-
-            #Write diagnostic info
-            write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ],
-                        output_dir + line_names[i+1] + '/weights/pyccf_weights.dat',
-                        '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
-
-            write_data( downsampled_cccd,
-                       output_dir + line_names[i+1] + '/weights/pyccf_weighted_cccd.dat')
-
-
-            #Output results
-            output['pyccf']['centroid'].append( [cent_err_lo, med_cent, cent_err_hi] )
-            output['pyccf']['bounds'].append( [min_bound, peak, max_bound] )
-            output['pyccf']['acf'].append( acf )
-            output['pyccf']['lags'].append( lags )
-            output['pyccf']['weight_dist'].append( prob_dist )
-            output['pyccf']['smoothed_dist'].append( smooth_weight_dist )
-            output['pyccf']['ntau'].append( ntau )
-            output['pyccf']['CCCD'].append( cccd_lags )
-            output['pyccf']['downsampled_CCCD'].append( downsampled_cccd )
-            output['pyccf']['frac_rejected'].append( 1 - len(downsampled_cccd) / len(cccd_lags) )
-
-
-            #Add to summary dict
-            summary_dicts[i]['n0_pyccf'] = n0
-            summary_dicts[i]['peak_bounds_pyccf'] = [min_bound, max_bound]
-            summary_dicts[i]['peak_pyccf'] = peak
-            summary_dicts[i]['lag_pyccf'] = med_cent
-            summary_dicts[i]['lag_err_pyccf'] = [cent_err_lo, cent_err_hi]
-            summary_dicts[i]['frac_rejected_pyccf'] = 1 - len(downsampled_cccd) / len(cccd_lags)
-
-            #Plot weights
-            plot_weights( output_dir, line_names[i+1], output['pyccf'], n0, k,
-                         time_unit=time_unit, plot=plot )
-
-            #Write summary file
-            if not run_javelin:
-                write_weight_summary( output_dir + line_names[i+1] + '/weights/weight_summary.txt',
-                                     summary_dicts[i])
-
-
-
-    #Run weighting on JAVELIN lag distributions
     if run_javelin:
         output['javelin']['tophat_lag'] = []
         output['javelin']['bounds'] = []
@@ -593,108 +468,389 @@ def run_weighting( cont_fname, line_fnames, output_dir, line_names,
         output['javelin']['downsampled_lag_dist'] = []
         output['javelin']['frac_rejected'] = []
 
-        for i in range(nlc):
-
-            if together:
-                lag_dist = javelin_res['tophat_params'][3*i]
-            else:
-                lag_dist = javelin_res[i]['tophat_params'][0]
-
-            x_line, y_line, yerr_line = np.loadtxt(line_fnames[i], usecols=[0,1,2], unpack=True, delimiter=',')
-
-            prob_dist, lags, ntau, acf, n0 = get_weights(x_cont, y_cont, x_line, y_line,
-                                                interp=interp, lag_bounds=lag_bounds[i],
-                                                sigmode=sigmode, thres=thres,
-                                                gap_size=gap_size, k=k)
 
 
-            min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(lag_dist, prob_dist, lags, width=width)
-            downsampled_dist = lag_dist[(lag_dist > min_bound) & (lag_dist < max_bound)]
+    for res in res_arr:
 
-            med_lag = np.median(downsampled_dist)
-            lag_err_lo = med_lag - np.percentile( downsampled_dist, 16 )
-            lag_err_hi = np.percentile( downsampled_dist, 84 ) - med_lag
+        #pyCCF
+        if run_pyccf:
+            output['pyccf']['centroid'].append( res['pyccf']['centroid'] )
+            output['pyccf']['bounds'].append( res['pyccf']['bounds'] )
+            output['pyccf']['acf'].append( res['pyccf']['acf'] )
+            output['pyccf']['lags'].append( res['pyccf']['lags'] )
+            output['pyccf']['weight_dist'].append( res['pyccf']['weight_dist'] )
+            output['pyccf']['smoothed_dist'].append( res['pyccf']['smoothed_dist'] )
+            output['pyccf']['ntau'].append( res['pyccf']['ntau'] )
+            output['pyccf']['CCCD'].append( res['pyccf']['CCCD'] )
+            output['pyccf']['downsampled_CCCD'].append( res['pyccf']['downsampled_CCCD'] )
+            output['pyccf']['frac_rejected'].append( res['pyccf']['frac_rejected'] )
 
+        #JAVELIN
+        if run_javelin:
+            output['javelin']['tophat_lag'].append( res['javelin']['tophat_lag'] )
+            output['javelin']['bounds'].append( res['javelin']['bounds'] )
+            output['javelin']['acf'].append( res['javelin']['acf'] )
+            output['javelin']['lags'].append( res['javelin']['lags'] )
+            output['javelin']['weight_dist'].append( res['javelin']['weight_dist'] )
+            output['javelin']['smoothed_dist'].append( res['javelin']['smoothed_dist'] )
+            output['javelin']['ntau'].append( res['javelin']['ntau'] )
+            output['javelin']['lag_dist'].append( res['javelin']['lag_dist'] )
+            output['javelin']['downsampled_lag_dist'].append( res['javelin']['downsampled_lag_dist'] )
+            output['javelin']['frac_rejected'].append( res['javelin']['frac_rejected'] )
 
-            #Write diagnostic info
-            write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ],
-                        output_dir + line_names[i+1] + '/weights/javelin_weights.dat',
-                        '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
+        #rmax
+        if run_pyccf & run_javelin:
+            output['rmax_pyccf'].append( res['rmax_pyccf'] )
+            output['rmax_javelin'].append( res['rmax_javelin'] )
 
-            write_data( downsampled_dist,
-                    output_dir + line_names[i+1] + '/weights/javelin_weighted_lag_dist.dat')
-
-
-            #Output results
-            output['javelin']['tophat_lag'].append( [lag_err_lo, med_lag, lag_err_hi] )
-            output['javelin']['bounds'].append( [min_bound, peak, max_bound] )
-            output['javelin']['acf'].append( acf )
-            output['javelin']['lags'].append( lags )
-            output['javelin']['weight_dist'].append( prob_dist )
-            output['javelin']['smoothed_dist'].append( smooth_weight_dist )
-            output['javelin']['ntau'].append( ntau )
-            output['javelin']['lag_dist'].append( lag_dist )
-            output['javelin']['downsampled_lag_dist'].append( downsampled_dist )
-            output['javelin']['frac_rejected'].append( 1 - len(downsampled_dist) / len(lag_dist) )
-
-
-            #Add to summary dict
-            summary_dicts[i]['n0_javelin'] = n0
-            summary_dicts[i]['peak_bounds_javelin'] = [min_bound, max_bound]
-            summary_dicts[i]['peak_javelin'] = peak
-            summary_dicts[i]['lag_javelin'] = med_lag
-            summary_dicts[i]['lag_err_javelin'] = [lag_err_lo, lag_err_hi]
-            summary_dicts[i]['frac_rejected_javelin'] = 1 - len(downsampled_dist) / len(lag_dist)
+    
+    return output
 
 
-            #Plot weights
-            if not run_pyccf:
-                plot_weights( output_dir, line_names[i+1], output['javelin'], n0, k,
-                             time_unit=time_unit, plot=plot )
-
-                write_weight_summary( output_dir + line_names[i+1] + '/weights/weight_summary.txt',
-                                     summary_dicts[i] )
 
 
+
+
+def run_weighting_single( output_dir, cont_fname, line_fname,
+                          weighting_kwargs, lag_bounds='baseline',
+                          jav_chain_file=None, 
+                          pyccf_iccf_file=None, pyccf_dist_file=None,
+                          javelin_lag_col=2, pyccf_params={},
+                          plot=False, time_unit='d'):
+
+    #---------------------------
+    # pyCCF kwargs
+    interp, nsim, mcmode, sigmode, thres, nbin = defaults.set_pyccf(pyccf_params)
+
+    #---------------------------
+    #Weighting kwargs
+    gap_size, k, width, zoom = defaults.set_weighting(weighting_kwargs)
+
+    #---------------------------
+    #See what modules to run
+
+    if jav_chain_file is not None:
+        run_javelin = True
+    else:
+        run_javelin = False
+
+    if pyccf_dist_file is not None:
+        run_pyccf = True
+    else:
+        run_pyccf = False
+
+
+    summary_dict = {
+        'k': k,
+        'n0_pyccf': None,
+        'peak_bounds_pyccf': None,
+        'peak_pyccf': None,
+        'lag_pyccf': None,
+        'lag_err_pyccf': None,
+        'frac_rejected_pyccf': None,
+        'n0_javelin': None,
+        'peak_bounds_javelin': None,
+        'peak_javelin': None,
+        'lag_javelin': None,
+        'lag_err_javelin': None,
+        'frac_rejected_javelin': None,
+        'rmax_pyccf': None,
+        'rmax_javelin': None
+    }
+
+    output = {
+        'pyccf': {},
+        'javelin': {},
+        'rmax_pyccf': None,
+        'rmax_javelin': None
+    }
+
+
+    #---------------------------
+    #Get continuum data
+    x_cont, y_cont, _ = np.loadtxt(cont_fname, usecols=[0,1,2], unpack=True, delimiter=',')
+    x_line, y_line, _ = np.loadtxt(line_fname, unpack=True, delimiter=',', usecols=[0,1,2])
+
+    if lag_bounds == 'baseline':
+        baseline = np.max([ x_cont.max(), x_line.max() ]) - np.min([ x_cont.min(), x_line.min() ])
+        lag_bounds = [-baseline, baseline]
+
+    #---------------------------
+    #pyCCF
+
+    if run_pyccf:
+        cccd_lags, ccpd_lags = np.loadtxt(pyccf_dist_file, unpack=True, delimiter=',')
+        prob_dist, lags, ntau, acf, n0 = get_weights(x_cont, y_cont, x_line, y_line,
+                                    interp=interp, lag_bounds=lag_bounds,
+                                    sigmode=sigmode, thres=thres,
+                                    gap_size=gap_size, k=k)
+
+        min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(cccd_lags, prob_dist, lags, width=width)
+        downsampled_cccd = cccd_lags[(cccd_lags > min_bound) & (cccd_lags < max_bound)]
+
+        med_cent = np.median(downsampled_cccd)
+        cent_err_lo = med_cent - np.percentile( downsampled_cccd, 16 )
+        cent_err_hi = np.percentile( downsampled_cccd, 84 ) - med_cent 
+
+
+
+        #Write diagnostic info
+        write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ],
+                    output_dir + 'pyccf_weights.dat',
+                    '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
+
+        write_data( downsampled_cccd,
+                    output_dir + 'pyccf_weighted_cccd.dat')
+
+
+        #Add to summary dict
+        summary_dict['n0_pyccf'] = n0
+        summary_dict['peak_bounds_pyccf'] = [min_bound, max_bound]
+        summary_dict['peak_pyccf'] = peak
+        summary_dict['lag_pyccf'] = med_cent
+        summary_dict['lag_err_pyccf'] = [cent_err_lo, cent_err_hi]
+        summary_dict['frac_rejected_pyccf'] = 1 - len(downsampled_cccd) / len(cccd_lags)
+
+
+        #Add to weighting results
+        output['pyccf']['centroid'] = [cent_err_lo, med_cent, cent_err_hi]
+        output['pyccf']['bounds'] = [min_bound, peak, max_bound]
+        output['pyccf']['acf'] = acf
+        output['pyccf']['lags'] = lags
+        output['pyccf']['weight_dist'] = prob_dist
+        output['pyccf']['smoothed_dist'] = smooth_weight_dist
+        output['pyccf']['ntau'] = ntau
+        output['pyccf']['CCCD'] = cccd_lags
+        output['pyccf']['downsampled_CCCD'] = downsampled_cccd
+        output['pyccf']['frac_rejected'] = 1 - len(downsampled_cccd) / len(cccd_lags)
+
+
+    #---------------------------
+    #JAVELIN
+
+    if run_javelin:
+        jav_chains = np.loadtxt(jav_chain_file, unpack=True)
+        lag_dist = jav_chains[javelin_lag_col]
+        prob_dist, lags, ntau, acf, n0 = get_weights(x_cont, y_cont, x_line, y_line,
+                                            interp=interp, lag_bounds=lag_bounds,
+                                            sigmode=sigmode, thres=thres,
+                                            gap_size=gap_size, k=k)
+
+        min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(lag_dist, prob_dist, lags, width=width)
+        downsampled_dist = lag_dist[(lag_dist > min_bound) & (lag_dist < max_bound)]
+
+        med_lag = np.median(downsampled_dist)
+        lag_err_lo = med_lag - np.percentile( downsampled_dist, 16 )
+        lag_err_hi = np.percentile( downsampled_dist, 84 ) - med_lag
+
+
+        #Write diagnostic info
+        write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ],
+                    output_dir + 'javelin_weights.dat',
+                    '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
+
+        write_data( downsampled_dist,
+                output_dir + 'javelin_weighted_lag_dist.dat')
+
+
+
+        #Add to summary dict
+        summary_dict['n0_javelin'] = n0
+        summary_dict['peak_bounds_javelin'] = [min_bound, max_bound]
+        summary_dict['peak_javelin'] = peak
+        summary_dict['lag_javelin'] = med_lag
+        summary_dict['lag_err_javelin'] = [lag_err_lo, lag_err_hi]
+        summary_dict['frac_rejected_javelin'] = 1 - len(downsampled_dist) / len(lag_dist)
+
+
+        #Add to weighting results
+        output['javelin']['tophat_lag'] =  [lag_err_lo, med_lag, lag_err_hi]
+        output['javelin']['bounds'] =  [min_bound, peak, max_bound]
+        output['javelin']['acf'] = acf
+        output['javelin']['lags'] = lags
+        output['javelin']['weight_dist'] = prob_dist
+        output['javelin']['smoothed_dist'] = smooth_weight_dist
+        output['javelin']['ntau'] = ntau
+        output['javelin']['lag_dist'] = lag_dist
+        output['javelin']['downsampled_lag_dist'] = downsampled_dist
+        output['javelin']['frac_rejected'] = 1 - len(downsampled_dist) / len(lag_dist)
+
+
+
+    #---------------------------
+    #Get rmax
 
     if run_pyccf & run_javelin:
-
-        for i in range(nlc):
-            lag = output['javelin']['tophat_lag'][i][1]
-            lag_err_hi = output['javelin']['tophat_lag'][i][2]
-            lag_err_lo = output['javelin']['tophat_lag'][i][0]
+        ccf_lags, ccf = np.loadtxt(pyccf_iccf_file, unpack=True, delimiter=',')
 
 
-            ccf = pyccf_res[i]['CCF']
-            ccf_lags = pyccf_res[i]['CCF_lags']
+        #PyCCF lag
+        lag = output['pyccf']['centroid'][1]
+        lag_err_hi = output['pyccf']['centroid'][2]
+        lag_err_lo = output['pyccf']['centroid'][0]
+        good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) | ( ccf_lags <= lag+lag_err_hi ) ).T[0]
+        rmax_pyccf = np.max(ccf[good_ind])
 
-            good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) | ( ccf_lags <= lag+lag_err_hi ) )
-            rmax = np.max(ccf[good_ind])
-
-            output['rmax'].append(rmax)
-
-            summary_dicts[i]['rmax'] = rmax
-            write_weight_summary(output_dir + line_names[i+1] + '/weights/weight_summary.txt',
-                                 summary_dicts[i] )
-
-        write_data( output_dir + 'rmax.dat', output['rmax'] )
+        summary_dict['rmax_pyccf'] = rmax_pyccf
+        output['rmax_pyccf'] = rmax_pyccf
 
 
-    #Plot results for pyCCF
+
+
+        #JAVELIN lag
+        lag = output['javelin']['tophat_lag'][1]
+        lag_err_hi = output['javelin']['tophat_lag'][2]
+        lag_err_lo = output['javelin']['tophat_lag'][0]
+        good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) | ( ccf_lags <= lag+lag_err_hi ) ).T[0]
+        rmax_jav = np.max(ccf[good_ind])
+
+        summary_dict['rmax_javelin'] = rmax_jav
+        output['rmax_javelin'] = rmax_jav
+
+
+
+    #---------------------------
+    #Write summary file
+    write_weighting_summary(output_dir + 'weight_summary.fits', summary_dict, run_pyccf, run_javelin)
+
+    return output, summary_dict
+
+
+
+
+
+def run_weighting_tot(output_dir,
+                      jav_chain_fnames=None, pyccf_iccf_fnames=None, pyccf_dist_fnames=None,
+                      line_names=None, interp=2, together=False,
+                      general_kwargs={}, weighting_params={}, share_lag_bounds=True):
+
+
+    output_dir = os.path.abspath(output_dir) + r'/'
+    pyccf_params = {'interp':interp}
+
+    if line_names is None:
+        warnings.warn('Assuming that the filenames are in the same order as the line names. Line names will be acquired in chronological order from the given directory, except the first will be the continuum', RuntimeWarning)
+        line_names = get_ordered_line_names(output_dir)
+
+    #---------------------------
+    #Get data fnames
+
+    if output_dir + 'processed_lcs/' in glob.glob( output_dir + '*' ):
+        line_fnames = np.array([ output_dir + 'processed_lcs/' + x + '_data.dat' for x in line_names ])
+    else:
+        line_fnames = np.array([ output_dir + 'light_curves/' + x + '.dat' for x in line_names ])
+
+
+    general_kwargs = defaults.set_general(general_kwargs, line_fnames)
+    _, _, _, zoom = defaults.set_weighting(weighting_params)
+
+    #---------------------------
+    #Share lag bounds?
+    if share_lag_bounds:
+
+        baselines = []
+
+        x_cont, _, _ = np.loadtxt(line_fnames[0], unpack=True, delimiter=',', usecols=[0,1,2])
+        for i in range(len(line_fnames)):
+            x_line, _, _ = np.loadtxt(line_fnames[i], unpack=True, delimiter=',', usecols=[0,1,2])
+
+            bl = np.max([ x_cont.max(), x_line.max() ]) - np.min([ x_cont.min(), x_line.min() ])
+            baselines.append(bl)
+
+        lag_bounds = [-np.max(baselines), np.max(baselines)] * ( len(line_fnames)-1 )
+
+
+    else:
+        lag_bounds = general_kwargs['lag_bounds']
+
+
+    #---------------------------
+    #Account for None inputs
+    run_javelin = True
+    run_pyccf = True
+
+    if jav_chain_fnames is None:
+        warnings.warn('Assuming JAVELIN was not run.', RuntimeWarning)
+
+    if (pyccf_iccf_fnames is None) or (pyccf_iccf_fnames is None):
+        warnings.warn('Assuming PyCCF was not run.', RuntimeWarning)
+
+
+    if jav_chain_fnames is None:
+        jav_chain_fnames = [None] * ( len(line_names)-1)
+        run_javelin = False
+
+    if pyccf_iccf_fnames is None:
+        pyccf_iccf_fnames = [None] * ( len(line_names)-1)
+        run_pyccf = False
+
+    if pyccf_dist_fnames is None:
+        pyccf_dist_fnames = [None] * ( len(line_names)-1)
+        run_pyccf = False
+
+    #---------------------------
+    #Make weights directories
+    for name in line_names[1:]:
+        os.makedirs(output_dir + name + r'/weights/', exist_ok=True)
+
+    #---------------------------
+    #Run weighting
+
+    summary_dicts = []
+    outputs = []
+
+    summary_fnames = []
+
+
+    for i in range(len(line_fnames)-1):
+
+        if together:
+            javelin_lag_col = 2 + 3*i
+        else:
+            javelin_lag_col = 2 
+
+        res, summary_dict = run_weighting_single(output_dir + line_names[i+1] + r'/weights/', 
+                                                 line_fnames[0], line_fnames[i+1],
+                                                 weighting_params, general_kwargs['lag_bounds'][i],
+                                                 jav_chain_fnames[i], pyccf_iccf_fnames[i], pyccf_dist_fnames[i],
+                                                 javelin_lag_col=javelin_lag_col,
+                                                 pyccf_params=pyccf_params)
+
+        summary_dicts.append(summary_dict)
+        outputs.append(res)
+        summary_fnames.append(output_dir + name + r'/weights/weight_summary.fits')
+
+
+
+    #---------------------------
+    #Get total results
+
+    res_tot = combine_weight_outputs(outputs, run_pyccf, run_javelin)
+
+    for i in range(len(line_fnames)-1):
+        plot_weights(output_dir, line_names[i+1], res_tot['pyccf'], 
+                        summary_dicts[i]['n0_pyccf'], summary_dicts[i]['k'],
+                        general_kwargs['time_unit'], general_kwargs['plot'])
+
+
     if run_pyccf:
-        plot_weight_output( output_dir, cont_fname, line_fnames, line_names,
-                     output['pyccf'], general_kwargs, module='pyccf',
-                     zoom=zoom, plot=plot)
+        plot_weight_output(output_dir, line_fnames[0], line_fnames, line_names,
+                            res_tot['pyccf'], general_kwargs, 'pyccf', zoom,
+                            general_kwargs['plot'])
 
-
-    #Plot results for JAVELIN
     if run_javelin:
-        plot_weight_output( output_dir, cont_fname, line_fnames, line_names,
-                    output['javelin'], general_kwargs, module='javelin',
-                    zoom=zoom, plot=plot)
+        plot_weight_output(output_dir, line_fnames[0], line_fnames, line_names,
+                            res_tot['javelin'], general_kwargs, 'javelin', zoom,
+                            general_kwargs['plot'])
 
 
-    return output
+    return res_tot, summary_dicts
+
+
+
+#############################################
+############## PLOTTING #####################
+#############################################
 
 
 def plot_weights(output_dir, line_name, res, n0, k, time_unit='d', plot=False):
