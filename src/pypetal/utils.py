@@ -648,8 +648,8 @@ def run_pyroa(fnames, output_dir, line_names,
     new_data_dir = output_dir + 'data/'
     os.makedirs(new_data_dir, exist_ok=True)
     
-    prior_arr = pyroa.get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together)
-    _ = pyroa.save_lines(fnames, line_names, new_data_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean)
+    new_fnames = pyroa.save_lines(fnames, line_names, new_data_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean)
+    prior_arr = pyroa.get_priors(new_fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together)
 
     cwd = os.getcwd()
 
