@@ -484,17 +484,20 @@ objname: {}
 
     tot_fnames = np.hstack( [ [cont_fname], line_fnames ] )
 
+    lc_dir = output_dir + 'pyroa_lcs/'
     if not together:
-        line_dirs = [ output_dir + x + '/pyroa/processed_lcs/' for x in line_names[1:]]
+        line_dir = [ output_dir + x + '/pyroa/' for x in line_names[1:]]
     else:
-        line_dirs = None
+        line_dir = output_dir + 'pyroa/'
+        
+    
 
-    res = utils.run_pyroa( tot_fnames, output_dir, line_names,
+    res = utils.run_pyroa( tot_fnames, lc_dir, line_dir, line_names,
                            nburn, nchain, lag_bounds, init_tau,
                            together=together, subtract_mean=subtract_mean,
                            div_mean=div_mean, add_var=add_var,
                            delay_dist=delay_dist, psi_types=psi_types,
-                           objname=objname, line_dirs=line_dirs)
+                           objname=objname)
 
 
     if together:

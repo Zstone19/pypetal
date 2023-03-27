@@ -534,12 +534,12 @@ def get_pyccf_lags(fname1, fname2,
 ######################### PyROA ##############################
 ##############################################################
 
-def run_pyroa(fnames, output_dir, line_names,
+def run_pyroa(fnames, lc_dir, line_dir, line_names,
               nburn=10000, nchain=15000, lag_bounds=None, 
               init_tau=None, init_delta=10, sig_level=100,
               together=True, subtract_mean=True, div_mean=False,
               add_var=False, delay_dist=False, psi_types='Gaussian',
-              objname=None, line_dirs=None):
+              objname=None):
     
     
     """Run PyROA for a number of input light curves.
@@ -552,8 +552,12 @@ def run_pyroa(fnames, output_dir, line_names,
     fnames : list of str
         A list of paths to the light curves to be used in PyROA. The first light curve will be assumed to be the continuum. Must be in CSV format.
         
-    output_dir : str
+    lc_dir : str
         The output directory to put the light curves for PyROA to use.
+        
+    line_dir : str, list of str
+        The output directory to store the data products output from PyROA. 
+        If together=False, this should be a list of paths for each line. If together=True, this should be a single path.
         
     line_names : list of str
         A list of the line names corresponding to the light curves.
@@ -634,28 +638,29 @@ def run_pyroa(fnames, output_dir, line_names,
             lag_bounds.append([-bl, bl])
             
             
-    if (not together) & (len(fnames)==2) & (line_dirs is None):
-        print('Only one line, assuming output_dir is where output files should be placed.')
-        line_dirs = [output_dir]
+    if (not together) & (len(fnames)==2) & isinstance(line_dir, str):
+        line_dir = [line_dir]
         
             
-    if line_dirs is not None:
-        for ldir in line_dirs:
+    if isinstance(line_dir, str):
+        os.makedirs(line_dir, exist_ok=True)
+    elif isinstance(line_dir, list):
+        for ldir in line_dir:
             os.makedirs(ldir, exist_ok=True)
-
+    else:
+        raise ValueError('line_dir must be a string or list of strings')
     
     
-    new_data_dir = output_dir + 'data/'
-    os.makedirs(new_data_dir, exist_ok=True)
+    os.makedirs(lc_dir, exist_ok=True)
     
     prior_arr = pyroa.get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, delimiter=',')
-    _ = pyroa.save_lines(fnames, line_names, new_data_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean, delimiter=',')
+    _ = pyroa.save_lines(fnames, line_names, lc_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean, delimiter=',')
 
     cwd = os.getcwd()
 
     if not together:
         
-        assert line_dirs is not None, 'Must provide line_dirs if together=False'
+        assert isinstance(line_dir, list), 'Must provide multiple line_dir if together=False'
         
         if isinstance(add_var, bool):
             add_var = np.full( len(fnames)-1, add_var )
@@ -669,24 +674,27 @@ def run_pyroa(fnames, output_dir, line_names,
         for i in range(len(fnames)-1):
             
             filters = [line_names[0], line_names[i+1]]
-            fit = PyROA.Fit(new_data_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
+            fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
                             init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
                             delay_dist=delay_dist[i], psi_types=[psi_types[i]],
                             Nsamples=nchain, Nburnin=nburn)
 
 
-            pyroa.move_output_files(cwd, line_dirs[i])
+            pyroa.move_output_files(cwd, line_dir[i])
 
             fit_arr.append(fit)
             
         return fit_arr
         
-    else:            
-        fit = PyROA.Fit(new_data_dir, objname, line_names, prior_arr, add_var=add_var,
+    else:    
+        
+        assert isinstance(line_dir, str), 'Must provide one line_dir if together=True'
+                
+        fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
                     init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
                     delay_dist=delay_dist, psi_types=psi_types,
                     Nsamples=nchain, Nburnin=nburn)
         
-        pyroa.move_output_files(cwd, output_dir)
+        pyroa.move_output_files(cwd, line_dir)
     
         return fit
