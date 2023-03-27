@@ -666,7 +666,8 @@ def peaktomean(mu, a, rms):
 
 def plot_fits(fnames, line_names, samples, models, 
               nburn=0, add_var=False, delay_dist=False, psi_types='Gaussian', 
-              nbin=50, time_unit='d', lc_unit='mJy', 
+              nbin=50, delimiter=',', 
+              time_unit='d', lc_unit='mJy', 
               output_fname=None, show=False):
     
     if isinstance(psi_types, str):
@@ -690,7 +691,7 @@ def plot_fits(fnames, line_names, samples, models,
     ax = gs.subplots(sharex='col')
 
     for i in range(nrow):
-        x, y, yerr = np.loadtxt( fnames[i], usecols=[0,1,2], unpack=True )
+        x, y, yerr = np.loadtxt( fnames[i], usecols=[0,1,2], unpack=True, delimiter=delimiter )
         x_sim, y_sim, yerr_sim = models[i]
         tau_samp = samples_chunks[i][2]
         
