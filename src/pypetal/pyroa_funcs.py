@@ -183,7 +183,7 @@ def save_lines(line_fnames, line_names, output_dir, objname=None, delimiter=None
 
 
 
-def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=False):
+def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=False, delimiter=','):
     
     
     """Get the priors used for PyROA.
@@ -237,7 +237,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
         min_y = []
         max_y = []
         for i in range(len(fnames)):
-            _, y, yerr = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2] )
+            _, y, yerr = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2], delimiter=delimiter )
             
             if div_mean:
                 yerr /= np.mean(y)
@@ -270,7 +270,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
     else:
         prior_arr = np.zeros(( len(fnames)-1, 5, 2 ))
         
-        _, y_cont, yerr_cont = np.loadtxt( fnames[0], unpack=True, usecols=[0,1,2])
+        _, y_cont, yerr_cont = np.loadtxt( fnames[0], unpack=True, usecols=[0,1,2], delimiter=delimiter )
         if div_mean:
             yerr_cont /= np.mean(y_cont)
             y_cont /= np.mean(y_cont)
@@ -280,7 +280,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
         
         
         for i in range(len(fnames)-1):
-            _, y, yerr = np.loadtxt( fnames[i+1], unpack=True, usecols=[0,1,2])
+            _, y, yerr = np.loadtxt( fnames[i+1], unpack=True, usecols=[0,1,2], delimiter=',' )
 
             if div_mean:
                 yerr /= np.mean(y)

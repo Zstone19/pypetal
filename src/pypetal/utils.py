@@ -550,7 +550,7 @@ def run_pyroa(fnames, output_dir, line_names,
     ----------
     
     fnames : list of str
-        A list of paths to the light curves to be used in PyROA. The first light curve will be assumed to be the continuum. Must be in ASCII format.
+        A list of paths to the light curves to be used in PyROA. The first light curve will be assumed to be the continuum. Must be in CSV format.
         
     output_dir : str
         The output directory to put the light curves for PyROA to use.
@@ -648,8 +648,8 @@ def run_pyroa(fnames, output_dir, line_names,
     new_data_dir = output_dir + 'data/'
     os.makedirs(new_data_dir, exist_ok=True)
     
-    new_fnames = pyroa.save_lines(fnames, line_names, new_data_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean)
-    prior_arr = pyroa.get_priors(new_fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together)
+    prior_arr = pyroa.get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, delimiter=',')
+    _ = pyroa.save_lines(fnames, line_names, new_data_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean)
 
     cwd = os.getcwd()
 
