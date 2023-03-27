@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1.inset_locator import (BboxConnector,
                                                    TransformedBbox, inset_axes)
