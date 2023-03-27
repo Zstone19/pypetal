@@ -489,7 +489,7 @@ objname: {}
     else:
         line_dirs = None
 
-    res = utils.run_pyroa( tot_fnames, line_names, output_dir,
+    res = utils.run_pyroa( tot_fnames, output_dir, line_names,
                            nburn, nchain, lag_bounds, init_tau,
                            together=together, subtract_mean=subtract_mean,
                            div_mean=div_mean, add_var=add_var,
