@@ -687,8 +687,16 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             proc = current_process()
             par_proc = parent_process()
             
-            par_proc.join()
-            par_proc.close()
+            if par_proc is not None:
+                par_proc.join()
+                par_proc.close()
+            else:
+                
+                try:
+                    proc.join()
+                    proc.close()
+                except:
+                    proc.close()
             
  
         return fit_arr
