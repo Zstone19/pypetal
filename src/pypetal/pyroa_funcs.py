@@ -502,7 +502,7 @@ def plot_histograms(samples, line_names, nburn=0, add_var=False, delay_dist=Fals
     plt.subplots_adjust(hspace=.3)
     
     if fname is not None:
-        plt.savefig('pyroa_histogram.pdf', bbox_inches='tight')
+        plt.savefig(fname, dpi=200, bbox_inches='tight')
     
     if show:
         plt.show()
