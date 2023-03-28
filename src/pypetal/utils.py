@@ -1,9 +1,5 @@
 import os
 import subprocess
-import time
-import threading
-import sys
-import signal
 
 import astropy.units as u
 import matplotlib.pyplot as plt
@@ -534,18 +530,6 @@ def get_pyccf_lags(fname1, fname2,
 ######################### PyROA ##############################
 ##############################################################
 
-def close_pool():
-    global pool
-    pool.close()
-    pool.terminate()
-    pool.join()
-
-def term(*args,**kwargs):
-    stoppool=threading.Thread(target=close_pool)
-    stoppool.daemon=True
-    stoppool.start()
-
-
 def run_pyroa(fnames, lc_dir, line_dir, line_names,
               nburn=10000, nchain=15000, lag_bounds=None, 
               init_tau=None, init_delta=10, sig_level=100,
@@ -694,10 +678,6 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             pyroa.move_output_files(cwd, line_dir[i])
 
             fit_arr.append(fit)
-            # time.sleep(60)
-            signal.signal(signal.SIGINT, term)
-            #signal.signal(signal.SIGTERM, term)
-            #signal.signal(signal.SIGQUIT, term)
  
         return fit_arr
         
