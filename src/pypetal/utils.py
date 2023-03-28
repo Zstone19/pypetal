@@ -1,7 +1,6 @@
 import os
 import subprocess
 import time
-from multiprocessing import active_children, current_process, parent_process
 
 import astropy.units as u
 import matplotlib.pyplot as plt
@@ -677,34 +676,12 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                             delay_dist=delay_dist[i], psi_types=[psi_types[i]],
                             Nsamples=nchain, Nburnin=nburn)
 
-
+            print('A')
             pyroa.move_output_files(cwd, line_dir[i])
 
+            print('B')
             fit_arr.append(fit)
-            
-            assert len( active_children() ) == 0
-
-            proc = current_process()
-            par_proc = parent_process()
-            
-            print( proc.is_alive() )
-            if par_proc is not None:
-                print( par_proc.is_alive() )
-            
-            if par_proc is not None:
-                par_proc.join()
-                par_proc.close()
-
-            try:            
-                proc.join()
-                proc.close()
-            except:
-                proc.close()
- 
-                
-            print( proc.is_alive() )
-            if par_proc is not None:
-                print( par_proc.is_alive() )
+            time.sleep(30)
  
         return fit_arr
         
