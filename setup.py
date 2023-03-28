@@ -1,4 +1,5 @@
 from setuptools import setup
+import os
 
 NAME = 'pypetal'
 VERSION = '0.1.0'
@@ -10,11 +11,12 @@ EMAIL = 'stone28@illinois.edu'
 #Get requirements.txt
 REQUIREMENTS = []
 with open('requirements.txt', 'r', encoding='UTF-8') as f:
-
     for line in f.readlines():
         REQUIREMENTS.append( line.strip('\n\r')  )
 
 
+
+os.environ["NUMBA_DISABLE_OPENMP"] = "1"
 
 setup(
     name=NAME,

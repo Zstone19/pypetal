@@ -1,17 +1,16 @@
-import glob
 import os
-import shlex
 import subprocess
-import time
 
 import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
-from astropy.table import Table
 from pyzdcf import pyzdcf
 
 import pypetal.drw_funcs as drw
 import pypetal.pyccf as pyccf
+
+import pypetal.pyroa_funcs as pyroa
+import PyROA
 
 ##############################################################
 ####################### DRW REJECTION ########################
@@ -525,3 +524,172 @@ def get_pyccf_lags(fname1, fname2,
         'CCCD_lags': tlags_centroid,
         'CCPD_lags': tlags_peak
     }
+
+
+##############################################################
+######################### PyROA ##############################
+##############################################################
+
+def run_pyroa(fnames, lc_dir, line_dir, line_names,
+              nburn=10000, nchain=15000, lag_bounds=None, 
+              init_tau=None, init_delta=10, sig_level=100,
+              together=True, subtract_mean=True, div_mean=False,
+              add_var=False, delay_dist=False, psi_types='Gaussian',
+              objname=None):
+    
+    
+    """Run PyROA for a number of input light curves.
+    NOTE: This will assume a log-Gaussian for the delay distribution.
+    
+    
+    Parameters
+    ----------
+    
+    fnames : list of str
+        A list of paths to the light curves to be used in PyROA. The first light curve will be assumed to be the continuum. Must be in CSV format.
+        
+    lc_dir : str
+        The output directory to put the light curves for PyROA to use.
+        
+    line_dir : str, list of str
+        The output directory to store the data products output from PyROA. 
+        If together=False, this should be a list of paths for each line. If together=True, this should be a single path.
+        
+    line_names : list of str
+        A list of the line names corresponding to the light curves.
+        
+    nburn : int, optional
+        The number of burn-in samples to discard. Default is 10000.
+        
+    nchain : int, optional
+        The number of samples to get per walker. Default is 15000.
+        
+    lag_bounds : list of str, optional
+        The range of lags to consider for PyROA, one set of bounds for each line (excluding the continuum). If ``None``, the baseline of
+        each light curve will be used as the lag bounds. Default is ``None``.
+        
+    init_tau : list of float
+        A list of inital values for the time delay (tau) for each light curve. If ``None``, will set the inital value to 10.0 for each line.
+        Default is ``None``.
+
+    sig_level : float
+        The number to use for sigma clipping in PyROA. Default is 100.
+        
+    together : bool, optional
+        Whether to fit all light curves together or not. If ``together=False``, the ``line_dirs`` argument must be set. Default is ``True``.
+        
+    subtract_mean : bool, optional
+        Whether to subtract the mean from all light curves before using PyROA or not. Will occur after ``div_mean`` if set to ``True``. Default is ``True``.
+        
+    div_mean : bool, optional
+        Whether to divide each light curve by its mean before using PyROA. Will occur before ``subtract_mean`` if set to ``True``. Default is ``False``.
+        
+    add_var : bool or list of bool, optional
+        Whether or not to add additional uncertainty in the data, same as the PyROA argument. If ``together=False``, multiple values may be given for each line. 
+        If only one value is given, it will be assumed for all lines. Default is ``True``.
+        
+    delay_dist : bool or list of bool, optional
+        Same as the ``delay_dist`` argument for PyROA. If ``together=False``, multiple values may be given for each line. 
+        If only one value is given, it will be assumed for all lines. Default is ``True``.
+        
+    objname : str, optional
+        The name of the object, will be used for plot and for the saved PyROA light curve data. If ``None``, will be set to "pyroa".
+        
+    line_names : list of str
+        A list of directories to place the output PyROA data for each of the lines (excluding the continuum). Must be set if ``together=False``, and will only be used in such a case.
+        Default is ``None``.
+        
+        
+    Returns
+    -------
+    
+    fit : PyROA.Fit or list of pyROA.Fit
+        The PyROA.Fit object output from PyROA. If ``together=False``, this will be an array of the ``Fit`` objects.
+
+    
+    """
+
+    
+    if objname is None:
+        objname = 'pyroa'
+    
+    if init_tau is None:
+        init_tau = np.full( len(fnames), 10. )
+        
+    if isinstance(psi_types, str):
+        psi_types = [psi_types] * ( len(fnames)-1 )
+        
+    #If no lag bounds given, use the baseline of the light curves
+    if lag_bounds is None:
+        lag_bounds = []
+        
+        x_cont, _, _ = np.loadtxt( fnames[0], unpack=True, usecols=[0,1,2] )
+        for i in range(1, len(fnames)):
+            x, _, _ = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2] )
+            
+            max_x = np.max([ np.max(x), np.max(x_cont) ])
+            min_x = np.min([ np.min(x), np.min(x_cont) ])
+            bl = max_x - min_x
+            
+            lag_bounds.append([-bl, bl])
+            
+            
+    if (not together) & (len(fnames)==2) & isinstance(line_dir, str):
+        line_dir = [line_dir]
+        
+            
+    if isinstance(line_dir, str):
+        os.makedirs(line_dir, exist_ok=True)
+    elif isinstance(line_dir, list):
+        for ldir in line_dir:
+            os.makedirs(ldir, exist_ok=True)
+    else:
+        raise ValueError('line_dir must be a string or list of strings')
+    
+    
+    os.makedirs(lc_dir, exist_ok=True)
+    
+    prior_arr = pyroa.get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, delimiter=',')
+    _ = pyroa.save_lines(fnames, line_names, lc_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean, delimiter=',')
+
+    cwd = os.getcwd()
+
+    if not together:
+        
+        assert isinstance(line_dir, list), 'Must provide multiple line_dir if together=False'
+        
+        if isinstance(add_var, bool):
+            add_var = np.full( len(fnames)-1, add_var )
+            
+        if isinstance(delay_dist, bool):
+            delay_dist = np.full( len(fnames)-1, delay_dist )
+        
+        
+        fit_arr = []
+        
+        for i in range(len(fnames)-1):
+            
+            filters = [line_names[0], line_names[i+1]]
+            fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
+                            init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
+                            delay_dist=delay_dist[i], psi_types=[psi_types[i]],
+                            Nsamples=nchain, Nburnin=nburn)
+
+            pyroa.move_output_files(cwd, line_dir[i])
+
+            fit_arr.append(fit)
+ 
+        return fit_arr
+        
+    else:    
+        
+        assert isinstance(line_dir, str), 'Must provide one line_dir if together=True'
+                
+        fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
+                    init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
+                    delay_dist=delay_dist, psi_types=psi_types,
+                    Nsamples=nchain, Nburnin=nburn)
+        
+        pyroa.move_output_files(cwd, line_dir)
+    
+        return fit

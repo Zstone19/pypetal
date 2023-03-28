@@ -15,6 +15,7 @@ def run_pipeline(output_dir, arg2,
                  run_detrend=False, detrend_params={},
                  run_pyccf=False, pyccf_params={},
                  run_pyzdcf=False, pyzdcf_params={},
+                 run_pyroa=False, pyroa_params={},
                  run_javelin=False, javelin_params={},
                  run_weighting=False, weighting_params={},
                  **kwargs):
@@ -56,6 +57,12 @@ def run_pipeline(output_dir, arg2,
 
     pyzdcf_params : dict, optional
         The parameters to pass to the pyZDCF module. Default is ``{}``.
+
+    run_pyroa : bool, optional
+        Whether to run the PyROA module. Default is ``False``.
+        
+    pyroa_params : dict, optional
+        The parameters to pass to the PyROA module. Default is ``{}``.
 
     run_javelin : bool, optional
         Whether to run the Javelin module. Default is ``False``.
@@ -133,8 +140,11 @@ def run_pipeline(output_dir, arg2,
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
 
-    #Get "reject_data" and "use_for_javelin"
-    _, _, _, _, _, _, reject_data, use_for_javelin = defaults.set_drw_rej(drw_rej_params, fnames)
+    #Get "reject_data"
+    _, _, _, _, _, _, reject_data, _ = defaults.set_drw_rej(drw_rej_params, fnames)
+
+    #Get "together_pyroa"
+    _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa(pyroa_params, len(fnames))
 
 
     #Name lines if unnamed
@@ -153,8 +163,8 @@ def run_pipeline(output_dir, arg2,
 
     #Create subdirectories for each line and module
     make_directories(output_dir, fnames, line_names,
-                     run_drw_rej, run_pyccf, run_pyzdcf,
-                     reject_data)
+                     run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa,
+                     reject_data, together_pyroa)
 
     if general_kwargs['file_fmt'] != 'csv':
         #Make temp directory to store csv files
@@ -163,7 +173,7 @@ def run_pipeline(output_dir, arg2,
 
         #Read in file
         try:
-            dat = Table.read( cont_fname, format=file_fmt)
+            dat = Table.read( cont_fname, format=general_kwargs['file_fmt'])
         except:
             dat = Table.read( cont_fname, format='ascii')
 
@@ -180,7 +190,7 @@ def run_pipeline(output_dir, arg2,
 
             #Read in file
             try:
-                dat = Table.read( line_fnames[i], format=file_fmt)
+                dat = Table.read( line_fnames[i], format=general_kwargs['file_fmt'])
             except:
                 dat = Table.read( line_fnames[i], format='ascii')
 
@@ -259,6 +269,9 @@ def run_pipeline(output_dir, arg2,
     if run_pyzdcf:
         pyzdcf_res, plike_res = modules.pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyzdcf_params)
 
+    if run_pyroa:
+        pyroa_res = modules.pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)
+
     if run_weighting:
         weighting_res = weighting.run_weighting(cont_fname, line_fnames, output_dir, line_names,
                                 run_pyccf, run_javelin,
@@ -287,6 +300,9 @@ def run_pipeline(output_dir, arg2,
     if run_pyzdcf:
         tot_res['pyzdcf_res'] = pyzdcf_res
         tot_res['plike_res'] = plike_res
+        
+    if run_pyroa:
+        tot_res['pyroa_res'] = pyroa_res
 
     if run_weighting:
         tot_res['weighting_res'] = weighting_res
