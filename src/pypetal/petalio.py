@@ -113,7 +113,7 @@ def write_data(arr, fname, header=None):
 
 
 
-def write_weighting_summary(fname, res, run_pyccf, run_javelin):
+def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
 
     k = res['k']
 
@@ -148,15 +148,44 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin):
         lag_javelin = np.nan
         lag_err_javelin = [np.nan, np.nan]
         frac_rejected_javelin = np.nan
+        
+        
+    #PyROA
+    if run_pyroa:
+        n0_pyroa = res['n0_pyroa']
+        peak_bounds_pyroa = res['peak_bounds_pyroa']
+        peak_pyroa = res['peak_pyroa']
+        lag_pyroa = res['lag_pyroa']
+        lag_err_pyroa = res['lag_err_pyroa']
+        frac_rejected_pyroa = res['frac_rejected_pyroa']
+    else:
+        n0_pyroa = np.nan
+        peak_bounds_pyroa = [np.nan, np.nan]
+        peak_pyroa = np.nan
+        lag_pyroa = np.nan
+        lag_err_pyroa = [np.nan, np.nan]
+        frac_rejected_pyroa = np.nan
+        
 
 
     #Total
-    if run_pyccf & run_javelin:
+    if run_pyccf:
         rmax_pyccf = res['rmax_pyccf']
-        rmax_jav = res['rmax_javelin']
-    else:
+        
+        if run_javelin:
+            rmax_jav = res['rmax_javelin']
+        if run_pyroa:
+            rmax_pyroa = res['rmax_pyroa']
+        
+    if not run_pyccf:
         rmax_pyccf = np.nan
         rmax_jav = np.nan
+        rmax_pyroa = np.nan
+    elif not run_javelin:
+        rmax_jav = np.nan
+    elif not run_pyroa:
+        rmax_pyroa = np.nan    
+    
 
     #---------------------------
     #Make table
@@ -176,21 +205,28 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin):
     lag_javelin_col = fits.Column(name='lag_javelin', format='E', array=[lag_javelin])
     lag_err_javelin_col = fits.Column(name='lag_err_javelin', format='2E', array=[lag_err_javelin])
     frac_rejected_javelin_col = fits.Column(name='frac_rejected_javelin', format='E', array=[frac_rejected_javelin])
+    
+    n0_pyroa_col = fits.Column(name='n0_pyroa', format='E', array=[n0_pyroa])
+    peak_bounds_pyroa_col = fits.Column(name='peak_bounds_pyroa', format='2E', array=[peak_bounds_pyroa])
+    peak_pyroa_col = fits.Column(name='peak_pyroa', format='E', array=[peak_pyroa])
+    lag_pyroa_col = fits.Column(name='lag_pyroa', format='E', array=[lag_pyroa])
+    lag_err_pyroa_col = fits.Column(name='lag_err_pyroa', format='2E', array=[lag_err_pyroa])
+    frac_rejected_pyroa_col = fits.Column(name='frac_rejected_pyroa', format='E', array=[frac_rejected_pyroa])
 
     rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=[rmax_pyccf])
     rmax_jav_col = fits.Column(name='rmax_javelin', format='E', array=[rmax_jav])
-
+    rmax_pyroa_col = fits.Column(name='rmax_pyroa', format='E', array=[rmax_pyroa])
 
 
     cols = [k_col, 
             n0_pyccf_col, peak_bounds_pyccf_col, peak_pyccf_col, lag_pyccf_col, lag_err_pyccf_col, frac_rejected_pyccf_col, 
             n0_javelin_col, peak_bounds_javelin_col, peak_javelin_col, lag_javelin_col, lag_err_javelin_col, frac_rejected_javelin_col, 
-            rmax_pyccf_col, rmax_jav_col]
+            n0_pyroa_col, peak_bounds_pyroa_col, peak_pyroa_col, lag_pyroa_col, lag_err_pyroa_col, frac_rejected_pyroa_col,
+            rmax_pyccf_col, rmax_jav_col, rmax_pyroa_col]
     table = fits.BinTableHDU.from_columns(cols)
     table.writeto(fname, overwrite=True)
 
     return 
-
 
 
 def combine_weight_summary(filenames, output_fname, line_names=None):
@@ -224,9 +260,17 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_javelin = np.zeros(len(filenames))
     lag_err_javelin = np.zeros( (len(filenames),2) )
     frac_rejected_javelin = np.zeros(len(filenames))
+    
+    n0_pyroa = np.zeros(len(filenames))
+    peak_bounds_pyroa = np.zeros( (len(filenames),2) )
+    peak_pyroa = np.zeros(len(filenames))
+    lag_pyroa = np.zeros(len(filenames))
+    lag_err_pyroa = np.zeros( (len(filenames),2) )
+    frac_rejected_pyroa = np.zeros(len(filenames))
 
     rmax_pyccf = np.zeros(len(filenames))
     rmax_jav = np.zeros(len(filenames))
+    rmax_pyroa = np.zeros(len(filenames))
 
 
     for i, fname in enumerate(filenames):
@@ -247,9 +291,17 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
         lag_javelin[i] = table['lag_javelin'][0]
         lag_err_javelin[i,:] = table['lag_err_javelin'][0]
         frac_rejected_javelin[i] = table['frac_rejected_javelin'][0]
+        
+        n0_pyroa[i] = table['n0_pyroa'][0]
+        peak_bounds_pyroa[i,:] = table['peak_bounds_pyroa'][0]
+        peak_pyroa[i] = table['peak_pyroa'][0]
+        lag_pyroa[i] = table['lag_pyroa'][0]
+        lag_err_pyroa[i,:] = table['lag_err_pyroa'][0]
+        frac_rejected_pyroa[i] = table['frac_rejected_pyroa'][0]
 
         rmax_pyccf[i] = table['rmax_pyccf'][0]
         rmax_jav[i] = table['rmax_javelin'][0] 
+        rmax_pyroa[i] = table['rmax_pyroa'][0]
 
     #---------------------------
     #Make columns
@@ -270,14 +322,23 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_javelin_col = fits.Column(name='lag_javelin', format='E', array=lag_javelin)
     lag_err_javelin_col = fits.Column(name='lag_err_javelin', format='2E', array=lag_err_javelin)
     frac_rejected_javelin_col = fits.Column(name='frac_rejected_javelin', format='E', array=frac_rejected_javelin)
+    
+    n0_pyroa_col = fits.Column(name='n0_pyroa', format='E', array=n0_pyroa)
+    peak_bounds_pyroa_col = fits.Column(name='peak_bounds_pyroa', format='2E', array=peak_bounds_pyroa)
+    peak_pyroa_col = fits.Column(name='peak_pyroa', format='E', array=peak_pyroa)
+    lag_pyroa_col = fits.Column(name='lag_pyroa', format='E', array=lag_pyroa)
+    lag_err_pyroa_col = fits.Column(name='lag_err_pyroa', format='2E', array=lag_err_pyroa)
+    frac_rejected_pyroa_col = fits.Column(name='frac_rejected_pyroa', format='E', array=frac_rejected_pyroa)
 
     rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=rmax_pyccf)    
     rmax_jav_col = fits.Column(name='rmax_javelin', format='E', array=rmax_jav)
+    rmax_pyroa_col = fits.Column(name='rmax_pyroa', format='E', array=rmax_pyroa)
 
     cols = [name_col, k_col,
             n0_pyccf_col, peak_bounds_pyccf_col, peak_pyccf_col, lag_pyccf_col, lag_err_pyccf_col, frac_rejected_pyccf_col,
             n0_javelin_col, peak_bounds_javelin_col, peak_javelin_col, lag_javelin_col, lag_err_javelin_col, frac_rejected_javelin_col,
-            rmax_pyccf_col, rmax_jav_col]
+            n0_pyroa_col, peak_bounds_pyroa_col, peak_pyroa_col, lag_pyroa_col, lag_err_pyroa_col, frac_rejected_pyroa_col,
+            rmax_pyccf_col, rmax_jav_col, rmax_pyroa_col]
 
     #---------------------------
     #Make table
