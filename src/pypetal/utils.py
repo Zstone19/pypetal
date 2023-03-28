@@ -701,8 +701,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             pyroa.move_output_files(cwd, line_dir[i])
 
-            #fit_arr.append(fit)
-            del fit
+            fit_arr.append(fit)
  
         return fit_arr
         
