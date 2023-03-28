@@ -1,6 +1,7 @@
 import os
 import subprocess
 import time
+import threading
 
 import astropy.units as u
 import matplotlib.pyplot as plt
@@ -676,12 +677,14 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                             delay_dist=delay_dist[i], psi_types=[psi_types[i]],
                             Nsamples=nchain, Nburnin=nburn)
 
-            print('A')
             pyroa.move_output_files(cwd, line_dir[i])
 
-            print('B')
             fit_arr.append(fit)
-            time.sleep(30)
+            
+            if threading.main_thread().is_alive():
+                print('Sleeping...')
+                time.sleep(2)
+
  
         return fit_arr
         
