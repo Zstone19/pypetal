@@ -682,8 +682,12 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             fit_arr.append(fit)
             
-            ac = active_children()
-            print(ac)
+            assert len( active_children() ) == 0
+
+            proc = current_process()
+            proc.join()
+            proc.close()
+            
  
         return fit_arr
         
