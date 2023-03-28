@@ -541,8 +541,6 @@ def close_pool():
     pool.join()
 
 def term(*args,**kwargs):
-    sys.stderr.write('\nStopping...')
-    # httpd.shutdown()
     stoppool=threading.Thread(target=close_pool)
     stoppool.daemon=True
     stoppool.start()

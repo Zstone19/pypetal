@@ -545,7 +545,7 @@ objname: {}
                                      fname = output_dir + line_names[i+1] + '/pyroa/corner_plot.pdf',
                                      show=plot)
             
-            pyroa.plot_fits( [cont_fname, lc_fnames[i+1]], line_names, res_i.samples, res_i.models,
+            pyroa.plot_fits( [lc_fnames[0], lc_fnames[i+1]], line_names, res_i.samples, res_i.models,
                              nburn=nburn, add_var=add_var[i], delay_dist=delay_dist[i],
                              psi_types=psi_types[i], delimiter=None,
                              time_unit=time_unit, lc_unit=lc_unit,
