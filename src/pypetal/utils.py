@@ -1,7 +1,7 @@
 import os
 import subprocess
 import time
-from multiprocessing import active_children, current_process
+from multiprocessing import active_children, current_process, parent_process
 
 import astropy.units as u
 import matplotlib.pyplot as plt
@@ -685,8 +685,10 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             assert len( active_children() ) == 0
 
             proc = current_process()
-            proc.join()
-            proc.close()
+            par_proc = parent_process()
+            
+            par_proc.join()
+            par_proc.close()
             
  
         return fit_arr
