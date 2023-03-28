@@ -695,9 +695,9 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             fit_arr.append(fit)
             
-            signal.signal(signal.SIGTERM, term)
-            signal.signal(signal.SIGINT, term)
-            signal.signal(signal.SIGQUIT, term)
+            signal.signal(signal.SIGCHLD, term)
+            # signal.signal(signal.SIGTERM, term)
+            # signal.signal(signal.SIGQUIT, term)
  
         return fit_arr
         
