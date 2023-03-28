@@ -1,5 +1,4 @@
 from setuptools import setup
-import os
 
 NAME = 'pypetal'
 VERSION = '0.1.0'
@@ -15,8 +14,6 @@ with open('requirements.txt', 'r', encoding='UTF-8') as f:
         REQUIREMENTS.append( line.strip('\n\r')  )
 
 
-
-# os.environ["NUMBA_DISABLE_OPENMP"] = "1"
 
 setup(
     name=NAME,
