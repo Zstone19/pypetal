@@ -687,17 +687,15 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             proc = current_process()
             par_proc = parent_process()
             
+            print( proc.is_alive(), par_proc.is_alive() )
+            
             if par_proc is not None:
                 par_proc.join()
                 par_proc.close()
             else:
+                proc.close()
                 
-                try:
-                    proc.join()
-                    proc.close()
-                except:
-                    proc.close()
-            
+            print( proc.is_alive(), par_proc.is_alive() )
  
         return fit_arr
         
