@@ -1,13 +1,10 @@
-import glob
 import os
-import shlex
 import subprocess
 import time
 
 import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
-from astropy.table import Table
 from pyzdcf import pyzdcf
 
 import pypetal.drw_funcs as drw
@@ -682,7 +679,8 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             pyroa.move_output_files(cwd, line_dir[i])
 
-            fit_arr.append(fit)
+            fit_arr.append(fit)            
+            time.sleep(10)
             
         return fit_arr
         
