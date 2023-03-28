@@ -694,8 +694,8 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             pyroa.move_output_files(cwd, line_dir[i])
 
             fit_arr.append(fit)
-            time.sleep(60)
-            # signal.signal(signal.SIGCHLD, term)
+            # time.sleep(60)
+            signal.signal(signal.SIGCHLD, term)
             # signal.signal(signal.SIGTERM, term)
             # signal.signal(signal.SIGQUIT, term)
  
