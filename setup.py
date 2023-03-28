@@ -16,7 +16,7 @@ with open('requirements.txt', 'r', encoding='UTF-8') as f:
 
 
 
-os.environ["NUMBA_DISABLE_OPENMP"] = "1"
+# os.environ["NUMBA_DISABLE_OPENMP"] = "1"
 
 setup(
     name=NAME,
