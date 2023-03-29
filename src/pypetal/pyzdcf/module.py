@@ -8,7 +8,7 @@ import numpy as np
 from astropy.table import Table
 
 from pypetal.utils import defaults
-from pypetal.pyzdcf.utils import get_zdcf, run_plike
+import pypetal.pyzdcf.utils as utils
 from pypetal.pyzdcf.plotting import plot_pyzdcf_results
 
 
@@ -96,7 +96,7 @@ plike_dir: {}
     line_fnames_short = [ os.path.basename(x) for x in line_fnames ]
 
 
-    pyzdcf_func = partial( get_zdcf, num_MC=nsim, minpts=minpts,
+    pyzdcf_func = partial( utils.get_zdcf, num_MC=nsim, minpts=minpts,
                            uniform_sampling=uniform_sampling, omit_zero_lags=omit_zero_lags,
                            sparse=sparse, sep=',', verbose=False)
 
@@ -118,7 +118,7 @@ plike_dir: {}
         plike_dict = None
         if run_plike:
 
-            run_plike( arg4[i] + arg5[i] + '.dcf', lag_bounds[i], plike_dir,
+            utils.run_plike( arg4[i] + arg5[i] + '.dcf', lag_bounds[i], plike_dir,
                             verbose=verbose)
 
             plike_fname = plike_dir + 'plike.out'
