@@ -333,6 +333,10 @@ def run_weighting(output_dir, line_names,
     if run_pyccf:
         pyccf_iccf_fnames = []
         pyccf_dist_fnames = []
+        
+        for x in line_names[1:]:
+            pyccf_iccf_fnames.append( output_dir + x + '/pyccf/' + x + 'ccf.dat' )
+            pyccf_dist_fnames.append( output_dir + x + '/pyccf/' + x + 'ccf_dists.dat' )
 
 
     if run_javelin:
