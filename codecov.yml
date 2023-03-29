@@ -9,5 +9,5 @@ coverage:
         branches:
           - main
 
-ignore:
-  - src/pypetal/pyccf.py
+# ignore:
+#   - src/pypetal/pyccf/utils.py

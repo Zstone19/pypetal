@@ -305,6 +305,55 @@ def run_weighting(output_dir, line_names,
                  **kwargs):
     
     
+    """Perform weighting on the results from the pyPetal pipeline. 
+    NOTE: This requires that you have run the pyPetal pipeline (i.e. pypetal.pipeline.run.pipeline) with 
+    at least run_pyccf=True. 
+    This will perform the weighting scheme described in Grier et al. (2019) to the lag distributions from 
+    each of the modules run (e.g., pyCCF, PyROA, JAVELIN).
+    
+    
+    Parameters
+    ----------
+    output_dir : str
+        The directory where the output files will be saved. Must be the same output directory as used
+        in pyPetal and pyPetal-jav.
+        
+    line_names : list of str
+        The names of the lines to be weighted. Must be the same as the line names used in pyPetal and
+        pyPetal-jav.
+        
+    run_pyccf : bool, optional
+        Whether or not pyCCF was run in the pyPetal pipeline. Default is False.
+        
+    pyccf_params : dict, optional
+        The parameters used in the pyPetal pipeline for pyCCF. Default is {}.
+        
+    run_pyroa : bool, optional
+        Whether or not PyROA was run in the pyPetal pipeline. Default is False.
+        
+    pyroa_params : dict, optional
+        The parameters used in the pyPetal pipeline for PyROA. Default is {}.
+        
+    run_javelin : bool, optional
+        Whether or not the pyPetal-jav pipeline was run. Default is False.
+        
+    javelin_params : dict, optional
+        The parameters used in the pyPetal-jav pipeline. Default is {}.
+        
+    weighting_params : dict, optional
+        The parameters to be used for the weighting. Default is {}.
+        
+    
+    
+    Returns
+    -------
+    
+    res : dict
+        A dictionary containing the results of the weighting.
+        
+    """
+    
+    
     if (not run_pyccf) & (not run_javelin) & (not run_pyroa):
         raise Exception('ERROR: Either JAVELIN, pyCCF, or PyROA must be run before weighting can be done.')
     

@@ -9,6 +9,8 @@ from pypetal.utils import defaults
 from pypetal.weighting.utils import run_weighting_single, combine_weight_outputs
 from pypetal.weighting.plotting import plot_weights, plot_weight_output
 
+
+
 def run_weighting_tot(output_dir,
                       jav_chain_fnames=None, pyccf_iccf_fnames=None, pyccf_dist_fnames=None,
                       pyroa_sample_fnames=None,
@@ -16,6 +18,73 @@ def run_weighting_tot(output_dir,
                       pyroa_obj_inds=None, pyroa_params={},
                       general_kwargs={}, weighting_params={}, share_lag_bounds=True):
 
+
+    """Run the weighting module for a number of lines, with pyPetal (and possible pyPetal-jav) already run.
+    This will use the weighting scheme described in Grier et al. (2019) for all lag distributions provided.
+    NOTE: If filenaes aren't given for a certain module (i.e. its input is None), it will be assumed not to have run.
+    
+    
+    Parameters
+    ----------
+    
+    output_dir : str
+        The directory where the output will be saved. Must be the same output directory used for the pyPetal run.
+    
+    jav_chain_fnames : list of str, optional
+        The filenames of the JAVELIN chains for each line. If None, JAVELIN will be assumed not to have run.
+        Default is None.
+        
+    pyccf_iccf_fnames : list of str, optional
+        The filenames of the PyCCF ICCF outputs for each line. If None, PyCCF will be assumed not to have run.
+        Default is None.
+        
+    pyccf_dist_fnames : list of str, optional
+        The filenames of the PyCCF lag distributions for each line. If None, PyCCF will be assumed not to have run.
+        Default is None.
+        
+    pyroa_sample_fnames : list of str, optional
+        The filenames of the PyROA sample for each line (i.e. "samples.obj"). If None, PyROA will be assumed not to have run.
+        Default is None.
+        
+    line_names : list of str, optional
+        The names of the lines to be weighted. If None, the output directory will be searched to determine the 
+        line_names. Default is None.
+        
+    interp : int, optional
+        The interpolation factor to use for the PyCCF lag distributions. Default is 2.
+        
+    together_jav : bool, optional
+        The together parameter used for the JAVELIN run. Default is False.
+        
+    pyroa_obj_inds : list of int, optional
+        The indices in the samples_chunked array for each line (in the same order as line_names).
+        Typically, the index for a given line will be one more than its index in line_names.
+        Must be specified if pyroa_sample_fnames is not None. Default is None.
+
+    pyroa_params : dict, optional
+        The parameters used for the PyROA run. Default is {}.
+        
+    general_kwargs : dict, optional
+        The general kwargs used for the pyPetal run. Default is {}.
+        
+    weighting_params : dict, optional
+        The parameters to be used for the weighting. Default is {}.
+        
+    share_lag_bounds : bool, optional
+        Whether to share the lag bounds for all lines when computing the weights. Default is True.
+        
+    
+    Returns
+    -------
+    
+    res_tot : list of dict
+        A list of dictionaries containing the results for each line.
+        
+    summary_dicts : list of dict
+        A list of dictionaries containing the summary information for each line. This information will
+        be stored in the weight summary file in the output directory as well.
+    
+    """
 
     output_dir = os.path.abspath(output_dir) + r'/'
     pyccf_params = {'interp':interp}
