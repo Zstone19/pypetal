@@ -14,6 +14,7 @@ with open('requirements.txt', 'r', encoding='UTF-8') as f:
         REQUIREMENTS.append( line.strip('\n\r')  )
 
 
+subdirs = ['', 'drw_rej', 'pyccf', 'pyroa', 'pyzdcf', 'utils', 'weighting']
 
 setup(
     name=NAME,
@@ -26,7 +27,7 @@ setup(
     license='MIT',
     install_requires=REQUIREMENTS,
     python_requires='>=3.8,<3.11',
-    packages=['pypetal', 'pypetal.utils'],
+    packages=['pypetal' + x for x in subdirs],
     package_dir={'pypetal':'./src/pypetal'},
     include_package_data=True
 )
