@@ -855,19 +855,19 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
 def run_weighting_tot(output_dir,
                       jav_chain_fnames=None, pyccf_iccf_fnames=None, pyccf_dist_fnames=None,
                       pyroa_sample_fnames=None,
-                      line_names=None, interp=2, pyroa_nburn=15000, 
-                      together_jav=False, together_pyroa=True,
-                      pyroa_obj_inds=None,
+                      line_names=None, interp=2, together_jav=False,
+                      pyroa_obj_inds=None, pyroa_params={},
                       general_kwargs={}, weighting_params={}, share_lag_bounds=True):
 
 
     output_dir = os.path.abspath(output_dir) + r'/'
     pyccf_params = {'interp':interp}
-    pyroa_params = {'nburn':pyroa_nburn, 'together':together_pyroa}
 
     if line_names is None:
         warnings.warn('Assuming that the filenames are in the same order as the line names. Line names will be acquired in chronological order from the given directory, except the first will be the continuum', RuntimeWarning)
         line_names = get_ordered_line_names(output_dir)
+
+    _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
     #---------------------------
     #Get data fnames
