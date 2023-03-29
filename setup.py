@@ -14,7 +14,7 @@ with open('requirements.txt', 'r', encoding='UTF-8') as f:
         REQUIREMENTS.append( line.strip('\n\r')  )
 
 
-subdirs = ['', 'drw_rej', 'pyccf', 'pyroa', 'pyzdcf', 'utils', 'weighting']
+subdirs = ['', '.drw_rej', '.pyccf', '.pyroa', '.pyzdcf', '.utils', '.weighting']
 
 setup(
     name=NAME,
