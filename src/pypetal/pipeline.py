@@ -325,7 +325,7 @@ def run_weighting(output_dir, line_names,
     _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
        
-    jav_chain_fnames = None
+    javelin_chain_fnames = None
     pyccf_iccf_fnames = None
     pyccf_dist_fnames = None
     pyroa_sample_fnames = None
@@ -361,7 +361,7 @@ def run_weighting(output_dir, line_names,
        
     
     res = weighting.run_weighting_tot(output_dir, 
-                                      jav_chain_fnames, pyccf_iccf_fnames, pyccf_dist_fnames, pyroa_sample_fnames,
+                                      javelin_chain_fnames, pyccf_iccf_fnames, pyccf_dist_fnames, pyroa_sample_fnames,
                                       line_names, interp, together_jav, 
                                       pyroa_params=pyroa_params, general_kwargs=general_kwargs,
                                       weighting_params=weighting_params)
