@@ -1,20 +1,26 @@
 import warnings
 
 import celerite
-import corner
 import emcee
-import matplotlib.pyplot as plt
+
+import astropy.units as u
 import numpy as np
 import scipy.stats as stat
-from astropy import units as u
+
 from astropy.timeseries import LombScargle
-from astropy.visualization import quantity_support
 from celerite import terms
-from matplotlib import gridspec
 from scipy.optimize import curve_fit, differential_evolution, minimize
+
+import corner
+import matplotlib.pyplot as plt
+from astropy.visualization import quantity_support
+from matplotlib import gridspec
 
 quantity_support()
 
+##############################################################
+###################### ASSIST FUNCTIONS ######################
+##############################################################
 
 def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
                  solver='minimize', suppress_warnings=True, jitter=True):
@@ -665,7 +671,171 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
            fit_vals, fit_err
 
 
+##############################################################
+##############################################################
+##############################################################
 
+def drw_flag(times, data, error,
+             target=None, fname=None,
+             nwalkers=32, nburn=300, nsamp=1000,
+             nsig=1, jitter=True, clip=True,
+             plot=True):
+
+
+    """Fits the light curve to a DRW model using celerite with MCMC sampling from emcee.
+    celerite will then predict the light curve with the best fit parameters. Points lying above
+    or below the mean prediction by ``nsig`` standard deviations will be flagged as outliers in
+    an output mask.
+
+
+    Parameters
+    ----------
+
+    times : list of astropy.units.Quantity
+        Times for the light curve.
+
+    data : list of astropy.units.Quantity
+        Data for the light curve.
+
+    error : list of astropy.units.Quantity
+        Uncertainty in the light curve.
+
+    nwalkers : int, optional
+        Number of walkers for the MCMC sampler. Default is 32.
+
+    nburn : int, optional
+        Number of burn-in steps for the MCMC sampler. Default is 300.
+
+    nsamp : int, optional
+        Number of samples for the MCMC sampler. Default is 1000.
+
+    nsig : int, optional
+        Number of standard deviations above or below the mean prediction to flag as an outlier.
+        Default is 1.
+
+    jitter : bool, optional
+        If True, will fit for a noise (jitter) term in the data. Default is ``True``.
+
+    clip : bool, optional
+        If true, will clip data points which are too close in time to another data point. Specifically,
+        will remove data points that are closer than 1e-8 days apart. Default is ``True``.
+
+    target : str, optional
+        The name of the target. Default is ``None``.
+
+    fname : str, optional
+        The name of the file to output the resulting plot. If ``None``, the plot will
+        not be saved. Default is ``None``.
+
+    plot : bool, optional
+        If true, the plot will be shown. Default is ``True``.
+
+
+
+    Returns
+    --------
+
+    res : dict
+        The output of the DRW fitting and rejection. The keys are:
+
+        * mask : array_like
+            The DRW rejection mask. Values marked as True are outliers.
+
+        * tau : array_like
+            The DRW tau chain from the MCMC sampler.
+
+        * sigma : array_like
+            The DRW sigma chain from the MCMC sampler.
+
+        * fit_x : array_like
+            The times for the predicted light curve.
+
+        * fit_y : array_like
+            The predicted light curve.
+
+        * fit_yerr : array_like
+            The uncertainty in the predicted light curve.
+
+        * jitter : array_like
+            The jitter chain from the MCMC sampler. Only present if ``jitter`` is True.
+
+
+    .. note:: The input times, data, and error must be astropy.units.Quantity objects.
+
+    """
+
+    assert times.shape == data.shape == error.shape
+    assert len(times.shape) == 1
+
+
+    if type(data[0]) == u.Quantity:
+        data_unit = data[0].unit
+
+    flag_mask = np.zeros( times.shape, dtype=bool )
+
+
+    #Assume 'times' and 'fluxes' have the same shape
+
+    #Fit to the DRW model
+    samples, gp, statuses = MCMC_fit(times, data, error,
+                                         nwalkers=nwalkers, nburn=nburn, nsamp=nsamp,
+                                         jitter=jitter, clip=clip)
+
+
+    fig, ax = plot_outcome(times, data, error, samples, gp, data_unit,
+                                nsig=nsig, target=target, show_mean=True,
+                                filename=fname, jitter=jitter, show=plot)
+
+    plt.cla()
+    plt.clf()
+    plt.close()
+
+    tau_vals = 1/np.exp(samples[:, 1])
+    sig_vals = np.sqrt( np.exp(samples[:, 0])/2 )
+
+    if jitter:
+        jitter_vals = np.exp(samples[:, 2])
+
+
+    #Get fit to light curve data
+    baseline = times[-1] - times[0]
+    extra_t = int(baseline.value//10)
+
+    t = np.linspace( times[0].value - extra_t, times[-1].value + extra_t, 1000 ).tolist()
+    for i in range(len(times)):
+        t.append(times[i].value)
+
+    sort_ind = np.argsort(t)
+    t = np.array(t)[sort_ind]
+
+    mu, var = gp.predict(data.value, t, return_var=True)
+    std = np.sqrt(var)
+
+    mu_flag = []
+    for i in range(len(times)):
+        ind = np.argwhere(t == times[i].value).T[0][0]
+        mu_flag.append(mu[ind])
+
+    #Reject if data is beyond nsig*sig of fit mean
+    flag_mask = np.abs(data.value - mu_flag) > nsig*error.value
+
+    res = {
+        'mask': flag_mask,
+        'tau' : tau_vals,
+        'sigma': sig_vals,
+        'fit_x': t,
+        'fit_y': mu,
+        'fit_err': std
+    }
+
+    if jitter:
+        res['jitter'] = jitter_vals
+
+    return res
+
+##############################################################
+######################## PLOT FUNCTIONS ######################
+##############################################################
 
 
 def plot_outcome(x, y, yerr, samples, gp, unit, nsig=0,
