@@ -497,7 +497,7 @@ objname: {}
                            together=together, subtract_mean=subtract_mean,
                            div_mean=div_mean, add_var=add_var,
                            delay_dist=delay_dist, psi_types=psi_types,
-                           objname=objname)
+                           objname=objname, verbose=verbose)
     
     lc_fnames = [ lc_dir + objname + '_' + x + '.dat' for x in line_names ]
 

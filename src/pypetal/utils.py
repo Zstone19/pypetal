@@ -12,6 +12,21 @@ import pypetal.pyccf as pyccf
 import pypetal.pyroa_funcs as pyroa
 import PyROA
 
+
+##############################################################
+####################### SILENCE OUTPUT #######################
+##############################################################
+
+from contextlib import contextmanager,redirect_stderr,redirect_stdout
+from os import devnull
+
+@contextmanager
+def suppress_stdout_stderr():
+    """A context manager that redirects stdout and stderr to devnull"""
+    with open(devnull, 'w') as fnull:
+        with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
+            yield (err, out)
+
 ##############################################################
 ####################### DRW REJECTION ########################
 ##############################################################
@@ -535,7 +550,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
               init_tau=None, init_delta=10, sig_level=100,
               together=True, subtract_mean=True, div_mean=False,
               add_var=False, delay_dist=False, psi_types='Gaussian',
-              objname=None):
+              objname=None, verbose=True):
     
     
     """Run PyROA for a number of input light curves.
@@ -670,10 +685,19 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         for i in range(len(fnames)-1):
             
             filters = [line_names[0], line_names[i+1]]
-            fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
-                            init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
-                            delay_dist=delay_dist[i], psi_types=[psi_types[i]],
-                            Nsamples=nchain, Nburnin=nburn)
+            
+            if verbose:
+                fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
+                                init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
+                                delay_dist=delay_dist[i], psi_types=[psi_types[i]],
+                                Nsamples=nchain, Nburnin=nburn)
+            else:
+                with suppress_stdout_stderr():
+                    fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
+                                    init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
+                                    delay_dist=delay_dist[i], psi_types=[psi_types[i]],
+                                    Nsamples=nchain, Nburnin=nburn)
+
 
             pyroa.move_output_files(cwd, line_dir[i])
 
@@ -685,10 +709,17 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         
         assert isinstance(line_dir, str), 'Must provide one line_dir if together=True'
                 
-        fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
-                    init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
-                    delay_dist=delay_dist, psi_types=psi_types,
-                    Nsamples=nchain, Nburnin=nburn)
+        if verbose:
+            fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
+                        init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
+                        delay_dist=delay_dist, psi_types=psi_types,
+                        Nsamples=nchain, Nburnin=nburn)
+        else:
+            with suppress_stdout_stderr():
+                fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
+                            init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
+                            delay_dist=delay_dist, psi_types=psi_types,
+                            Nsamples=nchain, Nburnin=nburn)
         
         pyroa.move_output_files(cwd, line_dir)
     
