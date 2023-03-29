@@ -1,10 +1,8 @@
-import itertools
 import multiprocessing as mp
 from functools import partial
 
 import numpy as np
 import scipy.stats as sst
-from matplotlib import pyplot as plt
 
 
 #For multiprocessing
@@ -22,6 +20,9 @@ def mp_map(func, arg, threads):
 
     return res
 
+############################################################################
+########################### Original pyCCF Code ############################
+############################################################################
 
 def corsig(r, v):
     '''
@@ -482,3 +483,175 @@ def xcor_mc(t1, y1, dy1, t2, y2, dy2, tlagmin, tlagmax, tunit,
         print( 'Failed peaks: ', nfail_peak )
 
     return tlags_peak, tlags_centroid, nsuccess_peak, nfail_peak, nsuccess_centroid, nfail_centroid, max_rvals, nfail_rvals, pvals
+
+
+############################################################################
+############################################################################
+############################################################################
+
+def get_pyccf_lags(fname1, fname2,
+                   lag_bounds=None, interp=None,
+                   nsim=1000, mcmode=0, sigmode=.2, thres=.8,
+                   threads=1, verbose=False):
+
+    """Obtain time lags from the correlation between two light curves using the pyCCF algorithm: https://ui.adsabs.harvard.edu/abs/2018ascl.soft05032S/abstract.
+    In short, pyCCF creates the Interpolated Cross-Correlation Function (ICCF) between two light curves,
+    and then samples the peak and centroid of the ICCF using Monte Carlo simulations with
+    Flux Randomization (FR) and/or Random Subset Resampling (RSS). These Monte Carlo simulations are then
+    used to create the cross-correlation centroid distribution (CCCD) and peak distribution (CCPD).
+
+
+
+    Parameters
+    ----------
+
+    fname1 : str
+        Path to the first light curve file .
+
+    fname2 : str
+        Path to the second light curve file .
+
+    file_fmt : str, optional
+        Format of the file. Default is 'csv'.
+
+    lag_bounds : (2,) array_like, optional
+        The bounds of times to search for the lag. The first element is the minimum lag and the second is the maximum.
+        If set to ``None", the lag bounds will be set to (-baseline, baseline). The default is ``None``.
+
+    interp : float, optional
+        The interval with which pyCCF will interpolate the ligh curves to form the ICCF. This value must be
+        shorter than the average cadence of the ligh curves. Setting this value too low can introduce noise.
+        If set to ``None``, will be set to half of the average cadence of the light curves. The default is ``None``.
+
+    nsim : int, optional
+        The number of Monte Carlo simulations to run. The default is 1000.
+
+    mcmode : int, optional
+        The type of resampling to do for the Monte Carlo Simulations. 0 performs both FR and RSS, 1 performs FR, and 2 performs RSS.
+        The default is 0.
+
+    sigmode : float, optional
+        The threshold for considering a measurement in the ICCF significant when computing peaks and centroids. Must be within the
+        interval (0,1). All peaks and centroids with correlation coefficient r_max <= sigmode will be considered as "failed".
+        If set to 0, will exclude all peaks based on a p-value significance test (see pyCCF documentation). The default is 0.2.
+
+    thres : float, optional
+        The lower limit of correlation coefficient used when calculating the centroid of the ICCF. Must be within
+        the interval (0,1). The default is 0.8.
+
+
+    .. note:: Both light curve files must be in CSV format with the following columns in order: time, value, uncertainty.
+
+
+
+    Returns
+    -------
+
+    result: dict
+        Dict of output results, containing:
+
+        * 'CCF' : list of floats
+            The ICCF.
+
+        * 'CCF_lags' : list of floats
+            The lags corresponding to the ICCF.
+
+        * 'centroid' : float
+            The median of the CCCD.
+
+        * 'centroid_err_hi' : float
+            The upper error of the centroid.
+
+        * 'centroid_err_lo' : float
+            The lower error of the centroid.
+
+        * 'peak' : float
+            The median of the CCPD.
+
+        * 'peak_err_hi' : float
+            The upper error of the peak.
+
+        * 'peak_err_lo' : float
+            The lower error of the peak.
+
+        * 'CCCD_lags' : list of floats
+            The CCCD.
+
+        * 'CCPD_lags' : list of floats
+            The CCPD.
+
+    """
+
+    #Files need to be csv
+    x1, y1, yerr1 = np.loadtxt( fname1, delimiter=',', unpack=True, usecols=[0,1,2] )
+    x2, y2, yerr2 = np.loadtxt( fname2, delimiter=',', unpack=True, usecols=[0,1,2] )
+
+    #Sort by time
+    sort_ind = np.argsort(x1)
+    x1 = x1[sort_ind]
+    y1 = y1[sort_ind]
+    yerr1 = yerr1[sort_ind]
+
+    sort_ind = np.argsort(x2)
+    x2 = x2[sort_ind]
+    y2 = y2[sort_ind]
+    yerr2 = yerr2[sort_ind]
+
+    #Get mean cadence and baseline
+    diff1 = np.diff(x1)
+    diff2 = np.diff(x2)
+    mean_diff = np.mean( [ np.mean(diff1), np.mean(diff2) ] )
+    baseline = np.max([ x1[-1], x2[-1] ]) - np.min([ x1[0], x2[0] ])
+
+    #Define pyCCF parameters
+    if lag_bounds is None:
+        lag_bounds = [-baseline, baseline]
+
+    if interp is None:
+       interp = mean_diff/2
+
+
+    if np.any( np.abs(lag_bounds) > baseline ):
+        print('Lag bounds are larger than baseline')
+
+
+    #Run algorithm
+    _, status_peak, _, status_centroid, ccf_pack, \
+        _, status_rval, _ = peakcent(x1, y1, x2, y2, lag_bounds[0],
+                                           lag_bounds[1], interp)
+
+    # assert status_peak == 1
+    # assert status_centroid == 1
+
+    tlags_peak, tlags_centroid, nsuccess_peak, nfail_peak, \
+        nsuccess_centroid, nfail_centroid, max_rvals, nfail_rvals, \
+            pvals = xcor_mc(x1, y1, np.abs(yerr1), x2, y2,
+                                np.abs(yerr2), lag_bounds[0], lag_bounds[1], interp,
+                                nsim=nsim, mcmode=mcmode, sigmode=sigmode,
+                                thres=thres, threads=threads, verbose=verbose)
+
+    ccf = ccf_pack[0]
+    ccf_lags = ccf_pack[1]
+
+    #Get peak and centroid values/uncertainties
+    cent_med = np.median( tlags_centroid )
+    cent_hi = np.percentile( tlags_centroid, 84 )
+    cent_lo = np.percentile( tlags_centroid, 16 )
+
+    peak_med = np.median( tlags_peak )
+    peak_hi = np.percentile( tlags_peak, 84 )
+    peak_lo = np.percentile( tlags_peak, 16 )
+
+
+    return {
+        'CCF': ccf,
+        'CCF_lags': ccf_lags,
+        'centroid': cent_med,
+        'centroid_err_hi': cent_hi - cent_med,
+        'centroid_err_lo': cent_med - cent_lo,
+        'peak': peak_med,
+        'peak_err_hi': peak_hi - peak_med,
+        'peak_err_lo': peak_med - peak_lo,
+        'CCCD_lags': tlags_centroid,
+        'CCPD_lags': tlags_peak
+    }

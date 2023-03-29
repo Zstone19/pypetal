@@ -4,10 +4,16 @@ import glob
 import numpy as np
 from astropy.table import Table
 
-import pypetal.detrending as dtr
-import pypetal.modules as modules
-from pypetal import defaults, weighting
-from pypetal.petalio import make_directories, write_data
+import pypetal.utils.detrending as dtr
+
+from pypetal.drw_rej.module import drw_rej_tot
+from pypetal.pyccf.module import pyccf_tot
+from pypetal.pyroa.module import pyroa_tot
+from pypetal.pyzdcf.module import pyzdcf_tot
+from pypetal.weighting.module import run_weighting_tot
+
+from pypetal.utils import defaults
+from pypetal.utils.petalio import make_directories, write_data
 
 
 def run_pipeline(output_dir, arg2,
@@ -193,7 +199,7 @@ def run_pipeline(output_dir, arg2,
         if np.any( reject_data ):
             os.makedirs( output_dir + 'processed_lcs/', exist_ok=True )
 
-        drw_rej_res = modules.drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params )
+        drw_rej_res = drw_rej_tot( cont_fname, line_fnames, line_names, output_dir, general_kwargs, drw_rej_params )
 
         #Output light curve files with masks
         for i in range(len(fnames)):
@@ -244,13 +250,13 @@ def run_pipeline(output_dir, arg2,
                 line_fnames[i] = output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat'
 
     if run_pyccf:
-        pyccf_res = modules.pyccf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyccf_params)
+        pyccf_res = pyccf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyccf_params)
 
     if run_pyzdcf:
-        pyzdcf_res, plike_res = modules.pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyzdcf_params)
+        pyzdcf_res, plike_res = pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyzdcf_params)
 
     if run_pyroa:
-        pyroa_res = modules.pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)
+        pyroa_res = pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)
 
 
     if general_kwargs['file_fmt'] != 'csv':
@@ -360,7 +366,7 @@ def run_weighting(output_dir, line_names,
                 pyroa_sample_fnames.append( output_dir + x + '/pyroa/samples.obj' )
        
     
-    res = weighting.run_weighting_tot(output_dir, 
+    res = run_weighting_tot(output_dir, 
                                       javelin_chain_fnames, pyccf_iccf_fnames, pyccf_dist_fnames, pyroa_sample_fnames,
                                       line_names, interp, together_jav, 
                                       pyroa_params=pyroa_params, general_kwargs=general_kwargs,
