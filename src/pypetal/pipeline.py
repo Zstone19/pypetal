@@ -4,7 +4,7 @@ import glob
 import numpy as np
 from astropy.table import Table
 
-from .utils import detrending as dtr
+import pypetal.utils.detrending as dtr
 
 from pypetal.drw_rej.module import drw_rej_tot
 from pypetal.pyccf.module import pyccf_tot

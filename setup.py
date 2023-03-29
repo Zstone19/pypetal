@@ -26,7 +26,7 @@ setup(
     license='MIT',
     install_requires=REQUIREMENTS,
     python_requires='>=3.8,<3.11',
-    packages=['pypetal'],
+    packages=['pypetal', 'pypetal.utils'],
     package_dir={'pypetal':'./src/pypetal'},
     include_package_data=True
 )
