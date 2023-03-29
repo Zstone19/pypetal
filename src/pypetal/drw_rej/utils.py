@@ -11,7 +11,6 @@ from astropy.visualization import quantity_support
 from celerite import terms
 from scipy.optimize import curve_fit, differential_evolution, minimize
 
-from pypetal.drw_rej.utils import MCMC_fit
 from pypetal.drw_rej.plotting import plot_outcome
 
 quantity_support()
