@@ -11,10 +11,12 @@ repos:
         exclude: |
             ^examples/
             ^docs/notebooks/
+            ^for_jav/
     -   id: trailing-whitespace
         exclude: |
             ^examples/
             ^docs/notebooks/
+            ^for_jav/
 
 
 -   repo: https://github.com/pycqa/isort
@@ -25,6 +27,7 @@ repos:
         exclude: |
             ^examples/
             ^docs/notebooks/
+            ^for_jav/
 
 
 -   repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit

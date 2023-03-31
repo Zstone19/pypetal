@@ -70,6 +70,7 @@ omit = [
     ".readthedocs.yml",
     "build_plike.sh",
     "plike_v4/*",
+    "for_jav/*",
     "LICENSE",
     "MANIFEST.in",
     "README.md",
