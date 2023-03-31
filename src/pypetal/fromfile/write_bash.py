@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from run_toml import make_toml
+from pypetal.fromfile.run_toml import make_toml
 from pypetal.utils.petalio import write_data
 
 
