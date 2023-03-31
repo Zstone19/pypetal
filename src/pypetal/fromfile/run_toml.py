@@ -201,7 +201,7 @@ def run_from_toml1(filename):
     return res
 
 
-#Run javelin
+#After javelin
 def run_from_toml2(filename):
     import pypetal.pipeline as pl
 
@@ -222,63 +222,6 @@ def run_from_toml2(filename):
     else:
         return
     
-    
-#After javelin
-def run_from_toml_jav(filename):
-    import pypetal_jav.pipeline as pl
-    
-    output_dir, _, line_names = get_toml_inputs(filename)
-    run_arr = get_toml_modules(filename)
-    param_arr = get_toml_params(filename, run_arr)
-
-    if 'use_for_javelin' in param_arr[1]:
-        use_for_javelin = param_arr[1]['use_for_javelin']
-    else:
-        use_for_javelin = False
-    
-    
-    if use_for_javelin:
-        if 'reject_data' in param_arr[1]:
-            reject_data = param_arr[1]['reject_data']
-        else:
-            reject_data = np.zeros(len(line_names), dtype=bool)
-            reject_data[0] = True
-            
-            
-        taus = []
-        sigs = []
-        jits = []
-        for i in range(len(line_names)):
-            if reject_data[i]:
-                s, t, j = np.loadtxt( output_dir + line_names[i] + '/drw_rej/' + line_names[i] + '_chain.dat', 
-                                      unpack=True, delimiter=',', usecols=[0,1,2] )
-        
-                sigs.append(s)
-                taus.append(t)
-                jits.append(j)
-                
-        drw_rej_res = {
-            'reject_data': reject_data,
-            'taus': taus,
-            'sigmas': sigs,
-            'jitters': jits
-        }
-    else:
-        drw_rej_res = {}
-    
-    
-    if run_arr[-2]:
-        res = pl.run_pipeline(output_dir, line_names,
-                              javelin_params=param_arr[6], use_for_javelin=use_for_javelin,
-                              drw_rej_res=drw_rej_res,
-                              **param_arr[0])
-        
-        return res
-
-    else:
-        return
-    
-    
 #########################################################################################
 ################################ TO RUN MULTIPLE OBJECTS ################################
 #########################################################################################
@@ -286,12 +229,6 @@ def run_from_toml_jav(filename):
 def run_all1(filenames):
     for f in filenames:
         _ = run_from_toml1(f)
-        
-    return
-
-def run_all2(filenames):
-    for f in filenames:
-        _ = run_from_toml_jav(f)
         
     return
 
