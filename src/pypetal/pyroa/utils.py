@@ -187,8 +187,8 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
         lower_lim = []
         upper_lim = []
         for i in range(len(fnames)-1):
-            lower_lim.append( laglim_in[0] )
-            upper_lim.append( laglim_in[1] )
+            lower_lim.append( laglim_in[i][0] )
+            upper_lim.append( laglim_in[i][1] )
             
         laglim = [ np.min(lower_lim), np.max(upper_lim) ]
         

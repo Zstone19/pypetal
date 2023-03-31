@@ -17,8 +17,6 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
     lc_unit = general_kwargs['lc_unit']
     lag_bounds = general_kwargs['lag_bounds']
     
-    print(lag_bounds)
-    
     #--------------------------------------------------
     #Read kwargs
     
