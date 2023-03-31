@@ -14,15 +14,15 @@ class TestPyROA(unittest.TestCase):
 
     def setUp(self):
 
-        main_dir = 'examples/dat/javelin_'
+        main_dir = 'pypetal/examples/dat/javelin_'
         filenames = [main_dir + 'continuum.dat', main_dir + 'yelm.dat', main_dir + 'zing.dat']
 
         output_dir = '.tmp/'
         line_names = ['continuum', 'yelm', 'zing']
 
         params = {
-            'nchain': 150,
-            'nburn': 100,
+            'nchain': 100,
+            'nburn': 50,
             'add_var': False,
             'delay_dist': False,
             'subtract_mean': True,
@@ -50,11 +50,13 @@ class TestPyROA(unittest.TestCase):
         #Make sure the lengths and keys of each of the resulting arrays are correct
 
         self.assertIs( isinstance( self.res['pyroa_res'], Fit ), True )
-        mc_length = 150
-        nparams = 2 + 3*2
+        mc_length = 100
+        nburn = 50
+        nparams = 2 + 3*2 + 1
 
         #Make sure lengths of arrays are correct
-        self.assertEqual( self.res['pyroa_res'].samples.shape, (nparams, mc_length) )
+        self.assertEqual( self.res['pyroa_res'].samples.shape[0], mc_length )
+        self.assertEqual( self.res['pyroa_res'].samples.shape[2], nparams )
         self.assertEqual( len(self.res['pyroa_res'].models), 3 )
 
 
@@ -100,7 +102,7 @@ class TestPyROA(unittest.TestCase):
         self.assertIn( '.tmp/pyroa_lcs/', main_directories )
         lc_files = glob.glob('.tmp/pyroa_lcs/*')
         for name in self.line_names:
-            self.assertIn( '.tmp/pyroa_lcs/pyroa_' + name + '.dat', files )
+            self.assertIn( '.tmp/pyroa_lcs/pyroa_' + name + '.dat', lc_files )
 
 
         #Make sure the light curves get saved
@@ -118,17 +120,20 @@ class TestPyROA(unittest.TestCase):
 
         #get_samples_chunks
         samples = self.res['pyroa_res'].samples
-        samples_chunks = get_samples_chunks(samples, 100)
+        nwalker = samples.shape[1]
+
+        samples_chunks = get_samples_chunks(samples, nburn)
+        nchain_tot = (mc_length-nburn)*nwalker
 
         self.assertEqual( len(samples_chunks), 4 )
 
         for i in range(3):
             self.assertEqual( len(samples_chunks[i]), 3 )
             for j in range(3):
-                self.assertEqual( len(samples_chunks[i][j]), 50 )
+                self.assertEqual( len(samples_chunks[i][j]), nchain_tot )
 
         self.assertEqual( len(samples_chunks[-1]), 1 )
-        self.assertEqual( len(samples_chunks[-1][0]), 50 )
+        self.assertEqual( len(samples_chunks[-1][0]), nchain_tot )
 
 
         #################################################################################################
