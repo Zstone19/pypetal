@@ -1,0 +1,80 @@
+[tool.poetry]
+name = "pypetal"
+version = "0.1.0"
+description = "A pipeline for estimating AGN time lags"
+authors = ["Zstone19 <stone28@illinois.edu>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/Zstone19/pypetal"
+repository = "https://github.com/Zstone19/pypetal"
+documentation = "https://pypetal.readthedocs.io"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Physics"
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.8, <3.11"
+astropy = "^5.2.2"
+autograd = "^1.5"
+celerite = "^0.4.2"
+corner = "^2.2.1"
+emcee = "^3.1.4"
+linmix = {git = "https://github.com/jmeyers314/linmix.git"}
+matplotlib = "^3.7.1"
+numba = "^0.56.4"
+numpy = ">=1.19.0, <1.23.0"
+palettable = "^3.3.0"
+pandas = "^1.5.3"
+PyROA = "^3.1.0"
+pyzdcf = "^1.0.0"
+scipy = "^1.10.1"
+tabulate = "^0.9.0"
+toml = "^0.10.2"
+tqdm = "^4.65.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.2"
+pytest-cov = "^4.0.0"
+ipykernel = "^6.22.0"
+nbsphinx = "^0.9.1"
+sphinx = "^6.1.3"
+sphinx-copybutton = "^0.5.1"
+sphinx-rtd-theme = "^1.2.0"
+
+
+[tool.pytest.ini_options]
+filterwarnings = "ignore::DeprecationWarning"
+
+
+[tool.coverage.run]
+branch = "true"
+omit = [
+    "*/.local/*",
+    "/usr/*",
+    "docs/*",
+    "examples/*",
+    ".gitignore",
+    ".readthedocs.yml",
+    "build_plike.sh",
+    "plike_v4/*",
+    "LICENSE",
+    "MANIFEST.in",
+    "README.md",
+    "requirements.txt"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
