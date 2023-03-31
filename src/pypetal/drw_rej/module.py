@@ -5,10 +5,9 @@ from functools import partial
 import astropy.units as u
 import numpy as np
 
+from pypetal.drw_rej.utils import drw_flag
 from pypetal.utils import defaults
 from pypetal.utils.petalio import write_data
-from pypetal.drw_rej.utils import drw_flag
-
 
 
 #For multiprocessing
@@ -201,4 +200,3 @@ use_for_javelin: {}
         output['jitters'] = jitters
 
     return output
-

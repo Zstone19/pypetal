@@ -7,9 +7,9 @@ from functools import partial
 import numpy as np
 from astropy.table import Table
 
-from pypetal.utils import defaults
 import pypetal.pyzdcf.utils as utils
 from pypetal.pyzdcf.plotting import plot_pyzdcf_results
+from pypetal.utils import defaults
 
 
 #For multiprocessing

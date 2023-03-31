@@ -229,7 +229,7 @@ def set_pyroa(input_args, nlc):
         'delay_dist': True,
         'psi_types': 'Gaussian',
         'together': True,
-        'objname': None        
+        'objname': None
     }
 
     params = { **default_kwargs, **input_args }
@@ -244,22 +244,22 @@ def set_pyroa(input_args, nlc):
     psi_types = params['psi_types']
     together = params['together']
     objname = params['objname']
-    
+
     if init_tau is None:
         init_tau = [10.] * (nlc-1)
-        
+
     if objname is None:
         objname = 'pyroa'
-        
+
     if isinstance(psi_types, str):
         psi_types = [psi_types] * (nlc-1)
-        
+
     if not together:
         if isinstance(delay_dist, bool):
             delay_dist = [delay_dist] * (nlc-1)
         if isinstance(add_var, bool):
             add_var = [add_var] * (nlc-1)
-        
+
 
     return nchain, nburn, init_tau, subtract_mean, div_mean, \
             add_var, delay_dist, psi_types, together, objname

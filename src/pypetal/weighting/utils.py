@@ -1,4 +1,5 @@
 import pickle
+
 import numpy as np
 from scipy.signal import peak_widths
 
@@ -6,7 +7,6 @@ from pypetal.pyccf.utils import peakcent
 from pypetal.pyroa.utils import get_samples_chunks
 from pypetal.utils import defaults
 from pypetal.utils.petalio import write_data, write_weighting_summary
-
 
 ###########################################################################
 ########################## ASSIST FUNCTIONS ###############################
@@ -436,17 +436,17 @@ def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa):
     cols_pyccf = ['centroid']
     cols_javelin = ['tophat_lag']
     cols_pyroa = ['time_delay']
-    
+
     cols_common = ['bounds', 'acf', 'lags', 'weight_dist', 'smoothed_dist', 'ntau', 'frac_rejected']
     for col in cols_common:
         cols_pyccf.append(col)
         cols_javelin.append(col)
         cols_pyroa.append(col)
-        
+
     cols_pyccf.append('CCCD')
     cols_javelin.append('lag_dist')
     cols_pyroa.append('lag_dist')
-    
+
 
     run_arr = [run_pyccf, run_javelin, run_pyroa]
     cols_arr = [cols_pyccf, cols_javelin, cols_pyroa]
@@ -456,7 +456,7 @@ def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa):
         if run:
             for col in cols:
                 output[name][col] = []
-                
+
 
     for res in res_arr:
         for run, cols, name in zip(run_arr, cols_arr, names_arr):
@@ -468,22 +468,22 @@ def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa):
         #rmax
         if run_pyccf:
             output['rmax_pyccf'].append( res['rmax_pyccf'] )
-            
+
             if run_javelin:
                 output['rmax_javelin'].append( res['rmax_javelin'] )
             if run_pyroa:
-                output['rmax_pyroa'].append( res['rmax_pyroa'] )     
-    
+                output['rmax_pyroa'].append( res['rmax_pyroa'] )
+
     return output
 
 
 
 def run_weighting_single( output_dir, cont_fname, line_fname,
                           weighting_kwargs, lag_bounds='baseline',
-                          jav_chain_file=None, 
+                          jav_chain_file=None,
                           pyccf_iccf_file=None, pyccf_dist_file=None,
                           pyroa_sample_file=None,
-                          javelin_lag_col=2, pyroa_obj_ind=1, 
+                          javelin_lag_col=2, pyroa_obj_ind=1,
                           pyccf_params={}, pyroa_params = {},
                           plot=False, time_unit='d'):
 
@@ -507,7 +507,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         run_pyccf = True
     else:
         run_pyccf = False
-        
+
     if pyroa_sample_file is not None:
         run_pyroa = True
     else:
@@ -557,7 +557,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
 
         med_cent = np.median(downsampled_cccd)
         cent_err_lo = med_cent - np.percentile( downsampled_cccd, 16 )
-        cent_err_hi = np.percentile( downsampled_cccd, 84 ) - med_cent 
+        cent_err_hi = np.percentile( downsampled_cccd, 84 ) - med_cent
 
 
 
@@ -590,7 +590,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         output['pyccf']['CCCD'] = cccd_lags
         output['pyccf']['downsampled_CCCD'] = downsampled_cccd
         output['pyccf']['frac_rejected'] = 1 - len(downsampled_cccd) / len(cccd_lags)
-        
+
     else:
         #Add to summary dict
         summary_dict['n0_pyccf'] = np.nan
@@ -663,7 +663,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         output['javelin']['lag_dist'] = lag_dist
         output['javelin']['downsampled_lag_dist'] = downsampled_dist
         output['javelin']['frac_rejected'] = 1 - len(downsampled_dist) / len(lag_dist)
-    
+
     else:
         #Add to summary dict
         summary_dict['n0_javelin'] = np.nan
@@ -685,21 +685,21 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         output['javelin']['lag_dist'] = np.nan
         output['javelin']['downsampled_lag_dist'] = np.nan
         output['javelin']['frac_rejected'] = np.nan
-        
+
 
     #---------------------------
-    #PyROA        
-        
+    #PyROA
+
     if run_pyroa:
         _, nburn, _, _, _, add_var, delay_dist, _, _, _ = defaults.set_pyroa(pyroa_params, 2)
         if isinstance(add_var, list):
             add_var = add_var[pyroa_obj_ind-1]
         if isinstance(delay_dist, list):
             delay_dist = delay_dist[pyroa_obj_ind-1]
-        
+
         pyroa_samples = pickle.load(open(pyroa_sample_file, 'rb'))
         samples_chunks = get_samples_chunks( pyroa_samples, nburn, add_var, delay_dist )
-        
+
         lag_dist = samples_chunks[pyroa_obj_ind][2]
         prob_dist, lags, ntau, acf, n0 = get_weights(x_cont, y_cont, x_line, y_line,
                                             interp=interp, lag_bounds=lag_bounds,
@@ -744,7 +744,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         output['pyroa']['lag_dist'] = lag_dist
         output['pyroa']['downsampled_lag_dist'] = downsampled_dist
         output['pyroa']['frac_rejected'] = 1 - len(downsampled_dist) / len(lag_dist)
-    
+
     else:
         #Add to summary dict
         summary_dict['n0_pyroa'] = np.nan
@@ -766,7 +766,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         output['pyroa']['lag_dist'] = np.nan
         output['pyroa']['downsampled_lag_dist'] = np.nan
         output['pyroa']['frac_rejected'] = np.nan
-        
+
 
 
 
@@ -782,7 +782,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         lag_err_hi = output['pyccf']['centroid'][2]
         lag_err_lo = output['pyccf']['centroid'][0]
         good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) & ( ccf_lags <= lag+lag_err_hi ) ).T[0]
-        
+
         if len(good_ind) > 0:
             rmax_pyccf = np.max(ccf[good_ind])
         else:
@@ -799,7 +799,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
             lag_err_hi = output['javelin']['tophat_lag'][2]
             lag_err_lo = output['javelin']['tophat_lag'][0]
             good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) & ( ccf_lags <= lag+lag_err_hi ) ).T[0]
-            
+
             if len(good_ind) > 0:
                 rmax_jav = np.max(ccf[good_ind])
             else:
@@ -807,13 +807,13 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
 
             summary_dict['rmax_javelin'] = rmax_jav
             output['rmax_javelin'] = rmax_jav
-        
-        
+
+
         if run_pyroa:
             #PyROA lag
             lag = output['pyroa']['time_delay'][1]
             lag_err_hi = output['pyroa']['time_delay'][2]
-            lag_err_lo = output['pyroa']['time_delay'][0]            
+            lag_err_lo = output['pyroa']['time_delay'][0]
             good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) & ( ccf_lags <= lag+lag_err_hi ) ).T[0]
 
             if len(good_ind) > 0:

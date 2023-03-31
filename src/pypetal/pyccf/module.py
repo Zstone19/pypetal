@@ -3,10 +3,11 @@ import multiprocessing as mp
 
 import numpy as np
 
+from pypetal.pyccf.plotting import plot_pyccf_results
+from pypetal.pyccf.utils import get_pyccf_lags
 from pypetal.utils import defaults
 from pypetal.utils.petalio import write_data
-from pypetal.pyccf.utils import get_pyccf_lags
-from pypetal.pyccf.plotting import plot_pyccf_results
+
 
 #For multiprocessing
 def mp_map(func, args, threads):

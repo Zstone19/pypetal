@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 
 from pypetal.fromfile.run_toml import make_toml
@@ -6,9 +7,9 @@ from pypetal.utils.petalio import write_data
 
 
 def write_bash(toml_fname, env1, env2):
-      
+
     """Need to use virtualenv. This won't work otherwise."""
-        
+
     txt = """source {}/bin/activate
 python run_toml.py "pre" {}
 deactivate
@@ -20,18 +21,18 @@ deactivate
 source {}/bin/activate
 python run_toml.py "post" {}
 deactivate
-""".format( env1, toml_fname, env2, toml_fname, env1, toml_fname ) 
-        
-        
-    
+""".format( env1, toml_fname, env2, toml_fname, env1, toml_fname )
+
+
+
     with open('run.sh', 'w+') as f:
-        f.write(txt)    
-    
+        f.write(txt)
+
     return
 
 
 
-def bash_from_python(output_dir, arg2, 
+def bash_from_python(output_dir, arg2,
                     toml_fname, env1, env2,
                     line_names=None,
                     run_drw_rej=False, drw_rej_params={},

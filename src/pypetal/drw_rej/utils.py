@@ -1,22 +1,18 @@
 import warnings
 
-import celerite
-import emcee
-
 import astropy.units as u
-import numpy as np
-import scipy.stats as stat
-
-from astropy.timeseries import LombScargle
-from celerite import terms
-from scipy.optimize import curve_fit, differential_evolution, minimize
-
+import celerite
 import corner
+import emcee
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
+import scipy.stats as stat
+from astropy.timeseries import LombScargle
 from astropy.visualization import quantity_support
+from celerite import terms
 from matplotlib import gridspec
-
+from scipy.optimize import curve_fit, differential_evolution, minimize
 
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True

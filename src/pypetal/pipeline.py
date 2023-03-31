@@ -1,19 +1,17 @@
-import os
 import glob
+import os
 
 import numpy as np
 from astropy.table import Table
 
 import pypetal.utils.detrending as dtr
-
 from pypetal.drw_rej.module import drw_rej_tot
 from pypetal.pyccf.module import pyccf_tot
 from pypetal.pyroa.module import pyroa_tot
 from pypetal.pyzdcf.module import pyzdcf_tot
-from pypetal.weighting.module import run_weighting_tot
-
 from pypetal.utils import defaults
 from pypetal.utils.petalio import make_directories, write_data
+from pypetal.weighting.module import run_weighting_tot
 
 
 def run_pipeline(output_dir, arg2,
@@ -65,7 +63,7 @@ def run_pipeline(output_dir, arg2,
 
     run_pyroa : bool, optional
         Whether to run the PyROA module. Default is ``False``.
-        
+
     pyroa_params : dict, optional
         The parameters to pass to the PyROA module. Default is ``{}``.
 
@@ -279,7 +277,7 @@ def run_pipeline(output_dir, arg2,
     if run_pyzdcf:
         tot_res['pyzdcf_res'] = pyzdcf_res
         tot_res['plike_res'] = plike_res
-        
+
     if run_pyroa:
         tot_res['pyroa_res'] = pyroa_res
 
@@ -303,73 +301,73 @@ def run_weighting(output_dir, line_names,
                  run_javelin=False, javelin_params={},
                  weighting_params={},
                  **kwargs):
-    
-    
-    """Perform weighting on the results from the pyPetal pipeline. 
-    NOTE: This requires that you have run the pyPetal pipeline (i.e. pypetal.pipeline.run.pipeline) with 
-    at least run_pyccf=True. 
-    This will perform the weighting scheme described in Grier et al. (2019) to the lag distributions from 
+
+
+    """Perform weighting on the results from the pyPetal pipeline.
+    NOTE: This requires that you have run the pyPetal pipeline (i.e. pypetal.pipeline.run.pipeline) with
+    at least run_pyccf=True.
+    This will perform the weighting scheme described in Grier et al. (2019) to the lag distributions from
     each of the modules run (e.g., pyCCF, PyROA, JAVELIN).
-    
-    
+
+
     Parameters
     ----------
     output_dir : str
         The directory where the output files will be saved. Must be the same output directory as used
         in pyPetal and pyPetal-jav.
-        
+
     line_names : list of str
         The names of the lines to be weighted. Must be the same as the line names used in pyPetal and
         pyPetal-jav.
-        
+
     run_pyccf : bool, optional
         Whether or not pyCCF was run in the pyPetal pipeline. Default is False.
-        
+
     pyccf_params : dict, optional
         The parameters used in the pyPetal pipeline for pyCCF. Default is {}.
-        
+
     run_pyroa : bool, optional
         Whether or not PyROA was run in the pyPetal pipeline. Default is False.
-        
+
     pyroa_params : dict, optional
         The parameters used in the pyPetal pipeline for PyROA. Default is {}.
-        
+
     run_javelin : bool, optional
         Whether or not the pyPetal-jav pipeline was run. Default is False.
-        
+
     javelin_params : dict, optional
         The parameters used in the pyPetal-jav pipeline. Default is {}.
-        
+
     weighting_params : dict, optional
         The parameters to be used for the weighting. Default is {}.
-        
-    
-    
+
+
+
     Returns
     -------
-    
+
     res : dict
         A dictionary containing the results of the weighting.
-        
+
     """
-    
-    
+
+
     if (not run_pyccf) & (not run_javelin) & (not run_pyroa):
         raise Exception('ERROR: Either JAVELIN, pyCCF, or PyROA must be run before weighting can be done.')
-    
+
     output_dir = os.path.abspath(output_dir) + r'/'
-    
+
     if output_dir + 'processed_lcs/' in glob.glob( output_dir + '*/' ):
         fnames = [ output_dir + 'processed_lcs/' + x + '_data.dat' for x in line_names ]
     else:
         fnames = [ output_dir + 'light_curves/' + x + '.dat' for x in line_names ]
-    
+
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
-    
+
     #Get "interp"
     interp, _, _, _, _, _ = defaults.set_pyccf(pyccf_params)
-    
+
     #Get "together" for javelin
     if 'together' in javelin_params:
         together_jav = javelin_params['together']
@@ -379,16 +377,16 @@ def run_weighting(output_dir, line_names,
     #Get "together" for pyroa
     _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
-       
+
     javelin_chain_fnames = None
     pyccf_iccf_fnames = None
     pyccf_dist_fnames = None
     pyroa_sample_fnames = None
-    
+
     if run_pyccf:
         pyccf_iccf_fnames = []
         pyccf_dist_fnames = []
-        
+
         for x in line_names[1:]:
             pyccf_iccf_fnames.append( output_dir + x + '/pyccf/' + x + '_ccf.dat' )
             pyccf_dist_fnames.append( output_dir + x + '/pyccf/' + x + '_ccf_dists.dat' )
@@ -399,26 +397,26 @@ def run_weighting(output_dir, line_names,
             javelin_chain_fnames = output_dir + 'javelin/chain_rmap.txt'
         else:
             javelin_chain_fnames = []
-            
+
             for x in line_names[1:]:
                 javelin_chain_fnames.append( output_dir + x + '/javelin/chain_rmap.txt' )
-            
-        
-        
+
+
+
     if run_pyroa:
         if together_pyroa:
             pyroa_sample_fnames = output_dir + 'pyroa/samples.obj'
         else:
             pyroa_sample_fnames = []
-            
+
             for x in line_names[1:]:
                 pyroa_sample_fnames.append( output_dir + x + '/pyroa/samples.obj' )
-       
-    
-    res = run_weighting_tot(output_dir, 
+
+
+    res = run_weighting_tot(output_dir,
                                       javelin_chain_fnames, pyccf_iccf_fnames, pyccf_dist_fnames, pyroa_sample_fnames,
-                                      line_names, interp, together_jav, 
+                                      line_names, interp, together_jav,
                                       pyroa_params=pyroa_params, general_kwargs=general_kwargs,
                                       weighting_params=weighting_params)
-    
+
     return res

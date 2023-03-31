@@ -1,14 +1,11 @@
-import numpy as np
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib import gridspec
 from mpl_toolkits.axes_grid1.inset_locator import (BboxConnector,
                                                    TransformedBbox, inset_axes)
 
 from pypetal.utils.petalio import err2str
-
-
 
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True
@@ -221,7 +218,7 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
             lag_value = res['tophat_lag'][i][1]
 
             xlabel = r't'
-            
+
         elif module == 'pyroa':
             lags = res['lags'][i].copy()
             lag_dist = res['lag_dist'][i].copy()
@@ -231,8 +228,8 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
             lag_value = res['time_delay'][i][1]
 
             xlabel = r'\tau'
-            
-            
+
+
         llim = res['bounds'][i][0]
         rlim = res['bounds'][i][2]
         peak = res['bounds'][i][1]

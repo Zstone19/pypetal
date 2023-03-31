@@ -1,8 +1,8 @@
-import toml
-import numpy as np
-
-import os
 import glob
+import os
+
+import numpy as np
+import toml
 
 
 def str2none(x):
@@ -15,7 +15,7 @@ def str2none(x):
 ################################# ASSIST FUNCTIONS ######################################
 #########################################################################################
 
-def make_toml(output_dir, fnames, 
+def make_toml(output_dir, fnames,
               run_arr, param_arr,
               line_names=None, filename=None):
 
@@ -82,7 +82,7 @@ def get_toml_modules(filename):
 
 
 def get_toml_params(filename, run_arr):
-    
+
     tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'javelin', 'weighting']
     param_arr = []
 
@@ -118,13 +118,13 @@ def get_toml_inputs(filename):
     toml_dat = toml.load(filename)
 
     assert 'inputs' in toml_dat.keys(), 'No inputs found in toml file'
-    assert 'output_dir' in toml_dat['inputs'].keys(), 'No output directory found in toml file'        
+    assert 'output_dir' in toml_dat['inputs'].keys(), 'No output directory found in toml file'
     assert 'filenames' in toml_dat['inputs'].keys(), 'No filenames found in toml file'
 
 
     #################################
     #Output directory
-    
+
     output_dir = os.path.abspath(toml_dat['inputs']['output_dir']) + r'/'
 
 
@@ -221,7 +221,7 @@ def run_from_toml2(filename):
 
     else:
         return
-    
+
 #########################################################################################
 ################################ TO RUN MULTIPLE OBJECTS ################################
 #########################################################################################
@@ -229,11 +229,11 @@ def run_from_toml2(filename):
 def run_all1(filenames):
     for f in filenames:
         _ = run_from_toml1(f)
-        
+
     return
 
 def run_all3(filenames):
     for f in filenames:
         _ = run_from_toml2(f)
-        
+
     return

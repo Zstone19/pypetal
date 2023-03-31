@@ -128,20 +128,20 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
     weighting_dat = []
     weighting_dat.append( res['k'] )
     for i, run in enumerate(run_arr):
-        if run:            
+        if run:
             for i in range( i*mod_ncols, (i+1)*mod_ncols ):
                 weighting_dat.append( res[ colnames_tot[i] ] )
-   
+
         else:
             for i in range(mod_ncols):
                 if i in [1, 4]:
                     weighting_dat.append( [np.nan, np.nan] )
                 else:
                     weighting_dat.append( np.nan )
-                    
+
     if run_pyccf:
         weighting_dat.append( res['rmax_pyccf'] )
-        
+
         if run_javelin & run_pyroa:
             weighting_dat.append( res['rmax_javelin'] )
             weighting_dat.append( res['rmax_pyroa'] )
@@ -151,28 +151,28 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
         elif run_pyroa:
             weighting_dat.append( np.nan )
             weighting_dat.append( res['rmax_pyroa'] )
-        
+
     else:
         weighting_dat.append(np.nan)
         weighting_dat.append(np.nan)
-        weighting_dat.append(np.nan)    
-        
-        
+        weighting_dat.append(np.nan)
+
+
     tot_fits_cols = []
-    
+
     fits_colnames = []
     fits_colnames.append('k')
     for i in range(len(colnames_tot)):
         fits_colnames.append( colnames_tot[i] )
-        
+
     fits_colnames.append('rmax_pyccf')
     fits_colnames.append('rmax_javelin')
     fits_colnames.append('rmax_pyroa')
-    
-    
-    
+
+
+
     col_fmts = []
-    col_fmts.append('E')  
+    col_fmts.append('E')
     for _ in range(len(run_arr)):
         for j in range(mod_ncols):
             if j in [1,4]:
@@ -182,15 +182,15 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
 
     for _ in range(3):
         col_fmts.append('E')
-        
-        
+
+
     for i in range(len(weighting_dat)):
         fits_col_i = fits.Column(name=fits_colnames[i], format=col_fmts[i], array=[ weighting_dat[i] ])
         tot_fits_cols.append(fits_col_i)
-        
+
     table = fits.BinTableHDU.from_columns(tot_fits_cols)
     table.writeto(fname, overwrite=True)
-    
+
     return
 
 
@@ -225,7 +225,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_javelin = np.zeros(len(filenames))
     lag_err_javelin = np.zeros( (len(filenames),2) )
     frac_rejected_javelin = np.zeros(len(filenames))
-    
+
     n0_pyroa = np.zeros(len(filenames))
     peak_bounds_pyroa = np.zeros( (len(filenames),2) )
     peak_pyroa = np.zeros(len(filenames))
@@ -256,7 +256,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
         lag_javelin[i] = table['lag_javelin'][0]
         lag_err_javelin[i,:] = table['lag_err_javelin'][0]
         frac_rejected_javelin[i] = table['frac_rejected_javelin'][0]
-        
+
         n0_pyroa[i] = table['n0_pyroa'][0]
         peak_bounds_pyroa[i,:] = table['peak_bounds_pyroa'][0]
         peak_pyroa[i] = table['peak_pyroa'][0]
@@ -265,7 +265,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
         frac_rejected_pyroa[i] = table['frac_rejected_pyroa'][0]
 
         rmax_pyccf[i] = table['rmax_pyccf'][0]
-        rmax_jav[i] = table['rmax_javelin'][0] 
+        rmax_jav[i] = table['rmax_javelin'][0]
         rmax_pyroa[i] = table['rmax_pyroa'][0]
 
     #---------------------------
@@ -273,7 +273,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
 
     name_col = fits.Column(name='name', format='20A', array=line_names)
     k_col = fits.Column(name='k', format='E', array=k)
-    
+
     n0_pyccf_col = fits.Column(name='n0_pyccf', format='E', array=n0_pyccf)
     peak_bounds_pyccf_col = fits.Column(name='peak_bounds_pyccf', format='2E', array=peak_bounds_pyccf)
     peak_pyccf_col = fits.Column(name='peak_pyccf', format='E', array=peak_pyccf)
@@ -287,7 +287,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_javelin_col = fits.Column(name='lag_javelin', format='E', array=lag_javelin)
     lag_err_javelin_col = fits.Column(name='lag_err_javelin', format='2E', array=lag_err_javelin)
     frac_rejected_javelin_col = fits.Column(name='frac_rejected_javelin', format='E', array=frac_rejected_javelin)
-    
+
     n0_pyroa_col = fits.Column(name='n0_pyroa', format='E', array=n0_pyroa)
     peak_bounds_pyroa_col = fits.Column(name='peak_bounds_pyroa', format='2E', array=peak_bounds_pyroa)
     peak_pyroa_col = fits.Column(name='peak_pyroa', format='E', array=peak_pyroa)
@@ -295,7 +295,7 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_err_pyroa_col = fits.Column(name='lag_err_pyroa', format='2E', array=lag_err_pyroa)
     frac_rejected_pyroa_col = fits.Column(name='frac_rejected_pyroa', format='E', array=frac_rejected_pyroa)
 
-    rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=rmax_pyccf)    
+    rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=rmax_pyccf)
     rmax_jav_col = fits.Column(name='rmax_javelin', format='E', array=rmax_jav)
     rmax_pyroa_col = fits.Column(name='rmax_pyroa', format='E', array=rmax_pyroa)
 
