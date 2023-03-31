@@ -10,12 +10,10 @@ repos:
     -   id: end-of-file-fixer
         exclude: |
             ^examples/
-            .coverage
             ^docs/notebooks/
     -   id: trailing-whitespace
         exclude: |
             ^examples/
-            .coverage
             ^docs/notebooks/
 
 
@@ -26,7 +24,6 @@ repos:
         name: isort (python)
         exclude: |
             ^examples/
-            .coverage
             ^docs/notebooks/
 
 
