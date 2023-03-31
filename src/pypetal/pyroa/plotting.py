@@ -402,7 +402,7 @@ def plot_fits(fnames, line_names, samples, models,
 
             else:
                 ax[i,1].hist(tau_samp, bins=nbin, color=colors[i%9] )
-                ax2.axvline( np.median(tau_samp), ls='--', color='k', lw=.75 )
+                ax[i,1].axvline( np.median(tau_samp), ls='--', color='k', lw=.75 )
 
 
             ax[i,1].set_yticklabels([])

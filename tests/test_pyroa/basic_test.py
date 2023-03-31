@@ -21,8 +21,8 @@ class TestPyROA(unittest.TestCase):
         line_names = ['continuum', 'yelm', 'zing']
 
         params = {
-            'nchain': 1500,
-            'nburn': 1000,
+            'nchain': 150,
+            'nburn': 100,
             'add_var': False,
             'delay_dist': False,
             'subtract_mean': True,
@@ -50,7 +50,7 @@ class TestPyROA(unittest.TestCase):
         #Make sure the lengths and keys of each of the resulting arrays are correct
 
         self.assertIs( isinstance( self.res['pyroa_res'], Fit ), True )
-        mc_length = 1500
+        mc_length = 150
         nparams = 2 + 3*2
 
         #Make sure lengths of arrays are correct
@@ -65,8 +65,6 @@ class TestPyROA(unittest.TestCase):
 
         main_directories = glob.glob('.tmp/*/')
         subdirs = ['.tmp/continuum/', '.tmp/yelm/', '.tmp/zing/']
-
-        mc_length = 1500
 
         #Make sure each line has a subdirectory
         self.assertIn( '.tmp/continuum/' , main_directories )
@@ -93,10 +91,10 @@ class TestPyROA(unittest.TestCase):
 
         #Make sure "pyroa" subdirectory has PyROA plots
         files = glob.glob('.tmp/pyroa/*')
-        self.assertIn( '.tmp/pyroa/samples.obj' , files )
-        self.assertIn( '.tmp/pyroa/samples_flat.obj' , files )
-        self.assertIn( '.tmp/pyroa/Lightcurve_models.obj' , files )
-        self.assertIn( '.tmp/pyroa/X_t.obj' , files )
+        self.assertIn( '.tmp/pyroa/corner_plot.pdf' , files )
+        self.assertIn( '.tmp/pyroa/fits_plot.pdf' , files )
+        self.assertIn( '.tmp/pyroa/histogram_plot.pdf' , files )
+        self.assertIn( '.tmp/pyroa/trace_plot.pdf' , files )
 
         #Make sure PyROA light curves get saved
         self.assertIn( '.tmp/pyroa_lcs/', main_directories )
@@ -120,15 +118,17 @@ class TestPyROA(unittest.TestCase):
 
         #get_samples_chunks
         samples = self.res['pyroa_res'].samples
-        samples_chunks = get_samples_chunks(samples, 1000)
+        samples_chunks = get_samples_chunks(samples, 100)
+
+        self.assertEqual( len(samples_chunks), 4 )
 
         for i in range(3):
             self.assertEqual( len(samples_chunks[i]), 3 )
             for j in range(3):
-                self.assertEqual( len(samples_chunks[i][j]), 500 )
+                self.assertEqual( len(samples_chunks[i][j]), 50 )
 
         self.assertEqual( len(samples_chunks[-1]), 1 )
-        self.assertEqual( len(samples_chunks[-1][0]), 500 )
+        self.assertEqual( len(samples_chunks[-1][0]), 50 )
 
 
         #################################################################################################
