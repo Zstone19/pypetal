@@ -151,6 +151,9 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
         elif run_pyroa:
             weighting_dat.append( np.nan )
             weighting_dat.append( res['rmax_pyroa'] )
+        else:
+            weighting_dat.append( np.nan )
+            weighting_dat.append( np.nan )
 
     else:
         weighting_dat.append(np.nan)
