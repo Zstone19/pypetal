@@ -283,9 +283,16 @@ def run_weighting_tot(output_dir,
 
     res_tot = combine_weight_outputs(outputs, run_pyccf, run_javelin, run_pyroa)
 
+    plot_mod = 'pyccf'
+    if not run_pyccf:
+        if run_javelin:
+            plot_mod = 'javelin'
+        elif run_pyroa:
+            plot_mod = 'pyroa'
+
     for i in range(len(line_fnames)-1):
-        plot_weights(output_dir, line_names[i+1], res_tot['pyccf'],
-                        summary_dicts[i]['n0_pyccf'], summary_dicts[i]['k'],
+        plot_weights(output_dir, line_names[i+1], res_tot[plot_mod],
+                        summary_dicts[i]['n0_'+plot_mod], summary_dicts[i]['k'],
                         general_kwargs['time_unit'], general_kwargs['plot'])
 
     if run_pyccf:
