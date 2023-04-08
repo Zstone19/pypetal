@@ -134,6 +134,3 @@ dmypy.json
 
 #pyPetal tests
 .tmp
-
-#PLIKE
-plike_v4/*
