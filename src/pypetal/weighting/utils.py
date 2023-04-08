@@ -447,6 +447,10 @@ def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa):
     cols_javelin.append('lag_dist')
     cols_pyroa.append('lag_dist')
 
+    cols_pyccf.append('downsampled_CCCD')
+    cols_javelin.append('downsampled_lag_dist')
+    cols_pyroa.append('downsampled_lag_dist')
+
 
     run_arr = [run_pyccf, run_javelin, run_pyroa]
     cols_arr = [cols_pyccf, cols_javelin, cols_pyroa]
