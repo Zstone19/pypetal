@@ -812,6 +812,10 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
             summary_dict['rmax_javelin'] = rmax_jav
             output['rmax_javelin'] = rmax_jav
 
+        else:
+            summary_dict['rmax_javelin'] = np.nan
+            output['rmax_javelin'] = np.nan
+
 
         if run_pyroa:
             #PyROA lag
@@ -827,6 +831,20 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
 
             summary_dict['rmax_pyroa'] = rmax_pyroa
             output['rmax_pyroa'] = rmax_pyroa
+        else:
+            summary_dict['rmax_pyroa'] = np.nan
+            output['rmax_pyroa'] = np.nan
+
+
+    else:
+        summary_dict['rmax_pyccf'] = np.nan
+        output['rmax_pyccf'] = np.nan
+
+        summary_dict['rmax_javelin'] = np.nan
+        output['rmax_javelin'] = np.nan
+
+        summary_dict['rmax_pyroa'] = np.nan
+        output['rmax_pyroa'] = np.nan
 
 
     #---------------------------
