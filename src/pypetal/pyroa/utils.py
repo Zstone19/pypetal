@@ -474,9 +474,9 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
     if lag_bounds is None:
         lag_bounds = []
 
-        x_cont, _, _ = np.loadtxt( fnames[0], unpack=True, usecols=[0,1,2] )
+        x_cont, _, _ = np.loadtxt( fnames[0], unpack=True, usecols=[0,1,2], delimiter=',' )
         for i in range(1, len(fnames)):
-            x, _, _ = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2] )
+            x, _, _ = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2], delimiter=',' )
 
             max_x = np.max([ np.max(x), np.max(x_cont) ])
             min_x = np.min([ np.min(x), np.min(x_cont) ])
