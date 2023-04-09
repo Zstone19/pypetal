@@ -465,7 +465,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         objname = 'pyroa'
 
     if init_tau is None:
-        init_tau = np.full( len(fnames), 10. )
+        init_tau = np.full( len(fnames)-1, 10. )
 
     if isinstance(psi_types, str):
         psi_types = [psi_types] * ( len(fnames)-1 )
