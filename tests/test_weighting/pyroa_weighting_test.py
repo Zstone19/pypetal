@@ -44,7 +44,7 @@ class TestWeighting(unittest.TestCase):
                                          run_pyroa=True, pyroa_params=pyroa_params,
                                          weighting_params=weighting_params,
                                          lag_bounds=lag_bounds,
-                                         file_fmt='ascii')
+                                         file_fmt='csv')
 
         self.filenames = filenames
         self.line_names = line_names
