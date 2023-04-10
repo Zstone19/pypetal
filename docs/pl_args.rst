@@ -230,6 +230,61 @@ Module: pyZDCF (``run_pyzdcf``)
       - :python:`None`
 
 
+
+Module: pyROA (``run_pyzdcf``)
+-------------------------------
+
+.. list-table::
+    :widths: 16 50 16 16
+    :header-rows: 1
+
+    * - Argument
+      - Description
+      - Type
+      - Default
+    * - ``nchain``
+      - The number of chains for Monte Carlo sampling.
+      - :python:`int`
+      - 20000
+    * - ``nburn``
+      - The number of burn-in steps to remove from the Monte Carlo samples.
+      - :python:`int`
+      - 15000
+    * - ``together``
+      - Whether or not to fit the time lags of all light curves together.
+      - :python:`bool`
+      - :python:`True`
+    * - ``init_tau``
+      - The initial guess for the time lag. If one value is given, it will be used for all lines. If :python:`None`, it will be set to 10. for each line.
+      - :python:`float`, list of :python:`float`, :python:`None`
+      - :python:`None`
+    * - ``subtract_mean``
+      - Whether or not to subtract the mean from all light curves before analysis.
+      - :python:`bool`
+      - :python:`True`
+    * - ``div_mean``
+      - Whether or not to divide the light curves by their mean before analysis. This will occur before the mean is subtracted if :python:`subtract_mean=True`.
+      - :python:`bool`
+      - :python:`False`
+    * - ``add_var``
+      - Whether or not to add additional uncertainty in the data, same as the PyROA argument. If :python:`together=False`, multiple values may be given for each line. If only one value is given, it will be assumed for all lines.
+      - :python:`bool`, list of :python:`bool`
+      - :python:`True`
+    * - ``delay_dist``
+      - Same as the ``delay_dist`` argument for PyROA. If :python:`together=False`, multiple values may be given for each line. If only one value is given, it will be assumed for all lines.
+      - :python:`bool`, list of :python:`bool`
+      - :python:`True`
+    * - ``psi_types``
+      - Same as the ``psi_types`` argument for PyROA - the form of the delay distribution. This will only affect the output if :python:`delay_dist=True`. If :python:`together=False`, multiple values may be given for each line. If only one value is given, it will be assumed for all lines. If :python:`None`, a Gaussian distribution will be assumed.
+      - :python:`str`, list of :python:`str`, :python:`None`
+      - :python:`None`
+    * - ``objname``
+      - The name of the object to use for PyROA analysis. This will apply to the output file names and figures. If :python:`None`, this will be set to "pyroa".
+      - :python:`str`, :python:`None`
+      - :python:`None`
+
+
+
 Module: JAVELIN (``run_javelin``)
 ---------------------------------
 
