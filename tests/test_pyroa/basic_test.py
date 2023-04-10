@@ -4,10 +4,9 @@ import shutil
 import unittest
 
 import numpy as np
-from PyROA import Fit
 
 import pypetal.pipeline as pl
-from pypetal.pyroa.utils import get_samples_chunks
+from pypetal.pyroa.utils import MyFit, get_samples_chunks
 
 
 class TestPyROA(unittest.TestCase):
@@ -49,7 +48,7 @@ class TestPyROA(unittest.TestCase):
         #################################################################################################
         #Make sure the lengths and keys of each of the resulting arrays are correct
 
-        self.assertIs( isinstance( self.res['pyroa_res'], Fit ), True )
+        self.assertIs( isinstance( self.res['pyroa_res'], MyFit ), True )
         mc_length = 100
         nburn = 50
         nparams = 2 + 3*2 + 1
