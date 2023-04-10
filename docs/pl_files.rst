@@ -25,6 +25,8 @@ In general, running all of the modules with three lines (named "cont", "line1", 
     │   ├── weights/
     │   └── detrend.pdf
     ├── processed_lcs/
+    ├── pyroa/
+    ├── pyroa_lcs/
     ├── light_curves/
     ├── pyccf_weights_res.pdf
     └── javelin_weights_res.pdf
@@ -179,13 +181,90 @@ If PLIKE is run under the pyZDCF module, its results will be stored in the ``pyz
 
 
 
+Module: PyROA
+--------------
+
+Unlike the previous modules, the layout of the output directory and the structure of the files depend on the ``together`` parameter.
+
+If :python:`together=True`, the output directory for all lines will be ``output_directory/pyroa/``. If :python:`together=False`, each line will have it's PyROA results in its own subdirectory, labeled ``pyroa/``.
+
+In addition, PyROA necessitates a directory for all light curves with names and contents in a specific format. This will be the ``output_directory/pyroa_lcs/`` directory.
+
+Each PyROA directory (whether ``together`` is :python:`True` or :python:`False`) will have the following files:
+
+.. list-table::
+    :widths: 30 30 10 30
+    :header-rows: 1
+
+    * - Filename
+      - Description
+      - Format
+      - Columns
+    * - ``samples.obj``
+      - The PyROA MCMC samples.
+      - pickle
+      - see below
+    * - ``samples_flat.obj``
+      - The PyROA MCMC samples, flattened.
+      - pickle
+      - see below
+    * - ``Lightcurve_models.obj``
+      - The models for the light curves (including the continuum).
+      - pickle
+      - There will be one model for each light curve, and each model with have the time, value, and error for the modeled light curve.
+    * - ``X_t.obj``
+      - The drving continuum light curve model.
+      - pickle
+      - time, value, error
+    * - ``trace_plot.pdf``
+      - A figure showing the MCMC trace plots for each parameter, and the cutoff for the specified burn-in.
+      - PDF
+      -
+    * - ``histogram_plot.pdf``
+      - A figure showing the MCMC posterior histograms for each parameter (excluding burn-in).
+      - PDF
+      -
+    * - ``corner_plot.pdf``
+      - A figure showing the MCMC corner plot for all parameters (excluding burn-in).
+      - PDF
+      -
+    * - ``fits_plot``
+      - A figure analogous to the PyROA fit plots, showing the light curve fits to the data, the time lag distributions, and the ``delay_dist`` distributions (if :python:`delay_dist=True`).
+      - PDF
+      -
+
+
+
+If :python:`together=True`, the columns of the ``samples`` files will be:
+
+.. list-table::
+    :widths: 30 30 10 30
+    :header-rows: 1
+
+    * - ``add_var``
+      - ``delay_dist``
+      - Columns
+    * - :python:`False`
+      - :python:`False`
+      - :math:`A_0, B_0, \tau_0, A_1, B_1, \tau_1, ..., \Delta`
+    * - :python:`True`
+      - :python:`False`
+      - :math:`A_0, B_0, \tau_0, \sigma_0, A_1, B_1, \tau_1, \sigma_0, ..., \Delta`
+    * - :python:`False`
+      - :python:`True`
+      - :math:`A_0, B_0, \tau_0, A_1, B_1, \tau_1, \Delta_1, A_2, B_2, \tau_2, \Delta_2, ..., \Delta`
+    * - :python:`True`
+      - :python:`True`
+      - :math:`A_0, B_0, \tau_0, \sigma_0, A_1, B_1, \tau_1, \Delta_1, \sigma_1, A_2, B_2, \tau_2, \Delta_2, \sigma_2, ..., \Delta`
+
+If :python:`together=False`, the columns will be the same as for :python:`together=True`, except the file for each line will only contain samples for the continuum, and that line.
 
 
 
 Module: JAVELIN
 ---------------
 
-Unlike the other modules, the layout of the output directiry and the structure of the files depends on multiple parameters, in particular ``together``, ``rm_type``, and ``fixed/p_fix``.
+Unlike the other modules, the layout of the output directory and the structure of the files depends on multiple parameters, in particular ``together``, ``rm_type``, and ``fixed/p_fix``.
 
 If :python:`together=True`, the output directory for all lines will be ``output_directory/javelin/``. If :python:`together=False`, each line will have it's JAVELIN results in its own subdirectory, labeled ``javelin/``.
 
