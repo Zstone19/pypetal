@@ -24,7 +24,9 @@ class TestWeighting(unittest.TestCase):
         pyroa_params = {
             'nchain': 100,
             'nburn': 50,
-            'together': True
+            'together': True,
+            'add_var': True,
+            'delay_dist': True
         }
 
         weighting_params = {
