@@ -2,6 +2,6 @@
 pyZDCF
 =======
 
-.. automodule:: pypetal.utils
+.. automodule:: pypetal.pyzdcf.utils
     :members: run_plike, get_zdcf
     :noindex:

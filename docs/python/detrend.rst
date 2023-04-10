@@ -2,5 +2,5 @@
 Detrending
 ===========
 
-.. automodule:: pypetal.detrending
+.. automodule:: pypetal.utils.detrending
     :members:

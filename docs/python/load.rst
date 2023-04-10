@@ -2,5 +2,5 @@
 Loading Prior Results
 ======================
 
-.. automodule:: pypetal.load
+.. automodule:: pypetal.utils.load
     :members:
