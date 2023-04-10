@@ -231,7 +231,7 @@ Module: pyZDCF (``run_pyzdcf``)
 
 
 
-Module: pyROA (``run_pyzdcf``)
+Module: pyROA (``run_pyroa``)
 -------------------------------
 
 .. list-table::
@@ -285,8 +285,8 @@ Module: pyROA (``run_pyzdcf``)
 
 
 
-Module: JAVELIN (``run_javelin``)
----------------------------------
+Module: JAVELIN (``pyprtal_jav.run_pipeline``)
+----------------------------------------------
 
 .. list-table::
     :widths: 16 50 16 16
@@ -380,8 +380,8 @@ Determining the number of parameters in the JAVELIN model:
 
 
 
-Module: Weighting (``run_weighting``)
--------------------------------------
+Module: Weighting (``pypetal.run_weighting``)
+---------------------------------------------
 
 .. list-table::
     :widths: 16 50 16 16
