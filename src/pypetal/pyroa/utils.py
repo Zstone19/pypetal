@@ -1,5 +1,7 @@
 import glob
+import multiprocessing as mp
 import os
+import pickle
 import shutil
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from os import devnull
@@ -19,6 +21,33 @@ def suppress_stdout_stderr():
     with open(devnull, 'w') as fnull:
         with redirect_stderr(fnull) as err, redirect_stdout(fnull) as out:
             yield (err, out)
+
+##############################################################
+######################### FIT CLASS ##########################
+##############################################################
+
+class MyFit:
+
+    def __init__(self, output_dir):
+
+        self.output_dir = output_dir
+
+        with open(output_dir + 'samples.obj', 'rb') as f:
+            self.samples = pickle.load(f)
+
+        with open(output_dir + 'samples_flat.obj', 'rb') as f:
+            self.samples_flat = pickle.load(f)
+
+        with open(output_dir + 'Lightcurve_models.obj', 'rb') as f:
+            self.models = pickle.load(f)
+
+        with open(output_dir + 'X_t.obj', 'rb') as f:
+            dat = pickle.load(f)
+
+            self.t = dat[0]
+            self.X = dat[1]
+            self.X_errs = dat[2]
+
 
 ##############################################################
 ######################## ASSIST FUNCTIONS ####################
@@ -522,20 +551,30 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             filters = [line_names[0], line_names[i+1]]
 
+            args = (lc_dir, objname, filters, prior_arr[i,:,:],)
+            kwargs = {'add_var':add_var[i], 'init_tau':[init_tau[i]], 'init_delta':init_delta, 'sig_level':sig_level,
+                      'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn}
+
             if verbose:
-                fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
-                                init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
-                                delay_dist=delay_dist[i], psi_types=[psi_types[i]],
-                                Nsamples=nchain, Nburnin=nburn)
+                proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+
+                proc.start()
+                while proc.is_alive():
+                    proc.is_alive()
+                proc.terminate()
+
             else:
                 with suppress_stdout_stderr():
-                    fit = PyROA.Fit(lc_dir, objname, filters, prior_arr[i,:,:], add_var=add_var[i],
-                                    init_tau=[init_tau[i]], init_delta=init_delta, sig_level=sig_level,
-                                    delay_dist=delay_dist[i], psi_types=[psi_types[i]],
-                                    Nsamples=nchain, Nburnin=nburn)
+                    proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+
+                    proc.start()
+                    while proc.is_alive():
+                        proc.is_alive()
+                    proc.terminate()
 
 
             move_output_files(cwd, line_dir[i])
+            fit = MyFit(line_dir[i])
 
             fit_arr.append(fit)
 
@@ -545,18 +584,29 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
         assert isinstance(line_dir, str), 'Must provide one line_dir if together=True'
 
+
+        args = (lc_dir, objname, line_names, prior_arr,)
+        kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
+                  'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn}
+
         if verbose:
-            fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
-                        init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
-                        delay_dist=delay_dist, psi_types=psi_types,
-                        Nsamples=nchain, Nburnin=nburn)
+            proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+
+            proc.start()
+            while proc.is_alive():
+                proc.is_alive()
+            proc.terminate()
+
         else:
             with suppress_stdout_stderr():
-                fit = PyROA.Fit(lc_dir, objname, line_names, prior_arr, add_var=add_var,
-                            init_tau=init_tau, init_delta=init_delta, sig_level=sig_level,
-                            delay_dist=delay_dist, psi_types=psi_types,
-                            Nsamples=nchain, Nburnin=nburn)
+                proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+
+                proc.start()
+                while proc.is_alive():
+                    proc.is_alive()
+                proc.terminate()
 
         move_output_files(cwd, line_dir)
+        fit = MyFit(line_dir)
 
         return fit
