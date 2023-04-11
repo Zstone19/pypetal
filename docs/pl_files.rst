@@ -306,8 +306,8 @@ If :python:`together=True`, the output directory will contain the following file
       - The continuum light curve in JAVELIN format.
       - ASCII
       -
-    * - ``tot_lcfile.dat``
-      - All light curves in JAVELIN format.
+    * - ``{line_name}_lcfile.dat``
+      - The line light curve in JAVELIN format. There will be one file for each line.
       - ASCII
       -
     * - ``{line_name}_lc_fits.dat``
