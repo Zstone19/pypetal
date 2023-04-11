@@ -228,7 +228,7 @@ Each PyROA directory (whether ``together`` is :python:`True` or :python:`False`)
       - A figure showing the MCMC corner plot for all parameters (excluding burn-in).
       - PDF
       -
-    * - ``fits_plot``
+    * - ``fits_plot.pdf``
       - A figure analogous to the PyROA fit plots, showing the light curve fits to the data, the time lag distributions, and the ``delay_dist`` distributions (if :python:`delay_dist=True`).
       - PDF
       -
@@ -449,6 +449,26 @@ If the JAVELIN module is run, the ``weights/`` subdirectory will contain the fol
 
 
 
+If the PyROA module is run, the ``weights/`` subdirectory will contain the following files:
+
+.. list-table::
+    :widths: 30 30 10 30
+    :header-rows: 1
+
+    * - Filename
+      - Description
+      - Format
+      - Columns
+    * - ``pyroa_weights.dat``
+      - The distributions needed to weight the PyROA lag distribution :math:`t` for the line.
+      - CSV
+      - lags :math:`\tau` , :math:`N(\tau)`, :math:`w(\tau)`, ACF, smoothed :math:`t`, smoothed weighted :math:`t`
+    * - ``pyroa_weighted_lag_dist.dat``
+      - The downsampled :math:`t` after weighting and finding the primary peak.
+      - CSV
+      -
+
+
 In addition, the weighting module will always output the following files in the ``weights/`` subdirectory:
 
 .. list-table::
@@ -460,17 +480,17 @@ In addition, the weighting module will always output the following files in the 
       - Format
       - Columns
     * - ``{line_name}_weights.pdf``
-      - A figure showing the distributions needed to weight the CCCD or JAVELIN lag distribution.
+      - A figure showing the distributions needed to weight the CCCD, JAVELIN lag distribution, or PyROA lag distribution.
       - PDF
       -
-    * - ``weight_summary.txt``
-      - The results of the weighting and auxiliary information from the weighting.
-      - Text
+    * - ``weight_summary.fits``
+      - A FITS table containing the results of the weighting and auxiliary information from the weighting.
+      - FITS
       - See below
 
 
 
-The ``weight_summary.txt`` file contains the following information:
+The ``weight_summary.fits`` file contains the following information for each module (pyCCF, JAVELIN, and/or PyROA):
 
 .. list-table::
     :widths: 30 30 30
@@ -482,35 +502,36 @@ The ``weight_summary.txt`` file contains the following information:
     * - ``k``
       - The exponent used to calculate :math:`P(\tau)`
       - :python:`float`
-    * - ``n0``
+    * - ``n0_(module)``
       - The value of :math:`N(0)`. Given for both the CCCD and :math:`t`.
       - :python:`float`
-    * - ``peak_bounds``
+    * - ``peak_bounds_(module)``
       - The bounds of the primary peak of the weighted distribution. Given as [lower bound, peak, upper bound] for both the CCCD and :math:`t`.
       - list of :python:`float`
-    * - ``peak``
+    * - ``peak_(module)``
       - The peak of the primary peak. Given for both the CCCD and :math:`t`.
       - :python:`float`
-    * - ``lag_value``
+    * - ``lag_(module)``
       - The median of the downsampled lag distribution. Given for both the CCCD and :math:`t`.
       - :python:`float`
-    * - ``lag_uncertainty``
+    * - ``lag_err_(module)``
       - The uncertainty on the lag. Given as [lower error, upper error] for both the CCCD and :math:`t`.
       - list of :python:`float`
-    * - ``fraction_rejected``
+    * - ``frac_rejected_(module)``
       - The fraction of the original distribution that was rejected to obtain the downsampled distribution. Given for both the CCCD and :math:`t`
       - :python:`float`
-    * - ``rmax``
+    * - ``rmax_(module)``
       - The maximum value of the CCCD within the region covered by the downsampled JAVELIN lag distribution.
       - :python:`float`
 
-.. note:: If either module is not run, the values in ``weight_summary.txt`` for that module will be :python:`None`.
+where ``(module)`` is either ``pyccf``, ``javelin``, or ``pyroa``.
 
-.. note:: If only one of the modules is run, ``rmax`` will be :python:`None`.
+.. note:: If a module is not run, its values in ``weight_summary.txt`` for that module will be ``NaN``.
+
+.. note:: If pyCCF is not run, ``rmax_(module)`` will be ``NaN``.
 
 
 In addition, the following files will be placed in the main ``output_directory/``:
-
 
 .. list-table::
     :widths: 30 30 10 30
@@ -526,5 +547,9 @@ In addition, the following files will be placed in the main ``output_directory/`
       -
     * - ``javelin_weights_res.pdf``
       - A figure showing the output of the weighting process for the JAVELIN lag distribution.
+      - PDF
+      -
+    * - ``pyroa_weights_res.pdf``
+      - A figure showing the output of the weighting process for the PyROA lag distribution.
       - PDF
       -
