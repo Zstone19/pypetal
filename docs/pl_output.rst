@@ -308,7 +308,7 @@ Most of the keys for each of the three dictionaries will be the same:
 The three modules differ with these keys:
 
 .. list-table::
-    :widths: 20 60 20
+    :widths: 15 15 55 15
     :header-rows: 1
 
     * - Module
