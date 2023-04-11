@@ -10,7 +10,6 @@ The key referencing each output will be labeled ``(name)_res``, where ``(name)``
 * ``pyzdcf_res``
 * ``plike_res``
 
-
 In addition, ``pypetal_jav.pipeline.run_pipeline`` will output a dictionary of results. The weighting module ``pypetal.pipeline.run_weighting`` will also output a dictionary.
 
 
@@ -269,10 +268,10 @@ The output dictionary(ies) will have the following keys:
 Module: Weighting
 -----------------
 
-The weighting module output dictionary will contain two dictionaries within it, one for pyCCF (with the key ``pyccf``) and one for JAVELIN (with the key ``javelin``). Each of these two dictionaries will have similar data, representing the results from the weighting. If either of these two modules aren't run, then the value corresponding to its key will be :python:`None`.
+The weighting module output dictionary will contain three dictionaries within it, for the three modules (with keys ``pyccf``, ``javelin``, and ``pyroa``). Each of these two dictionaries will have similar data, representing the results from the weighting. If any of these modules aren't run, then the value corresponding to its key will be :python:`None`.
 Similar to the DRW Rejection module, the values for the keys will be lists of results, one for each line, in the order of the input liht curves.
 
-For the pyCCF dictionary, the keys will be:
+Most of the keys for each of the three dictionaries will be the same:
 
 .. list-table::
     :widths: 20 60 20
@@ -281,9 +280,6 @@ For the pyCCF dictionary, the keys will be:
     * - Key
       - Description
       - Type
-    * - ``centroid``
-      - The median of the downsampled CCCD and its uncertainties, given as [lower error, value, upper error].
-      - list of :python:`float`
     * - ``bounds``
       - The bounds and lag value of the primary peak, given as [lower bound, peak, upper bound].
       - list of :python:`float`
@@ -301,51 +297,62 @@ For the pyCCF dictionary, the keys will be:
       - list of :python:`float`
     * - ``ntau``
       - The number of overlapping points at a given lag :math:`N(\tau)`.
-      - list of :python:`float`
-    * - ``downsampled_CCCD``
-      - The downsampled CCCD.
       - list of :python:`float`
     * - ``frac_rejected``
       - The fraction of the original CCCD rejected when downsampling.
       - list of :python:`float`
 
 
-Similarly, for the JAVELIN dictionary:
+
+
+The three modules differ with these keys:
 
 .. list-table::
     :widths: 20 60 20
     :header-rows: 1
 
-    * - Key
+    * - Module
+      - Key
       - Description
       - Type
-    * - ``tophat_lag``
-      - The median of the JAVELIN lag and its uncertainties, given as [lower error, value, upper error].
+    * - pyCCF
+      - ``centroid``
+      - The median of the downsampled CCCD and its uncertainties, given as [lower error, value, upper error].
       - list of :python:`float`
-    * - ``bounds``
-      - The bounds and lag value of the primary peak, given as [lower bound, peak, upper bound].
+    * - pyCCF
+      - ``downsampled_CCCD``
+      - The downsampled CCCD.
       - list of :python:`float`
-    * - ``acf``
-      - The ACF of the continuum light curve.
+    * - pyCCF
+      - ``rmax_pyCCF``
+      - The maximum value of the downsampled CCCD.
       - list of :python:`float`
-    * - ``lags``
-      - The lags that the weighting distributions are computed on.
+    * - JAVELIN
+      - ``tophat_lag``
+      - The median of the downsampled distribution for the JAVELIN tophat peak.
       - list of :python:`float`
-    * - ``weight_dist``
-      - The weight distribution :math:`w(\tau)`
+    * - JAVELIN
+      - ``downsampled_lag_dist``
+      - The downsampled distribution for the JAVELIN tophat peak.
       - list of :python:`float`
-    * - ``smooth_dist``
-      - The smoothed :math:`w(\tau)`.
+    * - JAVELIN
+      - ``rmax_javelin``
+      - The maximum value of the CCCD within :math:`\pm 1\sigma` of the median tophat lag.
       - list of :python:`float`
-    * - ``ntau``
-      - The number of overlapping points at a given lag :math:`N(\tau)`.
+    * - PyROA
+      - ``time_delay``
+      - The median of the downsampled distribution for the PyROA time delay.
       - list of :python:`float`
-    * - ``downsampled_lag_dist``
-      - The downsampled JAVELIN lag distribution.
+    * - PyROA
+      - ``downsampled_lag_dist``
+      - The downsampled distribution for the PyROA time delay.
       - list of :python:`float`
-    * - ``frac_rejected``
-      - The fraction of the original JAVELIN lag distribution rejected when downsampling.
+    * - PyROA
+      - ``rmax_pyroa``
+      - The maximum value of the CCCD within :math:`\pm 1\sigma` of the median PyROA time delay.
       - list of :python:`float`
 
 
-In addition, if both pyCCF and JAVELIN are run, there will be an additional key in the output dictionary labeled ``rmax``. This will be a list of :python:`float`, being the values of :math:`r_{\rm max}` for each line in the order input.
+.. note:: If pyCCF isn't run, all ``rmax_(module)`` values will be NaN.
+
+In addition, the weighting module will output an array of dictionaries representing the data in the weighting summary files (``weighting_summary.fits``) for each line. The keys and values for the entries in these dictionaries can be found in the pyPetal output files API.
