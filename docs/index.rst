@@ -28,6 +28,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, PyROA, and J
    notebooks/pyccf
    notebooks/pyzdcf
    notebooks/plike
+   pyroa_toc
    javelin_toc
    notebooks/weighting
    notebooks/all_together
