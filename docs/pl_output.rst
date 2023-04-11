@@ -2,15 +2,16 @@ pyPetal Output
 ===============
 
 Each module run in pyPetal has its own output, most of which are dictionaries with a variety of keys. These keys lead to the different output data from each module. Here we provide an in-depth description of all output and how to access them.
-Firstly, the output from the pipeline itself (i.e. from ``pyPetal.pipeline.run_pipeline``) will be a dictionary, containing the output dictionaries for each module (except the detrending module).
-The key referencing each output will be labeled ``(name)_res``, where ``(name)`` is the name of the module, in addition to the output from PLIKE (if it is run). Therefore, the possible keys for the output are:
+Firstly, the output from the pipeline itself (i.e. from ``pyPetal.pipeline.run_pipeline``) will be a dictionary, containing the output dictionaries for each module run in pyPetal (except the detrending module) - DRW-based outlier rejection, pyCCF, pyZDCF, PyROA.
+The key referencing each output will be labeled ``(name)_res``, where ``(name)`` is the name of the module, in addition to the output from PLIKE (if it is run). Therefore, the possible keys for the pyPetal output are:
 
 * ``drw_rej_res``
 * ``pyccf_res``
 * ``pyzdcf_res``
 * ``plike_res``
-* ``javelin_res``
-* ``weighting_res``
+
+
+In addition, ``pypetal_jav.pipeline.run_pipeline`` will output a dictionary of results. The weighting module ``pypetal.pipeline.run_weighting`` will also output a dictionary.
 
 
 Module: DRW Rejection
@@ -174,6 +175,43 @@ Each dictionary will have the following keys:
     * - ``ML_lag_err_hi``
       - The upper error on the maximum likelihood lag.
       - :python:`float`
+
+
+
+Module: PyROA
+-------------
+
+Normally, the PyROA code outputs a ``PyROA.PyROA.Fit`` object which contain its results. However, due to threading issues, this cannot be done in pyPetal. To circumvent this, pyPetal has a similar class called ``MyFit``, which contains some of the attributes of the original ``Fit`` class (see below).
+In general, the PyROA module's output will be dependent on the input value of the ``together`` argument. If :python:`together=False`, there will be a list of ``MyFit`` objects, one for each line. If :python:`together=True`, there will only be one ``MyFit`` object.
+
+The ``MyFit`` object will have the following attributes:
+
+.. list-table::
+    :widths: 20 60 20
+    :header-rows: 1
+
+    * - Attribute
+      - Description
+      - Type
+    * - ``samples``
+      - The MCMC samples.
+      - list of :python:`float`
+    * - ``samples_flat``
+      - The flattened MCMC samples.
+      - list of :python:`float`
+    * - ``models``
+      - The ROA model fit (times, values, and errors) for each light curve.
+      - list of :python:`float`
+    * - ``t``
+      - The time for the driving light curve model fit.
+      - list of :python:`float`
+    * - ``X``
+      - The driving light curve model fit.
+      - list of :python:`float`
+    * - ``X_errs``
+      - The error in the driving light curve model fit.
+      - list of :python:`float`
+
 
 
 Module: JAVELIN
