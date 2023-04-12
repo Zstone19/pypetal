@@ -723,8 +723,8 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
             med_lag = summary_dict['lag_javelin'][0]
             output['javelin']['tophat_lag'].append([lag_err_lo, med_lag, lag_err_hi])
 
-            min_bound = summary_dict['lag_bounds_javelin'][0][0]
-            max_bound = summary_dict['lag_bounds_javelin'][0][1]
+            min_bound = summary_dict['peak_bounds_javelin'][0][0]
+            max_bound = summary_dict['peak_bounds_javelin'][0][1]
             peak = summary_dict['peak_javelin'][0]
             output['javelin']['bounds'].append([min_bound, peak, max_bound])
 
@@ -748,8 +748,8 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
             med_lag = summary_dict['lag_pyroa'][0]
             output['pyroa']['time_delay'].append([lag_err_lo, med_lag, lag_err_hi])
 
-            min_bound = summary_dict['lag_bounds_pyroa'][0][0]
-            max_bound = summary_dict['lag_bounds_pyroa'][0][1]
+            min_bound = summary_dict['peak_bounds_pyroa'][0][0]
+            max_bound = summary_dict['peak_bounds_pyroa'][0][1]
             peak = summary_dict['peak_pyroa'][0]
             output['pyroa']['bounds'].append([min_bound, peak, max_bound])
 
@@ -773,8 +773,8 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
             med_cent = summary_dict['lag_pyccf'][0]
             output['pyccf']['centroid'].append([cent_err_lo, med_cent, cent_err_hi])
 
-            min_bound = summary_dict['lag_bounds_pyccf'][0][0]
-            max_bound = summary_dict['lag_bounds_pyccf'][0][1]
+            min_bound = summary_dict['peak_bounds_pyccf'][0][0]
+            max_bound = summary_dict['peak_bounds_pyccf'][0][1]
             peak = summary_dict['peak_pyccf'][0]
             output['pyccf']['bounds'].append([min_bound, peak, max_bound])
 
