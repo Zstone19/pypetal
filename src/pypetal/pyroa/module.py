@@ -93,23 +93,26 @@ objname: {}
     else:
 
         for i, res_i in enumerate(res):
-            pyroa_trace_plot( res_i.samples, line_names, add_var=add_var[i],
+            names_i = [ line_names[0], line_names[i+1] ]
+            fnames_i = [ lc_fnames[0], lc_fnames[i+1] ]
+
+            pyroa_trace_plot( res_i.samples, names_i, add_var=add_var[i],
                                     delay_dist=delay_dist[i], nburn=nburn,
                                     fname = output_dir + line_names[i+1] + '/pyroa/trace_plot.pdf',
                                     show=plot)
 
-            plot_histograms( res_i.samples, line_names, nburn=nburn,
+            plot_histograms( res_i.samples, names_i, nburn=nburn,
                                    add_var=add_var[i], delay_dist=delay_dist[i],
                                    fname= output_dir + line_names[i+1] + '/pyroa/histogram_plot.pdf',
                                    show=plot)
 
-            pyroa_corner_plot( res_i.samples, line_names, nburn=nburn,
+            pyroa_corner_plot( res_i.samples, names_i, nburn=nburn,
                                      add_var=add_var[i], delay_dist=delay_dist[i],
                                      split=False,
                                      fname = output_dir + line_names[i+1] + '/pyroa/corner_plot.pdf',
                                      show=plot)
 
-            plot_fits( [lc_fnames[0], lc_fnames[i+1]], line_names, res_i.samples, res_i.models,
+            plot_fits( fnames_i, names_i, res_i.samples, res_i.models,
                              nburn=nburn, add_var=add_var[i], delay_dist=delay_dist[i],
                              psi_types=psi_types[i], delimiter=None,
                              time_unit=time_unit, lc_unit=lc_unit,
