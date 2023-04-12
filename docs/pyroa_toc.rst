@@ -12,3 +12,4 @@ on in-depth usage of PyROA and understanding of its arguments.
     :caption: PyROA Tutorials
 
     notebooks/pyroa/basic
+    notebooks/pyroa/together
