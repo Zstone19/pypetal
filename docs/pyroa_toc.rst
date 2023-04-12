@@ -14,3 +14,4 @@ on in-depth usage of PyROA and understanding of its arguments.
     notebooks/pyroa/basic
     notebooks/pyroa/together
     notebooks/pyroa/delay_dist
+    notebooks/pyroa/advanced
