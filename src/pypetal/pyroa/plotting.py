@@ -376,7 +376,7 @@ def plot_fits(fnames, line_names, samples, models,
                         psi = TruncGaussian( tau_samp, tau_rms_samp, taus[k], np.zeros_like(tau_samp), conv=False )
                     elif psi_types[i-1] == 'LogGaussian':
                         psi = LogGaussian( tau_samp, tau_rms_samp, taus[k], np.zeros_like(tau_samp), conv=False )
-                    elif psi_types[i-1] == 'InverseGaussian':
+                    elif psi_types[i-1] == 'InverseGauss':
                         psi = InverseGaussian( tau_samp, tau_rms_samp, taus[k], np.zeros_like(tau_samp), conv=False )
 
                     hi_vals.append( np.percentile(psi, 84) )
