@@ -285,7 +285,7 @@ Module: pyROA (``run_pyroa``)
 
 
 
-Module: JAVELIN (``pyprtal_jav.run_pipeline``)
+Module: JAVELIN (``pypetal_jav.run_pipeline``)
 ----------------------------------------------
 
 .. list-table::
@@ -403,6 +403,10 @@ Module: Weighting (``pypetal.run_weighting``)
       - The width of the Gaussian used to smooth the weighted distribution to find the primary peak.
       - :python:`float`
       - 20.0
+    * - ``rel_height``
+      - The relative height (0-1) to use for the peak-finding algorithm.
+      - :python:`float`
+      - 0.99
     * - ``zoom``
       - Whether or not to zoom in on the peak with an inset in the output plot.
       - :python:`bool`

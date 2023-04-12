@@ -340,7 +340,7 @@ def gaussian(x, sigma):
     c = np.sqrt(2 * np.pi) * sigma
     return np.exp(-0.5 * (x / sigma)**2) / c
 
-def get_bounds(dist, weights, lags, width=15):
+def get_bounds(dist, weights, lags, width=15, rel_height=.99):
 
 
     """Find the bounds of the peak of the weighted distribution, given the original distribution and weights.
@@ -410,7 +410,7 @@ def get_bounds(dist, weights, lags, width=15):
     peak_ind = np.argmax(smooth_weight_dist)
 
     #Find peak bounds
-    res = peak_widths( smooth_weight_dist, [peak_ind], rel_height=.99 )
+    res = peak_widths( smooth_weight_dist, [peak_ind], rel_height=rel_height )
 
     peak = lags[peak_ind]
     bound_left = lags[ np.floor(res[2]).astype(int) ] + dbin*( res[2]%1 )
@@ -497,7 +497,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
 
     #---------------------------
     #Weighting kwargs
-    gap_size, k, width, _ = defaults.set_weighting(weighting_kwargs)
+    gap_size, k, width, rel_height, _ = defaults.set_weighting(weighting_kwargs)
 
     #---------------------------
     #See what modules to run
@@ -556,7 +556,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
                                     sigmode=sigmode, thres=thres,
                                     gap_size=gap_size, k=k)
 
-        min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(cccd_lags, prob_dist, lags, width=width)
+        min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(cccd_lags, prob_dist, lags, width=width, rel_height=rel_height)
         downsampled_cccd = cccd_lags[(cccd_lags > min_bound) & (cccd_lags < max_bound)]
 
         med_cent = np.median(downsampled_cccd)

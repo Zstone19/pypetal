@@ -272,6 +272,7 @@ def set_weighting(input_args):
         'gap_size': 30,
         'k': 2,
         'width': 15,
+        'rel_height': .99,
         'zoom': True
     }
 
