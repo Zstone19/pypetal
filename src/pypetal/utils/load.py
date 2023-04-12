@@ -879,7 +879,7 @@ Weighting: {}
         javelin_res = load_javelin(main_dir)
 
     if run_weighting:
-        weighting_res, summary_dicts = load_weighting(main_dir, run_pyccf, run_javelin)
+        weighting_res, summary_dicts = load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin)
 
     res_tot = {}
     res_tot['drw_rej_res'] = drw_rej_res
