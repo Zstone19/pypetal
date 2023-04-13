@@ -2,6 +2,8 @@ import matplotlib as mpl
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 
+from pypetal.utils.petalio import err2str
+
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True
 mpl.rcParams['xtick.direction'] = 'in'
@@ -120,6 +122,11 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
                     plike_dict['ML_lag'] + plike_dict['ML_lag_err_hi'],
                     color='b', alpha=.1)
 
+        lag_txt = err2str(plike_dict['ML_lag'], plike_dict['ML_lag_err_hi'], plike_dict['ML_lag_err_lo'])
+        lag_txt = r'$\tau_{\rm ML} = ' + lag_txt + '$'
+        ax2.text( .04, .6, lag_txt, transform=ax2.transAxes, fontsize=15, color='b')
+
+
 
     ax3.set_xlabel('Lag [' + str(time_unit) + ']', fontsize=17)
 
@@ -156,7 +163,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Magnitude'
         ax1.invert_yaxis()
 
-    elif lc_unit[0] == 'Arbitrary Units':
+    elif (lc_unit[0] == 'Arbitrary Units') or (lc_unit[0] == ''):
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[0]) + ']'
@@ -167,7 +174,7 @@ def plot_pyzdcf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Magnitude'
         ax2.invert_yaxis()
 
-    elif lc_unit[1] == 'Arbitrary Units':
+    elif (lc_unit[1] == 'Arbitrary Units') or (lc_unit[1] == ''):
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[1]) + ']'
