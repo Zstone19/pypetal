@@ -105,7 +105,7 @@ def run_weighting_tot(output_dir,
 
 
     general_kwargs = defaults.set_general(general_kwargs, line_fnames)
-    _, _, _, zoom = defaults.set_weighting(weighting_params)
+    _, _, _, _, zoom = defaults.set_weighting(weighting_params)
 
     #---------------------------
     #Share lag bounds?
