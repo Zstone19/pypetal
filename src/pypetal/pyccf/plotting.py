@@ -163,7 +163,7 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[0]) + ']'
-    ax1.text( -.1, .5, ytxt, transform=ax1.transAxes, rotation='vertical', ha='left', va='center', fontsize=19 )
+    ax1.text( -.2, .5, ytxt, transform=ax1.transAxes, rotation='vertical', ha='left', va='center', fontsize=19 )
 
 
     if lc_unit[1] == 'mag':
@@ -174,7 +174,7 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[1]) + ']'
-    ax2.text( -.1, .5, ytxt, transform=ax1.transAxes, rotation='vertical', ha='left', va='center', fontsize=19 )
+    ax2.text( -.2, .5, ytxt, transform=ax2.transAxes, rotation='vertical', ha='left', va='center', fontsize=19 )
 
 
     #Increase y-bounds to fit text
