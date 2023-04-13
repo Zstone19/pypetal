@@ -33,6 +33,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, PyROA, and J
    notebooks/weighting
    notebooks/all_together
    notebooks/load
+   notebooks/from_file
 
 
 .. toctree::
