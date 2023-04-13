@@ -120,18 +120,6 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
     [bar.set_alpha(.25) for bar in bars]
 
 
-    #Increase y-bounds to fit text
-    ymin, ymax = ax1.get_ylim()
-    ymax = ymin + (ymax - ymin)*1.15
-    ax1.set_ylim(ymin, ymax)
-
-    ymin, ymax = ax2.get_ylim()
-    ymax = ymin + (ymax - ymin)*1.15
-    ax2.set_ylim(ymin, ymax)
-
-    ax1.text( .05, .95, lc_names[0], transform=ax1.transAxes, ha='left', va='top', fontsize=17 )
-    ax2.text( .05, .95, lc_names[1], transform=ax2.transAxes, ha='left', va='top', fontsize=17 )
-
     ax2.set_xlabel('Time [' + str(time_unit) + ']', fontsize=19)
 
     #----------------------------
@@ -171,22 +159,35 @@ def plot_pyccf_results(x1, y1, yerr1, x2, y2, yerr2,
         ytxt = 'Magnitude'
         ax1.invert_yaxis()
 
-    elif lc_unit[0] == 'Arbitrary Units':
+    elif (lc_unit[0] == 'Arbitrary Units') or (lc_unit[0] == ''):
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[0]) + ']'
-    ax1.set_ylabel( ytxt, fontsize=19, va='center' )
+    ax1.text( -.1, .5, ytxt, transform=ax1.transAxes, rotation='vertical', ha='left', va='center', fontsize=19 )
 
 
     if lc_unit[1] == 'mag':
         ytxt = 'Magnitude'
         ax2.invert_yaxis()
 
-    elif lc_unit[1] == 'Arbitrary Units':
+    elif (lc_unit[1] == 'Arbitrary Units') or (lc_unit[1] == ''):
         ytxt = 'Flux'
     else:
         ytxt = 'Flux [' + str(lc_unit[1]) + ']'
-    ax2.set_ylabel( ytxt, fontsize=19, va='center' )
+    ax2.text( -.1, .5, ytxt, transform=ax1.transAxes, rotation='vertical', ha='left', va='center', fontsize=19 )
+
+
+    #Increase y-bounds to fit text
+    ymin, ymax = ax1.get_ylim()
+    ymax = ymin + (ymax - ymin)*1.15
+    ax1.set_ylim(ymin, ymax)
+
+    ymin, ymax = ax2.get_ylim()
+    ymax = ymin + (ymax - ymin)*1.15
+    ax2.set_ylim(ymin, ymax)
+
+    ax1.text( .05, .95, lc_names[0], transform=ax1.transAxes, ha='left', va='top', fontsize=17 )
+    ax2.text( .05, .95, lc_names[1], transform=ax2.transAxes, ha='left', va='top', fontsize=17 )
 
 
 
