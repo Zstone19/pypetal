@@ -281,6 +281,7 @@ def set_weighting(input_args):
     gap_size = params['gap_size']
     k = params['k']
     width = params['width']
+    rel_height = params['rel_height']
     zoom = params['zoom']
 
-    return gap_size, k, width, zoom
+    return gap_size, k, width, rel_height, zoom
