@@ -48,6 +48,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, PyROA, and J
    python/detrending
    python/pyccf
    python/pyzdcf
+   python/pyroa
    python/javelin
    python/weighting
    python/load
