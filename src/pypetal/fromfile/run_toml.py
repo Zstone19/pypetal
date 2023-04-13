@@ -46,6 +46,7 @@ def make_toml(output_dir, fnames,
     for i in range(len(run_arr)):
         if run_arr[i]:
             toml_dict['params'][tot_keys[i]] = param_arr[i+1]
+            toml_dict['params'][tot_keys[i]]['run'] = True
 
     #Write to file
     if filename is not None:
