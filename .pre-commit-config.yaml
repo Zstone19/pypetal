@@ -34,6 +34,6 @@ repos:
 
 
 -   repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit
-    rev: v0.6.6
+    rev: v0.8.0
     hooks:
       - id: clevercsv-standardize
