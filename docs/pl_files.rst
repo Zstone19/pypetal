@@ -29,6 +29,7 @@ In general, running all of the modules with three lines (named "cont", "line1", 
     ├── pyroa_lcs/
     ├── light_curves/
     ├── pyccf_weights_res.pdf
+    ├── pyroa_weights_res.pdf
     └── javelin_weights_res.pdf
 
 
