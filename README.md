@@ -12,7 +12,7 @@
 
 ### pyPetal
 
-pyPetal is available on PyPI and can be installed with pip: **(NOT IMPLEMENTED YET)**
+pyPetal is available on PyPI and can be installed with pip:
 ```
     pip install pypetal
 ```
