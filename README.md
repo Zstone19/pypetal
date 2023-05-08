@@ -6,6 +6,8 @@
 [![License](https://img.shields.io/github/license/Zstone19/pypetal)](https://img.shields.io/github/license/Zstone19/pypetal)
 [![codecov](https://codecov.io/gh/Zstone19/pypetal/branch/main/graph/badge.svg?token=00O40N9H05)](https://codecov.io/gh/Zstone19/pypetal)
 
+[![python-ver](https://img.shields.io/pypi/pyversions/pypetal)](https://img.shields.io/pypi/pyversions/pypetal)
+
 
 pyPETaL is a time-series data analysis pipeline for AGN reverberation mapping (RM) data. It combines multiple different popular softwares using for AGN RM analysis, including PyCCF, PyZDCF, JAVELIN, and PyROA. This pipeline also implements outlier rejection using Damped Random Walk Gaussian proces fitting, and detrending through the LinMix algorithm. pyPetal implements a weighting scheme (for all modules) in order to mitigate aliasing in peaks of time lag distributions between light curves.
 
