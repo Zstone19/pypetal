@@ -9,7 +9,7 @@ import scipy.stats as sst
 def mp_map(func, arg, threads):
 
     if threads > 1:
-        pool = mp.Pool(threads)
+        pool = mp.get_context('fork').Pool(threads)
         res = pool.map(func, arg)
 
         pool.close()

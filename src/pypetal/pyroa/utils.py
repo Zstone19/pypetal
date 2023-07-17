@@ -556,7 +556,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                       'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn}
 
             if verbose:
-                proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+                proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
 
                 proc.start()
                 while proc.is_alive():
@@ -565,7 +565,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             else:
                 with suppress_stdout_stderr():
-                    proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+                    proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
 
                     proc.start()
                     while proc.is_alive():
@@ -590,7 +590,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                   'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn}
 
         if verbose:
-            proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+            proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
 
             proc.start()
             while proc.is_alive():
@@ -599,7 +599,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
         else:
             with suppress_stdout_stderr():
-                proc = mp.Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+                proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
 
                 proc.start()
                 while proc.is_alive():

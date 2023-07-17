@@ -14,7 +14,7 @@ def mp_map(func, args, threads):
     n_inputs = len(args)
 
     if (threads > 1) & (n_inputs > 1):
-        pool = mp.Pool(threads)
+        pool = mp.get_context('fork').Pool(threads)
         res = pool.starmap(func, args)
 
         pool.close()
