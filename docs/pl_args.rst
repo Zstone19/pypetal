@@ -243,7 +243,7 @@ Module: pyROA (``run_pyroa``)
       - Type
       - Default
     * - ``nchain``
-      - The number of chains for Monte Carlo sampling.
+      - The total number of chains for Monte Carlo sampling.
       - :python:`int`
       - 20000
     * - ``nburn``

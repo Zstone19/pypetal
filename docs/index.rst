@@ -35,6 +35,7 @@ Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, PyROA, and J
    notebooks/load
    notebooks/from_file
    notebooks/from_bash
+   notebooks/bibliography
 
 
 .. toctree::

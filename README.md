@@ -40,6 +40,17 @@ PLIKE is an optional algorithm that is used in pyPetal. There is a script availa
 ```
 
 
+pyPetal offers the option to detrend the input light curves via the [LinMix](https://github.com/jmeyers314/linmix.git) algorithm. This package is not offered in the base version of pyPetal, but can be installed with pip:
+```
+    pip install "linmix @ git+https://github.com/jmeyers314/linmix.git"
+```
+
+Or with ``poetry``:
+```
+    poetry install --with extra
+
+```
+
 
 ### pyPetal and JAVELIN
 
@@ -54,6 +65,7 @@ External requirements (not installed by ``pip`` or ``setup.py``):
 
 pyPetal-jav is available on PyPI and can be installed with pip:
 ```
+    pip install --no-deps pypetal-jav
     pip install pypetal-jav
 ```
 
