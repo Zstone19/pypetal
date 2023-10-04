@@ -221,9 +221,11 @@ def run_pipeline(output_dir, arg2,
         if np.any( reject_data ):
             cont_fname = output_dir + 'processed_lcs/' + line_names[0] + '_data.dat'
 
+            line_fnames = []
             for i in range(len(line_fnames)):
-                line_fnames[i] = output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat'
+                line_fnames.append( output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat' )
 
+            line_fnames = np.array(line_fnames)
 
     else:
 
