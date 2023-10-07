@@ -118,7 +118,6 @@ def get_modules(main_dir):
 
     else:
         has_pyroa = np.zeros( len(line_names), dtype=bool )
-        print(line_dirs)
         for i,dir_i in enumerate(line_dirs):
             subdirs = glob.glob(dir_i + '*/')
 

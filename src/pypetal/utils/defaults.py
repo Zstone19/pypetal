@@ -33,7 +33,10 @@ def set_general(input_args, fnames):
 
         else:
             for i in range(len(lag_bounds)):
-                assert len(lag_bounds[i]) == 2
+                if isinstance(lag_bounds[i], list):
+                    assert ( len(lag_bounds[i]) == 2 ) | ( lag_bounds[i] is None ) | ( lag_bounds[i] == 'baseline' )
+                else:
+                    assert ( lag_bounds[i] is None ) | ( lag_bounds[i] == 'baseline' )
 
 
     if isinstance(lc_unit, str):

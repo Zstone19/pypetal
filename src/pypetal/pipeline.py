@@ -84,25 +84,19 @@ def run_pipeline(output_dir, arg2,
         raise Exception('Please provide a list of light curve filenames or the light curves themselves')
 
 
-    force_line_names = False
-    if line_names is None:
-        force_line_names = True
-
     if not isinstance(arg2[0], str):
         os.makedirs( output_dir + 'input_lcs/', exist_ok=True )
         fnames = []
 
-        if force_line_names:
-            line_names = line_names = np.zeros( len(line_fnames), dtype=str )
-
-            for i in range(len(arg2)):
-                line_names.append('Line {}'.format(i+1))
-
-            force_line_names = False
-
         for i in range( len(arg2) ):
-            write_data( arg2[i], output_dir + 'input_lcs/' + line_names[i] + '.dat' )
-            fnames.append( output_dir + 'input_lcs/' + line_names[i] + '.dat' )
+
+            if i == 0:
+                name = 'continuum'
+            else:
+                name = 'line{}'.format(i+1)
+
+            write_data( arg2[i], output_dir + 'input_lcs/' + name + '.dat' )
+            fnames.append( output_dir + 'input_lcs/' + name + '.dat' )
 
         fnames = np.array(fnames)
         kwargs['file_fmt'] = 'csv'
@@ -139,7 +133,7 @@ def run_pipeline(output_dir, arg2,
 
 
     #Name lines if unnamed
-    if force_line_names:
+    if line_names is None:
         line_names = np.zeros( len(line_fnames), dtype=str )
         for i in range(len(line_fnames)):
             line_names.append('Line {}'.format(i+1))
@@ -221,11 +215,9 @@ def run_pipeline(output_dir, arg2,
         if np.any( reject_data ):
             cont_fname = output_dir + 'processed_lcs/' + line_names[0] + '_data.dat'
 
-            line_fnames = []
             for i in range(len(line_fnames)):
-                line_fnames.append( output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat' )
+                line_fnames[i] = output_dir + 'processed_lcs/' + line_names[i+1] + '_data.dat'
 
-            line_fnames = np.array(line_fnames)
 
     else:
 
