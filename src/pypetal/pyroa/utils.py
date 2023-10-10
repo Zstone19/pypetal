@@ -223,8 +223,6 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
 
 
         std_vals = []
-        min_y = []
-        max_y = []
         for i in range(len(fnames)):
             _, y, yerr = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2], delimiter=delimiter )
 
@@ -236,19 +234,15 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 y -= np.mean(y)
 
             std_vals.append( np.std(y) )
-            min_y.append( np.min(y-yerr) )
-            max_y.append( np.max(y+yerr) )
 
 
         if div_mean:
-            a_prior = [0., 2.]
-            b_prior = [0., 2.]
             err_prior = [0., 10.]
         else:
-            a_prior = [0., np.max(std_vals)]
-            b_prior = [np.min(min_y), np.max(max_y)]
             err_prior = [0., 10*np.max(std_vals)]
 
+        a_prior = [.5, 2.]
+        b_prior = [.5, 2.]
         tau_prior = laglim
         delta_prior = [5., 50.]
 
@@ -278,14 +272,6 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 if subtract_mean:
                     y -= np.mean(y)
 
-                #a
-                prior_arr[i,0,0] = 0.
-                prior_arr[i,0,1] = 2.
-
-                #b
-                prior_arr[i,1,0] = 0.
-                prior_arr[i,1,1] = 2.
-
                 #err
                 prior_arr[i,4,0] = 0.
                 prior_arr[i,4,1] = 10.
@@ -295,18 +281,19 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 if subtract_mean:
                     y -= np.mean(y)
 
-                #a - RMS of the LC
-                prior_arr[i,0,0] = 0.
-                prior_arr[i,0,1] = 10.*np.max( [np.std(y), np.std(y_cont)] )
-
-                #b - mean of the LC
-                prior_arr[i,1,0] = np.min( [np.min(y-yerr), np.min(y_cont-yerr_cont)] )
-                prior_arr[i,1,1] = np.max( [np.max(y+yerr), np.max(y_cont+yerr_cont)] )
-
                 #err - extra error
                 prior_arr[i,4,0] = 0.
                 prior_arr[i,4,1] = 10.*np.max([ np.std(y), np.std(y_cont) ])
 
+
+
+            #a - RMS of the LC as a frac of MAD of the LC
+            prior_arr[i,0,0] = .5
+            prior_arr[i,0,1] = 2.
+
+            #b - Mean of the LC as a frac of the mean of the LC
+            prior_arr[i,1,0] = .5
+            prior_arr[i,1,1] = 2.
 
             #tau
             prior_arr[i,2,0] = laglim_in[i][0]
