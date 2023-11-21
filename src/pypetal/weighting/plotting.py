@@ -182,10 +182,12 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
         Nrow = 1
         Ncol = nlc
 
-    gs = gridspec.GridSpec(Nrow, Ncol)
+
+    fig = plt.figure(figsize=( 6*Ncol, 5*Nrow ))
+
+    gs = gridspec.GridSpec(Nrow, Ncol, figure=fig)
     ax_tot = np.zeros( (Nrow, Ncol), dtype=object )
 
-    fig, ax = plt.subplots(Nrow, Ncol, figsize=( 6*Ncol, 5*Nrow ))
     for i in range(Nrow):
         for j in range(Ncol):
             sub_gs = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=gs[i, j],
