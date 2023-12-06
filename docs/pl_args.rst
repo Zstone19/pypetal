@@ -282,7 +282,10 @@ Module: pyROA (``run_pyroa``)
       - The name of the object to use for PyROA analysis. This will apply to the output file names and figures. If :python:`None`, this will be set to "pyroa".
       - :python:`str`, :python:`None`
       - :python:`None`
-
+    * ``prior_func``
+      - A function used to get the priors for PyROA. Must have the same arguments as ``pypetal.pyroa.utils.get_priors`` except for the ``delimiter`` argument. If :python:`None`, will use the default priors.
+      - :python:`function`, :python:`None`
+      - :python:`None`
 
 
 Module: JAVELIN (``pypetal_jav.run_pipeline``)
