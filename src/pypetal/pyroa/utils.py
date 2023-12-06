@@ -402,7 +402,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
               init_tau=None, init_delta=10, sig_level=100,
               together=True, subtract_mean=True, div_mean=False,
               add_var=False, delay_dist=False, psi_types='Gaussian',
-              objname=None, verbose=True):
+              objname=None, prior_func=None, verbose=True):
 
 
     """Run PyROA for a number of input light curves.
@@ -462,9 +462,14 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
     objname : str, optional
         The name of the object, will be used for plot and for the saved PyROA light curve data. If ``None``, will be set to "pyroa".
 
+    prior_func : function, optional
+        A function to use to get the priors for PyROA. Must have the same arguments as ``pypetal.pyroa.utils.get_priors`` except for the ``delimiter`` argument. 
+        If ``None``, will use the default priors. Default is ``None``.
+
     line_names : list of str
         A list of directories to place the output PyROA data for each of the lines (excluding the continuum). Must be set if ``together=False``, and will only be used in such a case.
         Default is ``None``.
+
 
 
     Returns
@@ -516,7 +521,11 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
     os.makedirs(lc_dir, exist_ok=True)
 
-    prior_arr = get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, delimiter=',')
+    if prior_func is None:
+        prior_arr = get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, delimiter=',')
+    else:
+        prior_arr = prior_func(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together)
+
     _ = save_lines(fnames, line_names, lc_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean, delimiter=',')
 
     cwd = os.getcwd()

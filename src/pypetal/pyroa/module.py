@@ -23,7 +23,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
 
     nchain, nburn, init_tau, subtract_mean, div_mean, \
             add_var, delay_dist, psi_types, together, \
-                objname = defaults.set_pyroa( kwargs, len(line_names) )
+                objname, prior_func = defaults.set_pyroa( kwargs, len(line_names) )
 
     if verbose:
 
@@ -61,7 +61,7 @@ objname: {}
                            together=together, subtract_mean=subtract_mean,
                            div_mean=div_mean, add_var=add_var,
                            delay_dist=delay_dist, psi_types=psi_types,
-                           objname=objname, verbose=verbose)
+                           objname=objname, prior_func=prior_func, verbose=verbose)
 
     lc_fnames = [ lc_dir + objname + '_' + x + '.dat' for x in line_names ]
 

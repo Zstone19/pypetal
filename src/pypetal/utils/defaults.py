@@ -232,7 +232,8 @@ def set_pyroa(input_args, nlc):
         'delay_dist': True,
         'psi_types': 'Gaussian',
         'together': True,
-        'objname': None
+        'objname': None,
+        'prior_func': None
     }
 
     params = { **default_kwargs, **input_args }
