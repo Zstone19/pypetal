@@ -10,7 +10,7 @@ python:
     - requirements: requirements.txt
     - method: pip
       path: .
-  system_packages: true
+#system_packages: true
 
 conda:
   environment: docs/environment.yml
