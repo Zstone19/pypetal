@@ -129,7 +129,7 @@ def run_pipeline(output_dir, arg2,
     _, _, _, _, _, _, reject_data, _ = defaults.set_drw_rej(drw_rej_params, fnames)
 
     #Get "together_pyroa"
-    _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa(pyroa_params, len(fnames))
+    _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
 
 
     #Name lines if unnamed
