@@ -248,6 +248,7 @@ def set_pyroa(input_args, nlc):
     psi_types = params['psi_types']
     together = params['together']
     objname = params['objname']
+    prior_func = params['prior_func']
 
     if init_tau is None:
         init_tau = [10.] * (nlc-1)
@@ -266,7 +267,7 @@ def set_pyroa(input_args, nlc):
 
 
     return nchain, nburn, init_tau, subtract_mean, div_mean, \
-            add_var, delay_dist, psi_types, together, objname
+            add_var, delay_dist, psi_types, together, objname, prior_func
 
 
 
