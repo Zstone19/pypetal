@@ -239,7 +239,7 @@ Each PyROA directory (whether ``together`` is :python:`True` or :python:`False`)
 If :python:`together=True`, the columns of the ``samples`` files will be:
 
 .. list-table::
-    :widths: 30 30 10 30
+    :widths: 33 33 33
     :header-rows: 1
 
     * - ``add_var``
