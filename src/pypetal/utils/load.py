@@ -220,12 +220,14 @@ def get_cont_name(main_dir):
     if main_dir + 'processed_lcs/' in dirs_tot:
         dirs_tot.remove( main_dir + 'processed_lcs/')
 
+    pyroa_together = False
     if run_pyroa:
         pyroa_together = get_pyroa_together(main_dir)
         dirs_tot.remove( main_dir + 'pyroa_lcs/')
         if pyroa_together:
             dirs_tot.remove( main_dir + 'pyroa/')
 
+    javelin_together = False
     if run_javelin:
         javelin_together = get_javelin_together(main_dir)
         if javelin_together:
