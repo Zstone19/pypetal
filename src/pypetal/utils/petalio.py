@@ -6,6 +6,90 @@ import numpy as np
 from astropy.io import fits
 from astropy.table import Table
 
+from colorama import init, Fore
+init(autoreset=True)
+
+##############################################
+# PRINTING
+
+mcolor = Fore.BLUE
+acolor = Fore.GREEN
+wcolor = Fore.YELLOW
+ecolor = Fore.RED
+
+def print_hashstr():
+    hashstr = "".join( ['#']*80 )
+    print( mcolor + hashstr )
+    return
+
+def print_linestr(n):
+    linestr = "".join( ['\u25AC']*n )
+    print( mcolor + linestr )
+    return    
+
+
+def print_header(header):
+    nhead = len(header)
+    midpt = int(80/2)
+
+    hstart = midpt - int(nhead/2) - 2
+    hend = midpt + (nhead-int(nhead/2)) + 2
+
+    nstart = hstart
+    nend = 80 - hend
+    assert nstart + 2 + nhead + 2 + nend == 80
+
+    hashstr1 = "".join( ['#']*nstart )
+    hashstr2 = "".join( ['#']*nend )
+
+    print('')
+    print_hashstr()
+    print(mcolor + hashstr1, end='')
+    print('  ', end='')
+    print( acolor + header, end='')
+    print('  ', end='')
+    print(mcolor + hashstr2)
+    print_hashstr()
+    print('')
+    return
+
+
+def print_subheader(subheader, n, d):
+    if n < len(subheader) + 5:
+        n = len(subheader) + 5
+    
+    print_linestr(n)
+    print(acolor + subheader)
+    print_linestr(n)
+    print_subheader_dict(d)
+    print_linestr(n)
+    print('')
+    return
+
+
+def print_subheader_dict(d):
+    n = 15 + 5
+    
+    keys = list(d.keys())
+    vals = list(d.values())
+    for i in range(len(keys)):
+        print(keys[i] + ':', end='')
+        print( ''.join([' ']*(n-len(keys[i])-1)), end=''  )
+        print('{}'.format(vals[i]))
+        
+    return
+
+def print_warning(warning):
+    print(wcolor + '*** ', end='')
+    print(wcolor + warning)
+    return
+
+def print_error(error):
+    print(ecolor + '*** ', end='')
+    print(ecolor + error)
+    return
+
+##############################################
 
 def make_directories(output_dir, fnames, line_names,
                      run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa,

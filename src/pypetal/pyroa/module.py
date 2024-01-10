@@ -4,6 +4,7 @@ from pypetal.pyroa.plotting import (plot_fits, plot_histograms,
                                     pyroa_corner_plot, pyroa_trace_plot)
 from pypetal.pyroa.utils import run_pyroa
 from pypetal.utils import defaults
+from pypetal.utils.petalio import print_subheader
 
 
 def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
@@ -27,24 +28,20 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
 
     if verbose:
 
-        txt_str = """
-Running PyROA
-----------------
-nburn: {}
-nchain: {}
-init_tau: {}
-subtract_mean: {}
-div_mean: {}
-add_var: {}
-delay_dist: {}
-psi_types: {}
-together: {}
-objname: {}
-----------------
-        """.format(nburn, nchain, init_tau, subtract_mean, div_mean, add_var,
-                     delay_dist, psi_types, together, objname)
+        print_dict = {
+            'nchain': nchain,
+            'nburn': nburn,
+            'init_tau': init_tau,
+            'subtract_mean': subtract_mean,
+            'div_mean': div_mean,
+            'add_var': add_var,
+            'delay_dist': delay_dist,
+            'psi_types': psi_types,
+            'together': together,
+            'objname': objname
+        }
+        print_subheader('Running PyROA', 35, print_dict)
 
-        print(txt_str)
 
     tot_fnames = np.hstack( [ [cont_fname], line_fnames ] )
 

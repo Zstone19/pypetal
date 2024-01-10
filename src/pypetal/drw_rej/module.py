@@ -7,7 +7,7 @@ import numpy as np
 
 from pypetal.drw_rej.utils import drw_flag
 from pypetal.utils import defaults
-from pypetal.utils.petalio import write_data
+from pypetal.utils.petalio import write_data, print_subheader
 
 
 #For multiprocessing
@@ -75,22 +75,18 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
         else:
             clip_str = clip
 
-        txt_str = """
-Performing DRW rejection
-------------------------
-jitter: {}
-nsig: {}
-nwalker: {}
-nburn: {}
-nchain: {}
-clip: {}
-reject_data: {}
-use_for_javelin: {}
-------------------------
-        """.format( jitter, nsig, nwalker, nburn,
-                    nchain, clip_str, reject_data, use_for_javelin)
+        print_dict = {
+            'jitter': jitter,
+            'nsig': nsig,
+            'nwalker': nwalker,
+            'nburn': nburn,
+            'nchain': nchain,
+            'clip': clip_str,
+            'reject_data': reject_data,
+            'use_for_javelin': use_for_javelin
+        }
 
-        print(txt_str)
+        print_subheader('Performing DRW Rejection', 35, print_dict)
 
 
     sigmas = []

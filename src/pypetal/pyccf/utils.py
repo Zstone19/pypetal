@@ -3,6 +3,7 @@ from functools import partial
 
 import numpy as np
 import scipy.stats as sst
+from pypetal.utils.petalio import print_warning
 
 
 #For multiprocessing
@@ -612,7 +613,7 @@ def get_pyccf_lags(fname1, fname2,
 
 
     if np.any( np.abs(lag_bounds) > baseline ):
-        print('Lag bounds are larger than baseline')
+        print_warning('WARNING: Lag bounds are larger than baseline')
 
 
     #Run algorithm

@@ -10,6 +10,7 @@ from astropy.table import Table
 import pypetal.pyzdcf.utils as utils
 from pypetal.pyzdcf.plotting import plot_pyzdcf_results
 from pypetal.utils import defaults
+from pypetal.utils.petalio import print_subheader, print_error
 
 
 #For multiprocessing
@@ -58,37 +59,31 @@ def pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir,
 
     #-------------------------------------------
     if (run_plike) & (plike_dir is None):
-        print('Error: plike_dir must be specified if run_plike=True')
-        print('Skipping PLIKE')
+        print_error('ERROR: plike_dir must be specified if run_plike=True')
+        print_error('Skipping PLIKE')
         run_plike = False
 
     input_dir = os.path.dirname( os.path.realpath(cont_fname) )
 
     for i in range(len(line_fnames)):
         if input_dir != os.path.dirname( os.path.realpath(line_fnames[i]) ):
-            print('ERROR: All light curve files must be in the same directory')
+            print_error('ERROR: All light curve files must be in the same directory')
             return {}
 
 
     if verbose:
 
-        txt_str = """
-Running pyZDCF
-----------------------
-nsim: {}
-minpts: {}
-uniform_sampling: {}
-omit_zero_lags: {}
-sparse: {}
-prefix: {}
-run_plike: {}
-plike_dir: {}
-----------------------
-        """.format( nsim, minpts, uniform_sampling, omit_zero_lags,
-                    sparse, prefix, run_plike, plike_dir)
-
-        print(txt_str)
-
+        print_dict = {
+            'nsim': nsim,
+            'minpts': minpts,
+            'uniform_sampling': uniform_sampling,
+            'omit_zero_lags': omit_zero_lags,
+            'sparse': sparse,
+            'prefix': prefix,
+            'run_plike': run_plike,
+            'plike_dir': plike_dir
+        }
+        print_subheader('Running pyZDCF', 35, print_dict)
 
 
     input_dir += r'/'

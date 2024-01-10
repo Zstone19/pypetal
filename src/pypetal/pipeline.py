@@ -10,7 +10,7 @@ from pypetal.pyccf.module import pyccf_tot
 from pypetal.pyroa.module import pyroa_tot
 from pypetal.pyzdcf.module import pyzdcf_tot
 from pypetal.utils import defaults
-from pypetal.utils.petalio import make_directories, write_data
+from pypetal.utils.petalio import make_directories, write_data, print_header, print_error
 from pypetal.weighting.module import run_weighting_tot
 
 
@@ -81,7 +81,8 @@ def run_pipeline(output_dir, arg2,
     output_dir = os.path.abspath(output_dir) + r'/'
 
     if arg2 is None:
-        raise Exception('Please provide a list of light curve filenames or the light curves themselves')
+        print_error('ERROR: Please provide a list of light curve filenames or the light curves themselves')
+        raise Exception
 
 
     if not isinstance(arg2[0], str):
@@ -105,16 +106,6 @@ def run_pipeline(output_dir, arg2,
 
 
 
-
-    if len(fnames) < 2:
-        print('ERROR: Requires at least two light curves to run pipeline.')
-        return {}
-
-    if len(line_names) != len(fnames):
-        print('ERROR: Must have the same number of line names as light curves.')
-        return {}
-
-
     cont_fname = fnames[0]
     line_fnames = fnames[1:]
 
@@ -124,6 +115,18 @@ def run_pipeline(output_dir, arg2,
 
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
+    if general_kwargs['verbose']:
+        print_header('RUNNING PYPETAL')
+
+        
+    if len(fnames) < 2:
+        print_error('ERROR: Requires at least two light curves to run pipeline.')
+        return {}
+
+    if len(line_names) != len(fnames):
+        print_error('ERROR: Must have the same number of line names as light curves.')
+        return {}
+
 
     #Get "reject_data"
     _, _, _, _, _, _, reject_data, _ = defaults.set_drw_rej(drw_rej_params, fnames)
@@ -286,6 +289,9 @@ def run_pipeline(output_dir, arg2,
     if not isinstance(arg2[0], str):
         import shutil
         shutil.rmtree( output_dir + 'input_lcs/' )
+        
+    if general_kwargs['verbose']:
+        print_header('RUN FINISHED')
 
 
     return tot_res
@@ -353,7 +359,8 @@ def run_weighting(output_dir, line_names,
 
 
     if (not run_pyccf) & (not run_javelin) & (not run_pyroa):
-        raise Exception('ERROR: Either JAVELIN, pyCCF, or PyROA must be run before weighting can be done.')
+        print_error('ERROR: Either JAVELIN, pyCCF, or PyROA must be run before weighting can be done.')
+        raise Exception
 
     output_dir = os.path.abspath(output_dir) + r'/'
 
@@ -364,6 +371,9 @@ def run_weighting(output_dir, line_names,
 
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
+    if general_kwargs['verbose']:
+        print_header('RUNNING PYPETAL WEIGHTING')
+    
 
     #Get "interp"
     interp, _, _, _, _, _ = defaults.set_pyccf(pyccf_params)
@@ -418,5 +428,9 @@ def run_weighting(output_dir, line_names,
                                       line_names, interp, together_jav,
                                       pyroa_params=pyroa_params, general_kwargs=general_kwargs,
                                       weighting_params=weighting_params)
+
+    if general_kwargs['verbose']:
+        print_header('RUN FINISHED')
+
 
     return res

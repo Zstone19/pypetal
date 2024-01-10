@@ -5,6 +5,7 @@ import numpy as np
 from astropy.table import Table, vstack
 
 from pypetal.pyroa.utils import MyFit
+from pypetal.utils.petalio import print_subheader, print_warning, print_error
 
 
 def get_line_names(main_dir):
@@ -88,7 +89,7 @@ def get_modules(main_dir):
 
     n_pyccf = len( np.argwhere(has_pyccf).T[0] )
     if ( n_pyccf != n_lnc ) & ( n_pyccf > 0 ):
-        print('pyCCF was not completed for all lines, so will assume run_pyccf=False')
+        print_warning('WARNING: pyCCF was not completed for all lines, so will assume run_pyccf=False')
         run_pyccf = False
     else:
         run_pyccf = np.any( has_pyccf )
@@ -105,7 +106,7 @@ def get_modules(main_dir):
 
     n_pyzdcf = len( np.argwhere(has_pyzdcf).T[0] )
     if ( n_pyzdcf != n_lnc ) & ( n_pyzdcf > 0 ):
-        print('pyZDCF was not completed for all lines, so will assume run_pyzdcf=False')
+        print_warning('WARNING: pyZDCF was not completed for all lines, so will assume run_pyzdcf=False')
         run_pyzdcf = False
     else:
         run_pyzdcf = np.any( has_pyzdcf )
@@ -129,7 +130,7 @@ def get_modules(main_dir):
 
         n_pyroa = len( np.argwhere(has_pyroa).T[0] )
         if ( n_pyroa != n_lnc ) & ( n_pyroa > 0 ):
-            print('PyROA was not completed for all lines, so will assume run_pyroa=False')
+            print_warning('WARNING: PyROA was not completed for all lines, so will assume run_pyroa=False')
         else:
             run_pyroa = np.any( has_pyroa )
 
@@ -152,7 +153,7 @@ def get_modules(main_dir):
 
         n_javelin = len( np.argwhere(has_javelin).T[0] )
         if ( n_javelin != n_lnc ) & ( n_javelin > 0 ):
-            print('JAVELIN was not completed for all lines, so will assume run_javelin=False')
+            print_warning('WARNING: JAVELIN was not completed for all lines, so will assume run_javelin=False')
         else:
             run_javelin = np.any( has_javelin )
 
@@ -169,7 +170,7 @@ def get_modules(main_dir):
 
     n_weighting = len( np.argwhere(has_weighting).T[0] )
     if ( n_weighting != n_lnc ) & ( n_weighting > 0 ):
-        print('Weighting was not completed for all lines, so will assume run_weighting=False')
+        print_warning('WARNING: Weighting was not completed for all lines, so will assume run_weighting=False')
         run_weighting = False
     else:
         run_weighting = np.any( has_weighting )
@@ -854,20 +855,18 @@ def load(main_dir, modules=None, verbose=False):
         run_javelin = ('javelin' in modules)
         run_weighting = ('weighting' in modules)
         
-    txt = """
-Prior pyPetal run
----------------------
-DRW Rejection: {}
-pyCCF: {}
-pyZDCF: {}
-PyROA: {}
-JAVELIN: {}
-Weighting: {}
----------------------
-""".format(run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_weighting)
-
+        
     if verbose:
-        print(txt)
+        print_dict = {
+            'DRW Rejection': run_drw_rej,
+            'pyCCF': run_pyccf,
+            'pyZDCF': run_pyzdcf,
+            'PyROA': run_pyroa,
+            'JAVELIN': run_javelin,
+            'Weighting': run_weighting
+        }
+        print_subheader('Prior pyPetal Run', print_dict)
+
 
 
     drw_rej_res = {}

@@ -3,6 +3,7 @@ import subprocess
 
 import numpy as np
 from pyzdcf import pyzdcf
+from pypetal.utils.petalio import print_error
 
 
 def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
@@ -52,7 +53,8 @@ def run_plike(dcf_fname, lag_bounds, plike_dir, verbose=False):
 
     #Make sure there are two lag bounds
     if len(lag_bounds) != 2:
-        print('Lag bounds: ', lag_bounds)
+        print_error('ERROR: Must provide two lag bounds.')
+        print_error('Lag bounds: ', lag_bounds)
         raise ValueError('Must provide two lag bounds.')
 
 

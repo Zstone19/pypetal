@@ -6,7 +6,7 @@ import numpy as np
 from pypetal.pyccf.plotting import plot_pyccf_results
 from pypetal.pyccf.utils import get_pyccf_lags
 from pypetal.utils import defaults
-from pypetal.utils.petalio import write_data
+from pypetal.utils.petalio import write_data, print_subheader
 
 
 #For multiprocessing
@@ -56,22 +56,18 @@ def pyccf_tot(cont_fname, line_fnames, line_names, output_dir,
             lag_bounds_str = 'array'
         else:
             lag_bounds_str = lag_bounds
-
-        txt_str = """
-Running pyCCF
------------------
-lag_bounds: {}
-interp: {}
-nsim: {}
-mcmode: {}
-sigmode: {}
-thres: {}
-nbin: {}
------------------
-        """.format( lag_bounds_str, interp, nsim,
-                    mcmode, sigmode, thres, nbin)
-
-        print(txt_str)
+            
+        print_dict = {
+            'lag_bounds': lag_bounds_str,
+            'interp': interp,
+            'nsim': nsim,
+            'mcmode': mcmode,
+            'sigmode': sigmode,
+            'thres': thres,
+            'nbin': nbin
+        }
+        
+        print_subheader('Running pyCCF', 35, print_dict)
 
 
     res_tot = []

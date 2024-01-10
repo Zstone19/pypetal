@@ -4,7 +4,7 @@ import numpy as np
 from linmix import LinMix
 
 from pypetal.utils.defaults import set_detrend
-from pypetal.utils.petalio import write_data
+from pypetal.utils.petalio import write_data, print_subheader
 
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True
@@ -220,20 +220,15 @@ def detrend_tot(output_dir, cont_fname, line_fnames, line_names, general_kwargs,
     else:
         parallelize = False
 
-
-    txt = """
-Running detrending
--------------------
-parallelize: {}
-K: {}
-nchains: {}
-miniter: {}
-maxiter: {}
--------------------
-    """.format(parallelize, K, nchain, miniter, maxiter)
-
     if verbose:
-        print(txt)
+        print_dict = {
+            'parallelize': parallelize,
+            'K': K,
+            'nchain': nchain,
+            'miniter': miniter,
+            'maxiter': maxiter
+        }
+        print_subheader('Running detrending', 35, print_dict)
 
 
     m_vals = []
