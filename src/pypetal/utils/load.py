@@ -818,7 +818,7 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
 #                             All Modules
 #######################################################################
 
-def load(main_dir, verbose=False):
+def load(main_dir, modules=None, verbose=False):
 
     """Load the results from a previous run of pyPetal.
 
@@ -844,8 +844,16 @@ def load(main_dir, verbose=False):
 
     main_dir = os.path.abspath(main_dir) + r'/'
 
-    run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_weighting = get_modules(main_dir)
-
+    if modules is None:
+        run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_weighting = get_modules(main_dir)
+    else:
+        run_drw_rej = ('drw_rej' in modules)
+        run_pyccf = ('pyccf' in modules)
+        run_pyzdcf = ('pyzdcf' in modules)
+        run_pyroa = ('pyroa' in modules)
+        run_javelin = ('javelin' in modules)
+        run_weighting = ('weighting' in modules)
+        
     txt = """
 Prior pyPetal run
 ---------------------
