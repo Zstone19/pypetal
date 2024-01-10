@@ -9,6 +9,9 @@ from pypetal.pyroa.utils import MyFit
 
 def get_line_names(main_dir):
     dirs = glob.glob(main_dir + '*/')
+    
+    if main_dir + 'temp/' in dirs:
+        dirs.remove(main_dir + 'temp/')
 
     if main_dir + 'light_curves/' in dirs:
         dirs.remove(main_dir + 'light_curves/')
@@ -179,7 +182,6 @@ def get_modules(main_dir):
 
 def get_javelin_together(main_dir):
 
-
     dirs_tot = glob.glob( main_dir + '*/')
 
     dirs_tot.remove( main_dir + 'light_curves/')
@@ -219,6 +221,10 @@ def get_cont_name(main_dir):
     dirs_tot.remove( main_dir + 'light_curves/')
     if main_dir + 'processed_lcs/' in dirs_tot:
         dirs_tot.remove( main_dir + 'processed_lcs/')
+        
+    if main_dir + 'temp/' in dirs_tot:
+        dirs_tot.remove( main_dir + 'temp/')
+
 
     pyroa_together = False
     if run_pyroa:
