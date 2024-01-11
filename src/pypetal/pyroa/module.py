@@ -78,7 +78,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
             fname = output_dir + 'pyroa/corner_plot.pdf'
         else:
             split = True
-            fname = [ output_dir + 'pyroa/corner_plot_' + x + '.pdf' for x in line_names[1:] ]
+            fname = [ output_dir + 'pyroa/corner_plot_' + x + '.pdf' for x in line_names ]
 
         pyroa_corner_plot( res.samples, line_names, nburn=nburn,
                                  add_var=add_var, delay_dist=delay_dist,
