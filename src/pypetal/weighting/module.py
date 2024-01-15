@@ -93,7 +93,7 @@ def run_weighting_tot(output_dir,
         warnings.warn('Assuming that the filenames are in the same order as the line names. Line names will be acquired in chronological order from the given directory, except the first will be the continuum', RuntimeWarning)
         line_names = get_ordered_line_names(output_dir)
 
-    _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
+    _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
     #---------------------------
     #Get data fnames
