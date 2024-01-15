@@ -695,7 +695,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
     #PyROA
 
     if run_pyroa:
-        _, nburn, _, _, _, add_var, delay_dist, _, _, _ = defaults.set_pyroa(pyroa_params, 2)
+        _, nburn, _, _, _, add_var, delay_dist, _, _, _, _ = defaults.set_pyroa(pyroa_params, 2)
         if isinstance(add_var, list):
             add_var = add_var[pyroa_obj_ind-1]
         if isinstance(delay_dist, list):
