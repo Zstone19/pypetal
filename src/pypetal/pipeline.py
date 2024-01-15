@@ -385,7 +385,7 @@ def run_weighting(output_dir, line_names,
         together_jav = False
 
     #Get "together" for pyroa
-    _, _, _, _, _, _, _, _, together_pyroa, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
+    _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
 
     javelin_chain_fnames = None
