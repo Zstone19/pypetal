@@ -223,6 +223,10 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
 
 
         std_vals = []
+        miny = []
+        maxy = []
+        med_vals = []
+        mad_vals = []
         for i in range(len(fnames)):
             _, y, yerr = np.loadtxt( fnames[i], unpack=True, usecols=[0,1,2], delimiter=delimiter )
 
@@ -234,15 +238,34 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 y -= np.mean(y)
 
             std_vals.append( np.std(y) )
+            miny.append( np.min(y-yerr) )
+            maxy.append( np.max(y+yerr) )
+            med_vals.append( np.median(y) )
+            mad_vals.append( np.mean(np.abs(y-np.mean(y)))  )
+            
 
 
+        # A - MAD
+        # B - median
         if div_mean:
+            a_prior = [0., 2.]
+            b_prior = [0., 2.]            
             err_prior = [0., 10.]
         else:
+            a_prior = [0., np.max(std_vals)]
+            b_prior = [np.min(miny), np.max(maxy)]
             err_prior = [0., 10*np.max(std_vals)]
 
-        a_prior = [.5, 2.]
-        b_prior = [.5, 2.]
+
+        #Relative to LC MAD/median
+        a_prior[0] = np.min(a_prior[0]/np.array(mad_vals))
+        a_prior[1] = np.max(a_prior[1]/np.array(mad_vals))
+        b_prior[0] = np.min(b_prior[0]/np.array(med_vals))
+        b_prior[1] = np.max(b_prior[1]/np.array(med_vals))
+            
+        # Default priors from PyROA
+        # a_prior = [.5, 2.]
+        # b_prior = [.5, 2.]
         tau_prior = laglim
         delta_prior = [5., 50.]
 
@@ -260,6 +283,11 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
 
         if subtract_mean:
             y_cont -= np.mean(y_cont)
+            
+        
+        mad_cont = np.mean(np.abs(y_cont-np.mean(y_cont)))
+        med_cont = np.median(y_cont)
+
 
 
         for i in range(len(fnames)-1):
@@ -272,6 +300,15 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 if subtract_mean:
                     y -= np.mean(y)
 
+
+                #A - MAD
+                prior_arr[i,0,0] = 0.
+                prior_arr[i,0,1] = 2.
+                
+                #B - median
+                prior_arr[i,1,0] = 0.
+                prior_arr[i,1,1] = 2.
+
                 #err
                 prior_arr[i,4,0] = 0.
                 prior_arr[i,4,1] = 10.
@@ -281,19 +318,31 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 if subtract_mean:
                     y -= np.mean(y)
 
+                #A - MAD
+                prior_arr[i,0,0] = 0.
+                prior_arr[i,0,1] = 10.*np.max( [np.std(y), np.std(y_cont)] )
+                
+                #B - median
+                prior_arr[i,1,0] = np.min( [np.min(y-yerr), np.min(y_cont-yerr_cont)] )
+                prior_arr[i,1,1] = np.max( [np.max(y+yerr), np.max(y_cont+yerr_cont)] )
+
                 #err - extra error
                 prior_arr[i,4,0] = 0.
                 prior_arr[i,4,1] = 10.*np.max([ np.std(y), np.std(y_cont) ])
 
+    
+            mad_line = np.mean(np.abs(y-np.mean(y)))
+            med_line = np.median(y)
+            
+            
+            #Relative to LC mean/RMS
+            #A
+            prior_arr[i,0,0] = np.min([ prior_arr[i,0,0]/mad_line, prior_arr[i,0,0]/mad_cont ])
+            prior_arr[i,0,1] = np.max([ prior_arr[i,0,1]/mad_line, prior_arr[i,0,1]/mad_cont ])
+            #B
+            prior_arr[i,1,0] = np.min([ prior_arr[i,1,0]/med_line, prior_arr[i,1,0]/med_cont ])
+            prior_arr[i,1,1] = np.max([ prior_arr[i,1,1]/med_line, prior_arr[i,1,1]/med_cont ])
 
-
-            #a - RMS of the LC as a frac of MAD of the LC
-            prior_arr[i,0,0] = .5
-            prior_arr[i,0,1] = 2.
-
-            #b - Mean of the LC as a frac of the mean of the LC
-            prior_arr[i,1,0] = .5
-            prior_arr[i,1,1] = 2.
 
             #tau
             prior_arr[i,2,0] = laglim_in[i][0]
