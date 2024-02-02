@@ -4,14 +4,28 @@ import os
 import numpy as np
 from astropy.table import Table
 
-import pypetal.utils.detrending as dtr
+from pypetal.utils.petalio import make_directories, write_data, print_header, print_error, print_warning
+
+try:
+    import pypetal.utils.detrending as dtr
+    detrend_exist = True
+except ModuleNotFoundError:
+    print_warning('WARNING: Could not successfully import the detrending module. Assuming run_detrend=False.')
+    detrend_exist = False
+
+try:
+    from pypetal.mica2.module import mica2_tot
+    mica2_exist = True
+except ModuleNotFoundError:
+    print_warning('WARNING: Could not successfully import the MICA2 module. Assuming run_mica2=False.')
+    mica2_exist = False
+
+
 from pypetal.drw_rej.module import drw_rej_tot
-from pypetal.mica2.module import mica2_tot
 from pypetal.pyccf.module import pyccf_tot
 from pypetal.pyroa.module import pyroa_tot
 from pypetal.pyzdcf.module import pyzdcf_tot
 from pypetal.utils import defaults
-from pypetal.utils.petalio import make_directories, write_data, print_header, print_error
 from pypetal.weighting.module import run_weighting_tot
 
 
@@ -84,6 +98,11 @@ def run_pipeline(output_dir, arg2,
         A dictionary containing the output of the pipeline modules.
 
     """
+    
+    if not detrend_exist:
+        run_detrend = False
+    if not mica2_exist:
+        run_mica2 = False
 
     output_dir = os.path.abspath(output_dir) + r'/'
 
