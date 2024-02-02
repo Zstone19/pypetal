@@ -280,7 +280,7 @@ def set_mica2(input_args):
         'flag_trend': 0,
         'flag_lag_posivity': False,
         'flag_negative_resp': False,
-        'number_components': [1,1],
+        'number_component': [1,1],
         'width_limit': None,
         'flag_con_sys_err': False,
         'flag_line_sys_err': False,
@@ -306,7 +306,7 @@ def set_mica2(input_args):
     flag_trend = params['flag_trend']
     flag_lag_posivity = params['flag_lag_posivity']
     flag_negative_resp = params['flag_negative_resp']
-    number_components = params['number_components']
+    number_component = params['number_component']
     width_limit = params['width_limit']
     flag_con_sys_err = params['flag_con_sys_err']
     flag_line_sys_err = params['flag_line_sys_err']
@@ -323,7 +323,7 @@ def set_mica2(input_args):
     together = params['together']
     
     return type_tf, max_num_saves, flag_uniform_var_params, flag_uniform_tranfuns, \
-        flag_trend, flag_lag_posivity, flag_negative_resp, number_components, \
+        flag_trend, flag_lag_posivity, flag_negative_resp, number_component, \
         width_limit, flag_con_sys_err, flag_line_sys_err, type_lag_prior, lag_prior, \
         num_particles, thread_steps_factor, new_level_interval_factor, save_interval_factor, \
         lam, beta, ptol, max_num_levels, together
