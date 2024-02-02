@@ -315,7 +315,14 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
         errlo = tran_best - tran1
         errhi = tran2 - tran_best
-        np.savetxt(outdir + "{}_transfunc.dat".format(line_names[1]), np.array([tau, tran_best, errlo, errhi]).T, delimiter=',',
+        
+        if len(line_names) > 2:
+            tf_fname = outdir + 'transfunc.dat'
+        else:
+            tf_fname = outdir + "{}_transfunc.dat".format(line_names[1])
+
+
+        np.savetxt(tf_fname, np.array([tau, tran_best, errlo, errhi]).T, delimiter=',',
                    header='tau,tf,errlo,errhi')
 
     return
