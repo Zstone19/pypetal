@@ -204,7 +204,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
         # Get reconstructed continuum
         sall_con0 = sall[indx_con_rec[m]:(indx_con_rec[m]+ns_rec[0]), :] 
         np.savetxt(outdir + 'cont_recon.dat', sall_con0, delimiter=',',
-                   header='time,flux,errlo,errhi')
+                   header='time,flux,err')
         
         # Get trend
         if flagtrend > 0:
@@ -246,13 +246,13 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
             
             #Get reconstructed line
             sall_hb = sall[(indx_con_rec[m] + np.sum(ns_rec[:j])):(indx_con_rec[m] + np.sum(ns_rec[:j+1])), :]
-            np.savetxt(sall_hb, outdir + "{}_recon.dat".format(line_names[j]), delimiter=',',
-                       header='time,flux,errlo,errhi')
+            np.savetxt( outdir + "{}_recon.dat".format(line_names[j]), sall_hb, delimiter=',',
+                       header='time,flux,errlo,err')
 
             #Get centers
             for k in range(ngau):
                 cen = sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
-                np.savetxt( outdir + "{}_centers_{}.dat".format(line_names[j], k), cen, delimiter=',' )
+                np.savetxt( outdir + "{}_centers_{}.dat".format(line_names[j], k+1), cen, delimiter=',' )
 
 
             #Get centroids
@@ -270,7 +270,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
                         norm += 1.0
                         cent += sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
             
-                    np.savetxt(outdir + "{}_centroids_{}.dat".format(line_names[j], k), cent, delimiter=',' )
+                    np.savetxt(outdir + "{}_centroids_{}.dat".format(line_names[j], k+1), cent, delimiter=',' )
 
 
         #Get transfer function
@@ -315,7 +315,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
         errlo = tran_best - tran1
         errhi = tran2 - tran_best
-        np.savetxt(outdir + "{}_transfunc.dat".format(line_names[j]), [tau, tran_best, errlo, errhi], delimiter=',',
+        np.savetxt(outdir + "{}_transfunc.dat".format(line_names[1]), np.array([tau, tran_best, errlo, errhi]).T, delimiter=',',
                    header='tau,tf,errlo,errhi')
 
     return
