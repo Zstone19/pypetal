@@ -68,7 +68,7 @@ def run_mica2(outdir, line_names, cont_lc, line_lcs,
     model.post_process()
     
     #Save data
-    cwd = os.getcwd() 
+    cwd = os.getcwd() + '/'
     
     if type_tf == 'gaussian':
         typetf = 0
