@@ -41,7 +41,6 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
 
 
     mica2_func = partial(utils.run_mica2, 
-                         outdir=output_dir,
                          type_tf=type_tf, max_num_saves=max_num_saves, 
                          flag_uniform_var_params=flag_uniform_var_params,
                          flag_uniform_tranfuns=flag_uniform_tranfuns,
@@ -65,7 +64,8 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
         
         os.chdir(output_dir + 'mica2/')
         
-        res_tot = mica2_func(line_names, cont_lc, line_lcs, lag_limit=lag_bounds[0])
+        res_tot = mica2_func(os.getcwd()+'/', line_names, 
+                             cont_lc, line_lcs, lag_limit=lag_bounds[0])
         os.chdir(cwd)  
 
     else:
@@ -75,7 +75,7 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
             os.chdir(output_dir + line_names[i+1] + '/mica2/')
             
             line_lc = np.loadtxt( line_fnames[i], delimiter=',', usecols=[0,1,2] )
-            res = mica2_func([line_names[0], line_names[i+1]], 
+            res = mica2_func(os.getcwd()+'/', [line_names[0], line_names[i+1]], 
                               cont_lc, [line_lc], lag_limit=lag_bounds[i])
 
             res_tot.append(res)
