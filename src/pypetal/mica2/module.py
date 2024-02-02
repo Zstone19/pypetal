@@ -28,7 +28,7 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
     #--------------------------------------------------
     #Read kwargs
 
-    type_tf, max_num_saves, flag_uniform_var_params, flag_uniform_transfuns, \
+    type_tf, max_num_saves, flag_uniform_var_params, flag_uniform_tranfuns, \
         flag_trend, flag_lag_positivity, flag_negative_resp, number_components, \
         width_limit, flag_con_sys_err, flag_line_sys_err, type_lag_prior, lag_prior, \
         num_particles, thread_steps_factor, new_level_interval_factor, save_interval_factor, \
@@ -43,7 +43,7 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
     mica2_func = partial(utils.run_mica2, 
                          type_tf=type_tf, max_num_saves=max_num_saves, 
                          flag_uniform_var_params=flag_uniform_var_params,
-                         flag_uniform_transfuns=flag_uniform_transfuns,
+                         flag_uniform_tranfuns=flag_uniform_tranfuns,
                          flag_trend=flag_trend, flag_lag_positivity=flag_lag_positivity,
                          flag_negative_resp=flag_negative_resp, number_components=number_components,
                          width_limit=width_limit, flag_con_sys_err=flag_con_sys_err,

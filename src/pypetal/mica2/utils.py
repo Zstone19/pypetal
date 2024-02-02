@@ -6,7 +6,7 @@ import pymica
 def run_mica2(cont_lc, line_lcs, 
               #MICA2
               type_tf='gaussian', max_num_saves=2000, 
-              flag_uniform_var_params=False, flag_uniform_transfuns=False,
+              flag_uniform_var_params=False, flag_uniform_tranfuns=False,
               flag_trend=0, flag_lag_positivity=False,
               flag_negative_resp=False,
               lag_limit=[0,100], number_components=[1,1], width_limit=None,
@@ -46,7 +46,7 @@ def run_mica2(cont_lc, line_lcs,
     #Run MICA2
     model = pymica.gmodel()
     model.setup(data=data_input, type_tf=type_tf, max_num_saves=max_num_saves,
-                flag_uniform_var_params=flag_uniform_var_params, flag_uniform_transfuns=flag_uniform_transfuns,
+                flag_uniform_var_params=flag_uniform_var_params, flag_uniform_tranfuns=flag_uniform_tranfuns,
                 flag_trend=flag_trend, flag_lag_positivity=flag_lag_positivity,
                 flag_negative_resp=flag_negative_resp,
                 lag_limit=lag_limit, number_components=number_components, width_limit=width_limit,
