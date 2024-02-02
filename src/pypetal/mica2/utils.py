@@ -159,38 +159,38 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
             indx_line.append(indx_line[i-1] + (len(nl[i-1])-1)*(1+ngau*3))
        
        
-    # print time lags, median, and 68.3% confidence limits
-    if flagnegresp == False:
-        sample_lag = np.zeros(sample.shape[0])
-        weight_lag = np.zeros(sample.shape[0])
+    # # print time lags, median, and 68.3% confidence limits
+    # if flagnegresp == False:
+    #     sample_lag = np.zeros(sample.shape[0])
+    #     weight_lag = np.zeros(sample.shape[0])
         
-        #loop over datasets
-        for m in range(nd):
+    #     #loop over datasets
+    #     for m in range(nd):
 
-            #loop over lines
-            ns = nl[m]
-            for j in range(1, len(ns)):
-            sample_lag[:] = 0.0
-            weight_lag[:] = 0.0
+    #         #loop over lines
+    #         ns = nl[m]
+    #         for j in range(1, len(ns)):
+    #             sample_lag[:] = 0.0
+    #             weight_lag[:] = 0.0
 
-            for k in range(ngau):
-                if flagnegresp == 0:  # no negative response
-                    sample_lag[:] +=  sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1] * np.exp(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+0])
-                    weight_lag[:] +=  np.exp(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+0])
-                else:
-                    sample_lag[:] +=  sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
-                    weight_lag[:] +=  1.0
+    #             for k in range(ngau):
+    #                 if flagnegresp == 0:  # no negative response
+    #                     sample_lag[:] +=  sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1] * np.exp(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+0])
+    #                     weight_lag[:] +=  np.exp(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+0])
+    #                 else:
+    #                     sample_lag[:] +=  sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
+    #                     weight_lag[:] +=  1.0
 
 
-            lag, err1, err2 = np.quantile(sample_lag/weight_lag, q=(0.5, (1.0-0.683)/2.0, 1.0-(1.0-0.683)/2.0))
-            err1 = lag-err1
-            err2 = err2 - lag
+    #             lag, err1, err2 = np.quantile(sample_lag/weight_lag, q=(0.5, (1.0-0.683)/2.0, 1.0-(1.0-0.683)/2.0))
+    #             err1 = lag-err1
+    #             err2 = err2 - lag
 
 
     # dtau = tau_upp - tau_low 
     ntau = 500
     tran = np.zeros((sample.shape[0], ntau))
-    shift = 0.0
+    # shift = 0.0
     
 
     idx_q = 0 # index for long-term trend parameters
