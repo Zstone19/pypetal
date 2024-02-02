@@ -73,7 +73,7 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
         for i in range(len(line_fnames)):
             os.chdir(output_dir + line_names[i+1] + '/mica2/')
             
-            line_lc = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
+            line_lc = np.loadtxt( line_fnames[i], delimiter=',', usecols=[0,1,2] )
             res = mica2_func(cont_lc, [line_lc], lag_limit=lag_bounds[i])
 
             res_tot.append(res)
