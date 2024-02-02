@@ -75,7 +75,7 @@ def run_mica2(outdir, line_names, cont_lc, line_lcs,
     else:
         typetf = 1
     
-    get_mica2_data(outdir, line_names, cwd, 'data_input.txt',
+    get_mica2_data(outdir, line_names, cwd, '/data/data_input.txt',
                    lag_limit[0], lag_limit[1], typetf,
                    np.max(number_component), flag_trend, flag_uniform_var_params,
                    flag_uniform_tranfuns, flag_negative_resp)
