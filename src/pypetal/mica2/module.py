@@ -1,0 +1,83 @@
+import os
+from functools import partial
+
+import numpy as np
+
+import pypetal.mica2.utils as utils
+from pypetal.utils import defaults
+from pypetal.utils.petalio import print_subheader, print_error
+
+def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, mica2_params):
+    
+    if line_fnames is str:
+        line_fnames = [line_fnames]
+        line_names = [line_names]
+    
+    
+    #--------------------------------------------------
+    #Read general kwargs
+
+    verbose = general_kwargs['verbose']
+    plot = general_kwargs['plot']
+    time_unit = general_kwargs['time_unit']
+    lc_unit = general_kwargs['lc_unit']
+    lag_bounds = general_kwargs['lag_bounds']
+    threads = general_kwargs['threads']
+
+    
+    #--------------------------------------------------
+    #Read kwargs
+
+    type_tf, max_num_saves, flag_uniform_var_params, flag_uniform_transfuns, \
+        flag_trend, flag_lag_positivity, flag_negative_resp, number_components, \
+        width_limit, flag_con_sys_err, flag_line_sys_err, type_lag_prior, lag_prior, \
+        num_particles, thread_steps_factor, new_level_interval_factor, save_interval_factor, \
+        lam, beta, ptol, max_num_levels, together = defaults.set_mica2(mica2_params)
+    
+    #-------------------------------------------
+
+    if verbose:
+        print_subheader('Running MICA2', 35, mica2_params)
+
+
+    mica2_func = partial(utils.run_mica2, 
+                         type_tf=type_tf, max_num_saves=max_num_saves, 
+                         flag_uniform_var_params=flag_uniform_var_params
+                         flag_uniform_transfuns=flag_uniform_transfuns,
+                         flag_trend=flag_trend, flag_lag_positivity=flag_lag_positivity,
+                         flag_negative_resp=flag_negative_resp, number_components=number_components,
+                         width_limit=width_limit, flag_con_sys_err=flag_con_sys_err,
+                         flag_line_sys_err=flag_line_sys_err, type_lag_prior=type_lag_prior,
+                         lag_prior=lag_prior, num_particles=num_particles,
+                         thread_steps_factor=thread_steps_factor, new_level_interval_factor=new_level_interval_factor,
+                         save_interval_factor=save_interval_factor, lam=lam, beta=beta, ptol=ptol,
+                         max_num_levels=max_num_levels, together=together, show=plot)
+
+    cwd = os.getcwd()
+    cont_lc = np.loadtxt( cont_fname, delimiter=',', usecols=[0,1,2] )
+
+    if together:
+        line_lcs = []
+        for i in range(len(line_fnames)):
+            line_lc = np.loadtxt( line_fnames[i], delimiter=',', usecols=[0,1,2] )
+            line_lcs.append(line_lc)
+        
+        os.chdir(output_dir + 'mica2/')
+        
+        res_tot = mica2_func(cont_lc, line_lcs, lag_limit=lag_bounds[0])
+        os.chdir(cwd)  
+
+    else:
+        res_tot = []
+
+        for i in range(len(line_fnames)):
+            os.chdir(output_dir + line_names[i+1] + '/mica2/')
+            
+            line_lc = np.loadtxt( line_fnames[i], delimiter=',', unpack=True, usecols=[0,1,2] )
+            res = mica2_func(cont_lc, line_lc, lag_limit=lag_bounds[i])
+
+            res_tot.append(res)
+            os.chdir(cwd)
+
+
+    return res_tot

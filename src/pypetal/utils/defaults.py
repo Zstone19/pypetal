@@ -270,6 +270,66 @@ def set_pyroa(input_args, nlc):
             add_var, delay_dist, psi_types, together, objname, prior_func
 
 
+def set_mica2(input_args):
+    
+    default_kwargs = {
+        'type_tf': 'gaussian',
+        'max_num_saves': 2000,
+        'flag_uniform_var_params': False,
+        'flag_uniform_transfuns': False,
+        'flag_trend': 0,
+        'flag_lag_positivity': False,
+        'flag_negative_resp': False,
+        'number_components': [1,1],
+        'width_limit': None,
+        'flag_con_sys_err': False,
+        'flag_line_sys_err': False,
+        'type_lag_prior': 0,
+        'lag_prior': None,
+        'num_particles': 1,
+        'thread_steps_factor': 1,
+        'new_level_interval_factor': 1,
+        'save_interval_factor': 1,
+        'lam': 10,
+        'beta': 100,
+        'ptol': 0.1,
+        'max_num_levels': 0,
+        'together': False
+    }
+    
+    params = { **default_kwargs, **input_args }
+
+    type_tf = params['type_tf']
+    max_num_saves = params['max_num_saves']
+    flag_uniform_var_params = params['flag_uniform_var_params']
+    flag_uniform_transfuns = params['flag_uniform_transfuns']
+    flag_trend = params['flag_trend']
+    flag_lag_positivity = params['flag_lag_positivity']
+    flag_negative_resp = params['flag_negative_resp']
+    number_components = params['number_components']
+    width_limit = params['width_limit']
+    flag_con_sys_err = params['flag_con_sys_err']
+    flag_line_sys_err = params['flag_line_sys_err']
+    type_lag_prior = params['type_lag_prior']
+    lag_prior = params['lag_prior']
+    num_particles = params['num_particles']
+    thread_steps_factor = params['thread_steps_factor']
+    new_level_interval_factor = params['new_level_interval_factor']
+    save_interval_factor = params['save_interval_factor']
+    lam = params['lam']
+    beta = params['beta']
+    ptol = params['ptol']
+    max_num_levels = params['max_num_levels']
+    together = params['together']
+    
+    return type_tf, max_num_saves, flag_uniform_var_params, flag_uniform_transfuns, \
+        flag_trend, flag_lag_positivity, flag_negative_resp, number_components, \
+        width_limit, flag_con_sys_err, flag_line_sys_err, type_lag_prior, lag_prior, \
+        num_particles, thread_steps_factor, new_level_interval_factor, save_interval_factor, \
+        lam, beta, ptol, max_num_levels, together
+        
+    
+
 
 def set_weighting(input_args):
 

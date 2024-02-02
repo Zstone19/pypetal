@@ -6,6 +6,7 @@ from astropy.table import Table
 
 import pypetal.utils.detrending as dtr
 from pypetal.drw_rej.module import drw_rej_tot
+from pypetal.mica2.module import mica2_tot
 from pypetal.pyccf.module import pyccf_tot
 from pypetal.pyroa.module import pyroa_tot
 from pypetal.pyzdcf.module import pyzdcf_tot
@@ -21,6 +22,7 @@ def run_pipeline(output_dir, arg2,
                  run_pyccf=False, pyccf_params={},
                  run_pyzdcf=False, pyzdcf_params={},
                  run_pyroa=False, pyroa_params={},
+                 run_mica2=False, mica2_params={},
                  **kwargs):
 
     """ Run the pyPetal pipeline on a list of files. Individual modules can be specified, but are not run by default.
@@ -66,7 +68,12 @@ def run_pipeline(output_dir, arg2,
 
     pyroa_params : dict, optional
         The parameters to pass to the PyROA module. Default is ``{}``.
-
+        
+    run_mica2 : bool, optional
+        Whether to run the MICA2 module. Default is ``False``.
+        
+    mica2_params : dict, optional
+        The parameters to pass to the MICA2 module. Default is ``{}``.
 
 
 
@@ -133,6 +140,9 @@ def run_pipeline(output_dir, arg2,
 
     #Get "together_pyroa"
     _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
+    
+    #Get "together_mica2"
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2 = defaults.set_mica2(mica2_params)
 
 
     #Name lines if unnamed
@@ -151,8 +161,8 @@ def run_pipeline(output_dir, arg2,
 
     #Create subdirectories for each line and module
     make_directories(output_dir, fnames, line_names,
-                     run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa,
-                     reject_data, together_pyroa)
+                     run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_mica2,
+                     reject_data, together_pyroa, together_mica2)
 
     if general_kwargs['file_fmt'] != 'csv':
         #Make temp directory to store csv files
@@ -194,6 +204,8 @@ def run_pipeline(output_dir, arg2,
     detrend_res = {}
     pyccf_res = {}
     pyzdcf_res = {}
+    pyroa_res = {}
+    mica2_res = {}
 
     if run_drw_rej:
 
@@ -258,6 +270,10 @@ def run_pipeline(output_dir, arg2,
 
     if run_pyroa:
         pyroa_res = pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)
+        
+    if run_mica2:
+        mica2_res = mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, mica2_params)
+
 
 
     if general_kwargs['file_fmt'] != 'csv':
@@ -283,7 +299,9 @@ def run_pipeline(output_dir, arg2,
 
     if run_pyroa:
         tot_res['pyroa_res'] = pyroa_res
-
+        
+    if run_mica2:
+        tot_res['mica2_res'] = mica2_res
 
 
     if not isinstance(arg2[0], str):
@@ -300,10 +318,11 @@ def run_pipeline(output_dir, arg2,
 
 
 
-
+#NEED TO ADJUST THIS FOR MICA2
 def run_weighting(output_dir, line_names,
                  run_pyccf=False, pyccf_params={},
                  run_pyroa=False, pyroa_params={},
+                 run_mica2=False, mica2_params={},
                  run_javelin=False, javelin_params={},
                  weighting_params={},
                  **kwargs):
@@ -337,6 +356,12 @@ def run_weighting(output_dir, line_names,
 
     pyroa_params : dict, optional
         The parameters used in the pyPetal pipeline for PyROA. Default is {}.
+        
+    run_mica2 : bool, optional
+        Whether or not MICA2 was run in the pyPetal pipeline. Default is False.
+        
+    mica2_params : dict, optional
+        The parameters used in the pyPetal pipeline for MICA2. Default is {}.
 
     run_javelin : bool, optional
         Whether or not the pyPetal-jav pipeline was run. Default is False.

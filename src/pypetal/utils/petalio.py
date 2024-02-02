@@ -92,8 +92,8 @@ def print_error(error):
 ##############################################
 
 def make_directories(output_dir, fnames, line_names,
-                     run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa,
-                     reject_data, together_pyroa):
+                     run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_mica2,
+                     reject_data, together_pyroa, together_mica2):
 
     #Create subdirectories for each line
     for i in range(len(fnames)):
@@ -114,6 +114,14 @@ def make_directories(output_dir, fnames, line_names,
         else:
             for i in range(len(fnames)-1):
                 os.makedirs( output_dir + line_names[i+1] + '/pyroa', exist_ok=True )
+
+
+    if run_mica2:
+        if together_mica2:
+            os.makedirs( output_dir + 'mica2', exist_ok=True )
+        else:
+            for i in range(len(fnames)-1):
+                os.makedirs( output_dir + line_names[i+1] + '/mica2', exist_ok=True )
 
 
     #Make subdirectories for light curves

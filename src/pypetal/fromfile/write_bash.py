@@ -40,6 +40,7 @@ def bash_from_python(output_dir, arg2,
                     run_pyccf=False, pyccf_params={},
                     run_pyzdcf=False, pyzdcf_params={},
                     run_pyroa=False, pyroa_params={},
+                    run_mica2=False, mica2_params={},
                     run_javelin=False, javelin_params={},
                     run_weighting=False, weighting_params={},
                     **kwargs):
@@ -69,8 +70,8 @@ def bash_from_python(output_dir, arg2,
 
 
 
-    run_arr = [run_drw_rej, run_detrend, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_weighting]
-    param_arr = [kwargs, drw_rej_params, detrend_params, pyccf_params, pyzdcf_params, pyroa_params, javelin_params, weighting_params]
+    run_arr = [run_drw_rej, run_detrend, run_pyccf, run_pyzdcf, run_pyroa, run_mica2, run_javelin, run_weighting]
+    param_arr = [kwargs, drw_rej_params, detrend_params, pyccf_params, pyzdcf_params, pyroa_params, mica2_params, javelin_params, weighting_params]
 
     make_toml(output_dir, fnames, run_arr, param_arr, line_names, filename=toml_fname)
     write_bash(toml_fname, env1, env2)
