@@ -512,7 +512,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         The name of the object, will be used for plot and for the saved PyROA light curve data. If ``None``, will be set to "pyroa".
 
     prior_func : function, optional
-        A function to use to get the priors for PyROA. Must have the same arguments as ``pypetal.pyroa.utils.get_priors`` except for the ``delimiter`` argument. 
+        A function to use to get the priors for PyROA. Must have the same arguments as ``pypetal.pyroa.utils.get_priors`` except for the ``delimiter`` argument.
         If ``None``, will use the default priors. Default is ``None``.
 
     line_names : list of str
