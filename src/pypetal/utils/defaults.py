@@ -304,7 +304,7 @@ def set_mica2(input_args):
     flag_uniform_var_params = params['flag_uniform_var_params']
     flag_uniform_tranfuns = params['flag_uniform_tranfuns']
     flag_trend = params['flag_trend']
-    flag_lag_posivity = params['flag_lag_positivity']
+    flag_lag_posivity = params['flag_lag_posivity']
     flag_negative_resp = params['flag_negative_resp']
     number_components = params['number_components']
     width_limit = params['width_limit']
