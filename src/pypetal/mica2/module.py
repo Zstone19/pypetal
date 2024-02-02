@@ -42,7 +42,7 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
 
     mica2_func = partial(utils.run_mica2, 
                          type_tf=type_tf, max_num_saves=max_num_saves, 
-                         flag_uniform_var_params=flag_uniform_var_params
+                         flag_uniform_var_params=flag_uniform_var_params,
                          flag_uniform_transfuns=flag_uniform_transfuns,
                          flag_trend=flag_trend, flag_lag_positivity=flag_lag_positivity,
                          flag_negative_resp=flag_negative_resp, number_components=number_components,
