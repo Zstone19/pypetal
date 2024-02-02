@@ -60,7 +60,7 @@ def run_mica2(cont_lc, line_lcs,
 
     #Make plots
     model.plot_results(doshow=show)
-    model.post_process(doshow=show)
+    model.post_process()
 
     return model
 
