@@ -87,6 +87,11 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
             lagmin = np.min([ x[0] for x in lag_bounds ])
             lagmax = np.max([ x[1] for x in lag_bounds ])
             
+            line_lcs = []
+            for i in range(len(line_fnames)):
+                line_lc = np.loadtxt( line_fnames[i], delimiter=',', usecols=[0,1,2] )
+                line_lcs.append(line_lc)
+            
             
             outdirs = []
             for i in range(len(line_fnames)):
