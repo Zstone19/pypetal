@@ -161,7 +161,7 @@ def run_pipeline(output_dir, arg2,
     _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
     
     #Get "together_mica2"
-    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2 = defaults.set_mica2(mica2_params)
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, no_order_mica2 = defaults.set_mica2(mica2_params)
 
 
     #Name lines if unnamed
@@ -181,7 +181,7 @@ def run_pipeline(output_dir, arg2,
     #Create subdirectories for each line and module
     make_directories(output_dir, fnames, line_names,
                      run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_mica2,
-                     reject_data, together_pyroa, together_mica2)
+                     reject_data, together_pyroa, together_mica2, no_order_mica2)
 
     if general_kwargs['file_fmt'] != 'csv':
         #Make temp directory to store csv files
@@ -431,7 +431,7 @@ def run_weighting(output_dir, line_names,
     _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
     #Get "together" for mica2
-    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2 = defaults.set_mica2(mica2_params)
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, _ = defaults.set_mica2(mica2_params)
 
 
     javelin_chain_fnames = None

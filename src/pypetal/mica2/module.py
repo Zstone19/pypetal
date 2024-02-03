@@ -32,7 +32,7 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
         flag_trend, flag_lag_posivity, flag_negative_resp, number_component, \
         width_limit, flag_con_sys_err, flag_line_sys_err, type_lag_prior, lag_prior, \
         num_particles, thread_steps_factor, new_level_interval_factor, save_interval_factor, \
-        lam, beta, ptol, max_num_levels, together = defaults.set_mica2(mica2_params)
+        lam, beta, ptol, max_num_levels, together, no_order = defaults.set_mica2(mica2_params)
     
     #-------------------------------------------
 
@@ -64,22 +64,41 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
         
         os.chdir(output_dir + 'mica2/')
         
-        res_tot = mica2_func(os.getcwd()+'/', line_names, 
+        res_tot = mica2_func([os.getcwd()+'/'], line_names, 
                              cont_lc, line_lcs, lag_limit=lag_bounds[0])
         os.chdir(cwd)  
 
     else:
-        res_tot = []
+        
+        if no_order:
+            res_tot = []
 
-        for i in range(len(line_fnames)):
-            os.chdir(output_dir + line_names[i+1] + '/mica2/')
+            for i in range(len(line_fnames)):
+                os.chdir(output_dir + line_names[i+1] + '/mica2/')
+                
+                line_lc = np.loadtxt( line_fnames[i], delimiter=',', usecols=[0,1,2] )
+                res = mica2_func([os.getcwd()+'/'], [line_names[0], line_names[i+1]], 
+                                cont_lc, [line_lc], lag_limit=lag_bounds[i])
+
+                res_tot.append(res)
+                os.chdir(cwd)
+                
+        else:
+            lagmin = np.min([ x[0] for x in lag_bounds ])
+            lagmax = np.max([ x[1] for x in lag_bounds ])
             
-            line_lc = np.loadtxt( line_fnames[i], delimiter=',', usecols=[0,1,2] )
-            res = mica2_func(os.getcwd()+'/', [line_names[0], line_names[i+1]], 
-                              cont_lc, [line_lc], lag_limit=lag_bounds[i])
+            
+            outdirs = []
+            for i in range(len(line_fnames)):
+                outdirs.append(output_dir + line_names[i+1] + '/mica2/')
 
-            res_tot.append(res)
+            os.chdir(output_dir + 'mica2/')
+            res_tot = mica2_func(outdirs, line_names, 
+                                cont_lc, line_lcs, lag_limit=[lagmin, lagmax])
             os.chdir(cwd)
+
+            #Move output files
+            for i in range(len())
 
 
     return res_tot

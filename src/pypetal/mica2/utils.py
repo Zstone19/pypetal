@@ -8,7 +8,7 @@ import os
 
 
 
-def run_mica2(outdir, line_names, cont_lc, line_lcs, 
+def run_mica2(outdirs, line_names, cont_lc, line_lcs, 
               #MICA2
               type_tf='gaussian', max_num_saves=2000, 
               flag_uniform_var_params=False, flag_uniform_tranfuns=False,
@@ -23,6 +23,7 @@ def run_mica2(outdir, line_names, cont_lc, line_lcs,
               lam=10, beta=100, ptol=0.1, max_num_levels=0,
               together=False, show=False):
 
+    assert len(outdirs) == len(line_names)-1
 
     # initiate MPI
     comm = MPI.COMM_WORLD
@@ -75,7 +76,7 @@ def run_mica2(outdir, line_names, cont_lc, line_lcs,
     else:
         typetf = 1
     
-    get_mica2_data(outdir, line_names, cwd, '/data/data_input.txt',
+    get_mica2_data(outdirs, line_names, cwd, '/data/data_input.txt',
                    lag_limit[1], lag_limit[0], typetf,
                    np.max(number_component), flag_trend, flag_uniform_var_params,
                    flag_uniform_tranfuns, flag_negative_resp)
@@ -90,7 +91,7 @@ def run_mica2(outdir, line_names, cont_lc, line_lcs,
 
 
 
-def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
+def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
                    ngau, flagtrend, flagvar, flagtran, flagnegresp):
 
     sample = np.atleast_2d(np.loadtxt(fdir+"/data/posterior_sample1d.txt_%d"%ngau))
@@ -181,7 +182,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
                         sample_lag[:] +=  sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
                         weight_lag[:] +=  1.0
 
-                np.savetxt(outdir + "{}_lag_samples.dat".format(line_names[j]), np.array([sample_lag, 1/weight_lag, sample_lag/weight_lag]).T, delimiter=',',
+                np.savetxt(outdirs[m] + "{}_lag_samples.dat".format(line_names[j]), np.array([sample_lag, 1/weight_lag, sample_lag/weight_lag]).T, delimiter=',',
                            header='lags,weights,weighted_lags')
 
 
@@ -206,7 +207,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
         
         # Get reconstructed continuum
         sall_con0 = sall[indx_con_rec[m]:(indx_con_rec[m]+ns_rec[0]), :] 
-        np.savetxt(outdir + 'cont_recon.dat', sall_con0, delimiter=',',
+        np.savetxt(outdirs[m]+ 'cont_recon.dat', sall_con0, delimiter=',',
                    header='time,flux,err')
         
         # Get trend
@@ -216,7 +217,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
             for j in range(nq):
                 y += trend[idx_q + j, 0] * x**(j)
         
-            np.savetxt( outdir + 'trend.dat', [x, y], delimiter=',',
+            np.savetxt( outdirs[m] + 'trend.dat', [x, y], delimiter=',',
                         header='time,trend')
 
 
@@ -249,13 +250,13 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
             
             #Get reconstructed line
             sall_hb = sall[(indx_con_rec[m] + np.sum(ns_rec[:j])):(indx_con_rec[m] + np.sum(ns_rec[:j+1])), :]
-            np.savetxt( outdir + "{}_recon.dat".format(line_names[j]), sall_hb, delimiter=',',
+            np.savetxt( outdirs[m] + "{}_recon.dat".format(line_names[j]), sall_hb, delimiter=',',
                        header='time,flux,errlo,err')
 
             #Get centers
             for k in range(ngau):
                 cen = sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
-                np.savetxt( outdir + "{}_centers_{}.dat".format(line_names[j], k+1), cen, delimiter=',' )
+                np.savetxt( outdirs[m] + "{}_centers_{}.dat".format(line_names[j], k+1), cen, delimiter=',' )
 
 
             #Get centroids
@@ -273,7 +274,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
                         norm += 1.0
                         cent += sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
             
-                    np.savetxt(outdir + "{}_centroids_{}.dat".format(line_names[j], k+1), cent, delimiter=',' )
+                    np.savetxt(outdirs[m] + "{}_centroids_{}.dat".format(line_names[j], k+1), cent, delimiter=',' )
 
 
         #Get transfer function
@@ -319,9 +320,9 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
         errhi = tran2 - tran_best
         
         if len(line_names) > 2:
-            tf_fname = outdir + 'transfunc.dat'
+            tf_fname = outdirs[m] + 'transfunc.dat'
         else:
-            tf_fname = outdir + "{}_transfunc.dat".format(line_names[1])
+            tf_fname = outdirs[m] + "{}_transfunc.dat".format(line_names[1])
 
 
         np.savetxt(tf_fname, np.array([tau, tran_best, errlo, errhi]).T, delimiter=',',

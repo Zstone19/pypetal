@@ -93,7 +93,7 @@ def print_error(error):
 
 def make_directories(output_dir, fnames, line_names,
                      run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_mica2,
-                     reject_data, together_pyroa, together_mica2):
+                     reject_data, together_pyroa, together_mica2, no_order_mica2):
 
     #Create subdirectories for each line
     for i in range(len(fnames)):
@@ -122,6 +122,9 @@ def make_directories(output_dir, fnames, line_names,
         else:
             for i in range(len(fnames)-1):
                 os.makedirs( output_dir + line_names[i+1] + '/mica2', exist_ok=True )
+                
+            if not no_order_mica2:
+                os.makedirs( output_dir + 'mica2', exist_ok=True )
 
 
     #Make subdirectories for light curves
