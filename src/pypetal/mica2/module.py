@@ -97,8 +97,5 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
                                 cont_lc, line_lcs, lag_limit=[lagmin, lagmax])
             os.chdir(cwd)
 
-            #Move output files
-            for i in range(len())
-
 
     return res_tot
