@@ -337,7 +337,6 @@ def run_pipeline(output_dir, arg2,
 
 
 
-#NEED TO ADJUST THIS FOR MICA2
 def run_weighting(output_dir, line_names,
                  run_pyccf=False, pyccf_params={},
                  run_pyroa=False, pyroa_params={},
@@ -351,7 +350,7 @@ def run_weighting(output_dir, line_names,
     NOTE: This requires that you have run the pyPetal pipeline (i.e. pypetal.pipeline.run.pipeline) with
     at least run_pyccf=True.
     This will perform the weighting scheme described in Grier et al. (2019) to the lag distributions from
-    each of the modules run (e.g., pyCCF, PyROA, JAVELIN).
+    each of the modules run (e.g., pyCCF, PyROA, JAVELIN, MICA2).
 
 
     Parameters
@@ -402,8 +401,8 @@ def run_weighting(output_dir, line_names,
     """
 
 
-    if (not run_pyccf) & (not run_javelin) & (not run_pyroa):
-        print_error('ERROR: Either JAVELIN, pyCCF, or PyROA must be run before weighting can be done.')
+    if (not run_pyccf) & (not run_javelin) & (not run_pyroa) & (not run_mica2):
+        print_error('ERROR: Either JAVELIN, pyCCF, PyROA, or MICA2 must be run before weighting can be done.')
         raise Exception
 
     output_dir = os.path.abspath(output_dir) + r'/'
@@ -431,11 +430,15 @@ def run_weighting(output_dir, line_names,
     #Get "together" for pyroa
     _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
+    #Get "together" for mica2
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2 = defaults.set_mica2(mica2_params)
+
 
     javelin_chain_fnames = None
     pyccf_iccf_fnames = None
     pyccf_dist_fnames = None
     pyroa_sample_fnames = None
+    mica2_sample_fnames = None
 
     if run_pyccf:
         pyccf_iccf_fnames = []
@@ -465,10 +468,26 @@ def run_weighting(output_dir, line_names,
 
             for x in line_names[1:]:
                 pyroa_sample_fnames.append( output_dir + x + '/pyroa/samples.obj' )
+                
+                
+    
+    if run_mica2:
+        if together_mica2:
+            mica2_sample_fnames = []
+            
+            for x in line_names[1:]:
+                mica2_sample_fnames.append( output_dir + x + '/mica2/{}_lag_samples.dat'.format(x) )
+            
+        else:
+            mica2_sample_fnames = []
+
+            for x in line_names[1:]:
+                mica2_sample_fnames.append( output_dir + x + '/mica2/{}_lag_samples.dat'.format(x) )
+
 
 
     res = run_weighting_tot(output_dir,
-                                      javelin_chain_fnames, pyccf_iccf_fnames, pyccf_dist_fnames, pyroa_sample_fnames,
+                                      javelin_chain_fnames, pyccf_iccf_fnames, pyccf_dist_fnames, pyroa_sample_fnames, mica2_sample_fnames,
                                       line_names, interp, together_jav,
                                       pyroa_params=pyroa_params, general_kwargs=general_kwargs,
                                       weighting_params=weighting_params)

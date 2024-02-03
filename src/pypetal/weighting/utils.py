@@ -422,39 +422,46 @@ def get_bounds(dist, weights, lags, width=15, rel_height=.99):
 ###########################################################################
 ###########################################################################
 
-def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa):
+def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa, run_mica2):
 
     output = {
         'pyccf': {},
         'javelin': {},
         'pyroa': {},
+        'mica2': {},
         'rmax_pyccf': [],
         'rmax_javelin': [],
-        'rmax_pyroa': []
+        'rmax_pyroa': [],
+        'rmax_mica2': []
     }
 
     cols_pyccf = ['centroid']
     cols_javelin = ['tophat_lag']
     cols_pyroa = ['time_delay']
+    cols_mica2 = ['time_lag']
+    
 
     cols_common = ['bounds', 'acf', 'lags', 'weight_dist', 'smoothed_dist', 'ntau', 'frac_rejected']
     for col in cols_common:
         cols_pyccf.append(col)
         cols_javelin.append(col)
         cols_pyroa.append(col)
+        cols_mica2.append(col)
 
     cols_pyccf.append('CCCD')
     cols_javelin.append('lag_dist')
     cols_pyroa.append('lag_dist')
+    cols_mica2.append('lag_dist')
 
     cols_pyccf.append('downsampled_CCCD')
     cols_javelin.append('downsampled_lag_dist')
     cols_pyroa.append('downsampled_lag_dist')
+    cols_mica2.append('downsampled_lag_dist')
 
 
-    run_arr = [run_pyccf, run_javelin, run_pyroa]
-    cols_arr = [cols_pyccf, cols_javelin, cols_pyroa]
-    names_arr = ['pyccf', 'javelin', 'pyroa']
+    run_arr = [run_pyccf, run_javelin, run_pyroa, run_mica2]
+    cols_arr = [cols_pyccf, cols_javelin, cols_pyroa, cols_mica2]
+    names_arr = ['pyccf', 'javelin', 'pyroa', 'mica2']
 
     for run, cols, name in zip(run_arr, cols_arr, names_arr):
         if run:
@@ -477,6 +484,8 @@ def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa):
                 output['rmax_javelin'].append( res['rmax_javelin'] )
             if run_pyroa:
                 output['rmax_pyroa'].append( res['rmax_pyroa'] )
+            if run_mica2:
+                output['rmax_mica2'].append( res['rmax_mica2'] )
 
     return output
 
@@ -486,7 +495,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
                           weighting_kwargs, lag_bounds='baseline',
                           jav_chain_file=None,
                           pyccf_iccf_file=None, pyccf_dist_file=None,
-                          pyroa_sample_file=None,
+                          pyroa_sample_file=None, mica2_dist_file=None,
                           javelin_lag_col=2, pyroa_obj_ind=1,
                           pyccf_params={}, pyroa_params = {},
                           plot=False, time_unit='d'):
@@ -516,10 +525,15 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         run_pyroa = True
     else:
         run_pyroa = False
+        
+    if mica2_dist_file is not None:
+        run_mica2 = True
+    else:
+        run_mica2 = False
 
 
     cols = ['n0', 'peak_bounds', 'peak', 'lag', 'lag_err', 'frac_rejected']
-    modules = ['pyccf', 'javelin', 'pyroa']
+    modules = ['pyccf', 'javelin', 'pyroa', 'mica2']
 
     summary_dict = {}
     summary_dict['k'] = k
@@ -772,6 +786,77 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         output['pyroa']['frac_rejected'] = np.nan
 
 
+    #---------------------------
+    #MICA2
+
+    if run_mica2:
+        samples = np.loadtxt(mica2_dist_file, unpack=True, delimiter=',')
+        lag_dist = samples[2]
+        prob_dist, lags, ntau, acf, n0 = get_weights(x_cont, y_cont, x_line, y_line,
+                                            interp=interp, lag_bounds=lag_bounds,
+                                            sigmode=sigmode, thres=thres,
+                                            gap_size=gap_size, k=k)
+
+        min_bound, peak, max_bound, smooth_dist, smooth_weight_dist = get_bounds(lag_dist, prob_dist, lags, width=width)
+        downsampled_dist = lag_dist[(lag_dist > min_bound) & (lag_dist < max_bound)]
+
+        med_lag = np.median(downsampled_dist)
+        lag_err_lo = med_lag - np.percentile( downsampled_dist, 16 )
+        lag_err_hi = np.percentile( downsampled_dist, 84 ) - med_lag
+
+
+        #Write diagnostic info
+        write_data( [ lags, ntau, prob_dist, acf, smooth_dist, smooth_weight_dist ],
+                    output_dir + 'mica2_weights.dat',
+                    '#lags,ntau,weight_dist,acf,smooth_dist,smooth_weight_dist')
+
+        write_data( downsampled_dist,
+                output_dir + 'mica2_weighted_lag_dist.dat')
+
+
+
+        #Add to summary dict
+        summary_dict['n0_mica2'] = n0
+        summary_dict['peak_bounds_mica2'] = [min_bound, max_bound]
+        summary_dict['peak_mica2'] = peak
+        summary_dict['lag_mica2'] = med_lag
+        summary_dict['lag_err_mica2'] = [lag_err_lo, lag_err_hi]
+        summary_dict['frac_rejected_mica2'] = 1 - len(downsampled_dist) / len(lag_dist)
+
+
+        #Add to weighting results
+        output['mica2']['time_lag'] =  [lag_err_lo, med_lag, lag_err_hi]
+        output['mica2']['bounds'] =  [min_bound, peak, max_bound]
+        output['mica2']['acf'] = acf
+        output['mica2']['lags'] = lags
+        output['mica2']['weight_dist'] = prob_dist
+        output['mica2']['smoothed_dist'] = smooth_weight_dist
+        output['mica2']['ntau'] = ntau
+        output['mica2']['lag_dist'] = lag_dist
+        output['mica2']['downsampled_lag_dist'] = downsampled_dist
+        output['mica2']['frac_rejected'] = 1 - len(downsampled_dist) / len(lag_dist)
+
+    else:
+        #Add to summary dict
+        summary_dict['n0_mica2'] = np.nan
+        summary_dict['peak_bounds_mica2'] = [np.nan, np.nan]
+        summary_dict['peak_mica2'] = np.nan
+        summary_dict['lag_mica2'] = np.nan
+        summary_dict['lag_err_mica2'] = [np.nan, np.nan]
+        summary_dict['frac_rejected_mica2'] = np.nan
+
+
+        #Add to weighting results
+        output['mica2']['time_lag'] =  [np.nan, np.nan, np.nan]
+        output['mica2']['bounds'] =  [np.nan, np.nan, np.nan]
+        output['mica2']['acf'] = np.nan
+        output['mica2']['lags'] = np.nan
+        output['mica2']['weight_dist'] = np.nan
+        output['mica2']['smoothed_dist'] = np.nan
+        output['mica2']['ntau'] = np.nan
+        output['mica2']['lag_dist'] = np.nan
+        output['mica2']['downsampled_lag_dist'] = np.nan
+        output['mica2']['frac_rejected'] = np.nan
 
 
     #---------------------------
@@ -834,6 +919,26 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         else:
             summary_dict['rmax_pyroa'] = np.nan
             output['rmax_pyroa'] = np.nan
+            
+            
+        if run_mica2:
+            #PyROA lag
+            lag = output['mica2']['time_lag'][1]
+            lag_err_hi = output['mica2']['time_lag'][2]
+            lag_err_lo = output['mica2']['time_lag'][0]
+            good_ind = np.argwhere( ( ccf_lags >= lag-lag_err_lo ) & ( ccf_lags <= lag+lag_err_hi ) ).T[0]
+
+            if len(good_ind) > 0:
+                rmax_mica2 = np.max(ccf[good_ind])
+            else:
+                rmax_mica2 = ccf[ np.argmin( np.abs(lag - ccf_lags) ) ]
+
+            summary_dict['rmax_mica2'] = rmax_mica2
+            output['rmax_mica2'] = rmax_mica2
+        else:
+            summary_dict['rmax_mica2'] = np.nan
+            output['rmax_mica2'] = np.nan
+            
 
 
     else:
@@ -849,6 +954,6 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
 
     #---------------------------
     #Write summary file
-    write_weighting_summary(output_dir + 'weight_summary.fits', summary_dict, run_pyccf, run_javelin, run_pyroa)
+    write_weighting_summary(output_dir + 'weight_summary.fits', summary_dict, run_pyccf, run_javelin, run_pyroa, run_mica2)
 
     return output, summary_dict

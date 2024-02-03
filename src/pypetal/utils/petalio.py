@@ -205,10 +205,10 @@ def write_data(arr, fname, header=None):
 
 
 
-def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
+def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa, run_mica2):
 
-    run_arr = [run_pyccf, run_javelin, run_pyroa]
-    names = ['pyccf', 'javelin', 'pyroa']
+    run_arr = [run_pyccf, run_javelin, run_pyroa, run_mica2]
+    names = ['pyccf', 'javelin', 'pyroa', 'mica2']
     mod_ncols = 6
 
     colnames = ['n0', 'peak_bounds', 'peak', 'lag', 'lag_err', 'frac_rejected']
@@ -233,21 +233,15 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
 
     if run_pyccf:
         weighting_dat.append( res['rmax_pyccf'] )
-
-        if run_javelin & run_pyroa:
-            weighting_dat.append( res['rmax_javelin'] )
-            weighting_dat.append( res['rmax_pyroa'] )
-        elif run_javelin:
-            weighting_dat.append( res['rmax_javelin'] )
-            weighting_dat.append( np.nan )
-        elif run_pyroa:
-            weighting_dat.append( np.nan )
-            weighting_dat.append( res['rmax_pyroa'] )
-        else:
-            weighting_dat.append( np.nan )
-            weighting_dat.append( np.nan )
-
+        
+        for i in range(1, len(run_arr)):
+            if run_arr[i]:
+                weighting_dat.append( res['rmax_' + names[i]] )
+            else:
+                weighting_dat.append( np.nan )
+        
     else:
+        weighting_dat.append(np.nan)
         weighting_dat.append(np.nan)
         weighting_dat.append(np.nan)
         weighting_dat.append(np.nan)
@@ -263,6 +257,7 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
     fits_colnames.append('rmax_pyccf')
     fits_colnames.append('rmax_javelin')
     fits_colnames.append('rmax_pyroa')
+    fits_colnames.append('rmax_mica2')
 
 
 
@@ -275,7 +270,7 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa):
             else:
                 col_fmts.append('E')
 
-    for _ in range(3):
+    for _ in range(len(run_arr)):
         col_fmts.append('E')
 
 
@@ -328,9 +323,17 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_err_pyroa = np.zeros( (len(filenames),2) )
     frac_rejected_pyroa = np.zeros(len(filenames))
 
+    n0_mica2 = np.zeros(len(filenames))
+    peak_bounds_mica2 = np.zeros( (len(filenames),2) )
+    peak_mica2 = np.zeros(len(filenames))
+    lag_mica2 = np.zeros(len(filenames))
+    lag_err_mica2 = np.zeros( (len(filenames),2) )
+    frac_rejected_mica2 = np.zeros(len(filenames))
+
     rmax_pyccf = np.zeros(len(filenames))
     rmax_jav = np.zeros(len(filenames))
     rmax_pyroa = np.zeros(len(filenames))
+    rmax_mica2 = np.zeros(len(filenames))
 
 
     for i, fname in enumerate(filenames):
@@ -358,10 +361,19 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
         lag_pyroa[i] = table['lag_pyroa'][0]
         lag_err_pyroa[i,:] = table['lag_err_pyroa'][0]
         frac_rejected_pyroa[i] = table['frac_rejected_pyroa'][0]
+        
+        n0_mica2[i] = table['n0_mica2'][0]
+        peak_bounds_mica2[i,:] = table['peak_bounds_mica2'][0]
+        peak_mica2[i] = table['peak_mica2'][0]
+        lag_mica2[i] = table['lag_mica2'][0]
+        lag_err_mica2[i,:] = table['lag_err_mica2'][0]
+        frac_rejected_mica2[i] = table['frac_rejected_mica2'][0]
+        
 
         rmax_pyccf[i] = table['rmax_pyccf'][0]
         rmax_jav[i] = table['rmax_javelin'][0]
         rmax_pyroa[i] = table['rmax_pyroa'][0]
+        rmax_mica2[i] = table['rmax_mica2'][0]
 
     #---------------------------
     #Make columns
@@ -390,15 +402,24 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
     lag_err_pyroa_col = fits.Column(name='lag_err_pyroa', format='2E', array=lag_err_pyroa)
     frac_rejected_pyroa_col = fits.Column(name='frac_rejected_pyroa', format='E', array=frac_rejected_pyroa)
 
+    n0_mica2_col = fits.Column(name='n0_mica2', format='E', array=n0_mica2)
+    peak_bounds_mica2_col = fits.Column(name='peak_bounds_mica2', format='2E', array=peak_bounds_mica2)
+    peak_mica2_col = fits.Column(name='peak_mica2', format='E', array=peak_mica2)
+    lag_mica2_col = fits.Column(name='lag_mica2', format='E', array=lag_mica2)
+    lag_err_mica2_col = fits.Column(name='lag_err_mica2', format='2E', array=lag_err_mica2)
+    frac_rejected_mica2_col = fits.Column(name='frac_rejected_mica2', format='E', array=frac_rejected_mica2)
+
     rmax_pyccf_col = fits.Column(name='rmax_pyccf', format='E', array=rmax_pyccf)
     rmax_jav_col = fits.Column(name='rmax_javelin', format='E', array=rmax_jav)
     rmax_pyroa_col = fits.Column(name='rmax_pyroa', format='E', array=rmax_pyroa)
+    rmax_mica2_col = fits.Column(name='rmax_mica2', format='E', array=rmax_mica2)
 
     cols = [name_col, k_col,
             n0_pyccf_col, peak_bounds_pyccf_col, peak_pyccf_col, lag_pyccf_col, lag_err_pyccf_col, frac_rejected_pyccf_col,
             n0_javelin_col, peak_bounds_javelin_col, peak_javelin_col, lag_javelin_col, lag_err_javelin_col, frac_rejected_javelin_col,
             n0_pyroa_col, peak_bounds_pyroa_col, peak_pyroa_col, lag_pyroa_col, lag_err_pyroa_col, frac_rejected_pyroa_col,
-            rmax_pyccf_col, rmax_jav_col, rmax_pyroa_col]
+            n0_mica2_col, peak_bounds_mica2_col, peak_mica2_col, lag_mica2_col, lag_err_mica2_col, frac_rejected_mica2_col,
+            rmax_pyccf_col, rmax_jav_col, rmax_pyroa_col, rmax_mica2_col]
 
     #---------------------------
     #Make table

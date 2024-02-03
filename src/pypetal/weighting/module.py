@@ -13,7 +13,7 @@ from pypetal.weighting.utils import (combine_weight_outputs,
 
 def run_weighting_tot(output_dir,
                       jav_chain_fnames=None, pyccf_iccf_fnames=None, pyccf_dist_fnames=None,
-                      pyroa_sample_fnames=None,
+                      pyroa_sample_fnames=None, mica2_dist_fnames=None,
                       line_names=None, interp=2, together_jav=False,
                       pyroa_obj_inds=None, pyroa_params={},
                       general_kwargs={}, weighting_params={}, share_lag_bounds=True):
@@ -44,6 +44,10 @@ def run_weighting_tot(output_dir,
 
     pyroa_sample_fnames : list of str, optional
         The filenames of the PyROA sample for each line (i.e. "samples.obj"). If None, PyROA will be assumed not to have run.
+        Default is None.
+        
+    mica2_dist_fnames : list of str, optional
+        The filenames of the MICA2 lag distributions for each line. If None, MICA2 will be assumed not to have run.
         Default is None.
 
     line_names : list of str, optional
@@ -137,6 +141,7 @@ def run_weighting_tot(output_dir,
     run_javelin = True
     run_pyccf = True
     run_pyroa = True
+    run_mica2 = True
 
     if jav_chain_fnames is None:
         warnings.warn('Assuming JAVELIN was not run.', RuntimeWarning)
@@ -241,6 +246,12 @@ def run_weighting_tot(output_dir,
                         pyroa_obj_inds.append(1)
     else:
         pyroa_obj_inds = [None] * ( len(line_names)-1)
+        
+        
+        
+    if mica2_dist_fnames is None:
+        mica2_dist_fnames = [None] * ( len(line_names)-1)
+        run_mica2 = False
 
     #---------------------------
     #Make weights directories
@@ -267,7 +278,7 @@ def run_weighting_tot(output_dir,
                                                  line_fnames[0], line_fnames[i+1],
                                                  weighting_params, lag_bounds[i],
                                                  jav_chain_fnames[i], pyccf_iccf_fnames[i], pyccf_dist_fnames[i],
-                                                 pyroa_sample_fnames[i],
+                                                 pyroa_sample_fnames[i], mica2_dist_fnames[i],
                                                  javelin_lag_col=javelin_lag_col,
                                                  pyroa_obj_ind=pyroa_obj_inds[i],
                                                  pyccf_params=pyccf_params, pyroa_params=pyroa_params)
@@ -281,7 +292,7 @@ def run_weighting_tot(output_dir,
     #---------------------------
     #Get total results
 
-    res_tot = combine_weight_outputs(outputs, run_pyccf, run_javelin, run_pyroa)
+    res_tot = combine_weight_outputs(outputs, run_pyccf, run_javelin, run_pyroa, run_mica2)
 
     plot_mod = 'pyccf'
     if not run_pyccf:
@@ -289,6 +300,9 @@ def run_weighting_tot(output_dir,
             plot_mod = 'javelin'
         elif run_pyroa:
             plot_mod = 'pyroa'
+        elif run_mica2:
+            plot_mod = 'mica2'
+
 
     for i in range(len(line_fnames)-1):
         plot_weights(output_dir, line_names[i+1], res_tot[plot_mod],
@@ -308,6 +322,11 @@ def run_weighting_tot(output_dir,
     if run_pyroa:
         plot_weight_output(output_dir, line_fnames[0], line_fnames, line_names,
                             res_tot['pyroa'], general_kwargs, 'pyroa', zoom,
+                            general_kwargs['plot'])
+        
+    if run_mica2:
+        plot_weight_output(output_dir, line_fnames[0], line_fnames, line_names,
+                            res_tot['mica2'], general_kwargs, 'mica2', zoom,
                             general_kwargs['plot'])
 
 

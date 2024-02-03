@@ -169,8 +169,6 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
     plot = general_kwargs['plot']
     time_unit = general_kwargs['time_unit']
 
-
-
     nlc = len(res['lags'])
 
     Ncol = 3
@@ -228,6 +226,16 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
             lag_err_lo = res['time_delay'][i][0]
             lag_err_hi = res['time_delay'][i][2]
             lag_value = res['time_delay'][i][1]
+
+            xlabel = r'\tau'
+            
+        elif module == 'mica2':
+            lags = res['lags'][i].copy()
+            lag_dist = res['lag_dist'][i].copy()
+
+            lag_err_lo = res['time_lag'][i][0]
+            lag_err_hi = res['time_lag'][i][2]
+            lag_value = res['time_lag'][i][1]
 
             xlabel = r'\tau'
 
