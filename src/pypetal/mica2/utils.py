@@ -76,7 +76,7 @@ def run_mica2(outdir, line_names, cont_lc, line_lcs,
         typetf = 1
     
     get_mica2_data(outdir, line_names, cwd, '/data/data_input.txt',
-                   lag_limit[0], lag_limit[1], typetf,
+                   lag_limit[1], lag_limit[0], typetf,
                    np.max(number_component), flag_trend, flag_uniform_var_params,
                    flag_uniform_tranfuns, flag_negative_resp)
 
@@ -191,7 +191,7 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
 
     # dtau = tau_upp - tau_low 
-    ntau = 500
+    ntau = 10000
     tran = np.zeros((sample.shape[0], ntau))
     # shift = 0.0
     
