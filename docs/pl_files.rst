@@ -323,6 +323,8 @@ Additionally, pyPetal will save the following files in the ``mica2/`` directory:
 
 If :python:`together=True`, the only difference will be that the transfer function file will be named ``transfunc.dat``.
 
+If :python:`together=False` and :python:`no_order=False`, the ``data/`` and ``param/`` directories will be located in ``output_directory/mica2/`` and the individual sample files will be located in ``output_directory/{line_name}/mica2/``.
+
 
 
 
