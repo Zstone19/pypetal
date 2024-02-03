@@ -290,9 +290,9 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
                     else:
                         amp =      sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+0]
 
-                        cen =        sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
-                        sig = np.exp(sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+2])
-                        tran[i, :] += amp/sig * np.exp(-0.5*(tau - cen)**2/sig**2)
+                    cen =        sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
+                    sig = np.exp(sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+2])
+                    tran[i, :] += amp/sig * np.exp(-0.5*(tau - cen)**2/sig**2)
 
         else: #tophats
             
@@ -308,7 +308,6 @@ def get_mica2_data(outdir, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
                     cen =        sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
                     sig = np.exp(sample[i, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+2])
-                    
                     tran[i, :] += amp/sig/2.0 *(np.heaviside(sig-np.abs(tau-cen), 1.0))
 
 
