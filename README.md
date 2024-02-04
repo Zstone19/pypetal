@@ -10,6 +10,8 @@
 [![python-ver](https://img.shields.io/pypi/pyversions/pypetal)](https://img.shields.io/pypi/pyversions/pypetal)
 [![pypi-downloads](https://static.pepy.tech/badge/pypetal)](https://pepy.tech/project/pypetal)
 
+<a href="https://ascl.net/2401.004"><img src="https://img.shields.io/badge/ascl-2401.004-blue.svg?colorB=262255" alt="ascl:2401.004" /></a>
+
 
 pyPETaL is a time-series data analysis pipeline for AGN reverberation mapping (RM) data. It combines multiple different popular softwares using for AGN RM analysis, including PyCCF, PyZDCF, JAVELIN, and PyROA. This pipeline also implements outlier rejection using Damped Random Walk Gaussian proces fitting, and detrending through the LinMix algorithm. pyPetal implements a weighting scheme (for all modules) in order to mitigate aliasing in peaks of time lag distributions between light curves.
 
@@ -99,3 +101,14 @@ __NOTE:__ The user may need to install ``NumPy`` before installing pyPetal-jav t
 ```
     pip install numpy
 ```
+
+
+
+## Citing pyPetal
+
+To cite the pyPetal code itself, use the [ASCL reference](https://ascl.net/2401.004):
+```
+    Stone Z., 2024, version xxxx, Astrophysics Source Code Library, record ascl:2401.004
+```
+
+Cit the paper pyPetal was used in: [Shen et al. (2023)](https://ui.adsabs.harvard.edu/abs/2023arXiv230501014S/abstract) 
