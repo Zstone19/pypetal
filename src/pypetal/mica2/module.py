@@ -7,7 +7,7 @@ import pypetal.mica2.utils as utils
 from pypetal.utils import defaults
 from pypetal.utils.petalio import print_subheader, print_error
 
-def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, mica2_params):
+def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, mica2_params, comm, rank):
     
     if line_fnames is str:
         line_fnames = [line_fnames]
@@ -51,7 +51,9 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
                          lag_prior=lag_prior, num_particles=num_particles,
                          thread_steps_factor=thread_steps_factor, new_level_interval_factor=new_level_interval_factor,
                          save_interval_factor=save_interval_factor, lam=lam, beta=beta, ptol=ptol,
-                         max_num_levels=max_num_levels, together=together, show=plot)
+                         max_num_levels=max_num_levels, 
+                         comm=comm, rank=rank,
+                         together=together, show=plot)
 
     cwd = os.getcwd()
     cont_lc = np.loadtxt( cont_fname, delimiter=',', usecols=[0,1,2] )

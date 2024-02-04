@@ -21,13 +21,16 @@ def run_mica2(outdirs, line_names, cont_lc, line_lcs,
               num_particles=1, thread_steps_factor=1,
               new_level_interval_factor=1, save_interval_factor=1,
               lam=10, beta=100, ptol=0.1, max_num_levels=0,
+              #pyPetal
+              comm=None, rank=0,
               together=False, show=False):
 
-    assert len(outdirs) == len(line_names)-1
-
     # initiate MPI
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
+
+    if comm is None:
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+
 
     if rank == 0:
         
@@ -39,6 +42,8 @@ def run_mica2(outdirs, line_names, cont_lc, line_lcs,
                 data_input["set1"].append(line_lcs[i])
             
         else:
+            assert len(outdirs) == len(line_names)-1
+            
             for i in range(len(line_lcs)):
                 data_input["set{}".format(i+1)] = [cont_lc, line_lcs[i]]
 
@@ -76,10 +81,11 @@ def run_mica2(outdirs, line_names, cont_lc, line_lcs,
     else:
         typetf = 1
     
-    get_mica2_data(outdirs, line_names, cwd, '/data/data_input.txt',
-                   lag_limit[1], lag_limit[0], typetf,
-                   np.max(number_component), flag_trend, flag_uniform_var_params,
-                   flag_uniform_tranfuns, flag_negative_resp)
+    if rank == 0:
+        get_mica2_data(outdirs, line_names, cwd, '/data/data_input.txt',
+                    lag_limit[1], lag_limit[0], typetf,
+                    np.max(number_component), flag_trend, flag_uniform_var_params,
+                    flag_uniform_tranfuns, flag_negative_resp)
 
     return model
 
