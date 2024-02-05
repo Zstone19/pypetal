@@ -37,7 +37,8 @@ def mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, m
     #-------------------------------------------
 
     if verbose:
-        print_subheader('Running MICA2', 35, mica2_params)
+        if rank == 0:
+            print_subheader('Running MICA2', 35, mica2_params)
 
 
     mica2_func = partial(utils.run_mica2, 
