@@ -1,0 +1,21 @@
+NumberParticles          1  # Number of particles
+NewLevelIntervalFactor   1.00  # New level interval factor
+SaveIntervalFactor       1.00  # Save interval factor
+ThreadStepsFactor        1.00  # ThreadSteps factor
+MaxNumberLevels          0  # Maximum number of levels
+BacktrackingLength       10.0  # Backtracking scale length
+StrengthEqualPush        100.0  # Strength of effect to force histogram to equal push
+MaxNumberSaves           2000    # Maximum number of saves
+PTol                     1.0e-01  # Likelihood tolerance in loge
+ThreadSteps              10   #
+SaveInterval             10   #
+NewLevelInterval         10  #
+SampleFile               .//data//sample1d.txt_2  #
+SampleInfoFile           .//data//sample_info1d.txt_2  #
+SamplerStateFile         .//data//sampler_state1d.txt_2  #
+PosteriorSampleFile      .//data//posterior_sample1d.txt_2  #
+PosteriorSampleInfoFile  .//data//posterior_sample_info1d.txt_2  #
+LevelsFile               .//data//levels1d.txt_2  #
+LimitsFile               .//data//limits1d.txt_2  #
+NumberCores              1   # Number of cores
+NumberParameters         10   # Number of parameters

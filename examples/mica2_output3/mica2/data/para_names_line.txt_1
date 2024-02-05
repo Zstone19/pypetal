@@ -1,0 +1,14 @@
+ 0 sys_err_con               LOGUNI   0.000000   0.000000    1    0.000000e+00
+ 1 sigmad                    LOG     -4.562524  -3.857164    0  -1.797693e+308
+ 2 taud                      LOG      0.187225   9.427207    0  -1.797693e+308
+ 3 sys_err_con               LOGUNI   0.000000   0.000000    1    0.000000e+00
+ 4 sigmad                    LOG     -4.567282  -3.868503    0  -1.797693e+308
+ 5 taud                      LOG      0.327653   9.427207    0  -1.797693e+308
+ 6 sys_err_line              LOGUNI   0.000000   2.397895    1    0.000000e+00
+ 7 0-th Gaussian amplitude   LOG    -11.512925   2.302585    0  -1.797693e+308
+ 8 0-th Gaussian center      UNI    -500.000000 500.000000    0  -1.797693e+308
+ 9 0-th Gaussian sigma       LOG      0.366764   6.490718    0  -1.797693e+308
+10 sys_err_line              LOGUNI   0.000000   2.397895    1    0.000000e+00
+11 0-th Gaussian amplitude   LOG    -11.512925   2.302585    0  -1.797693e+308
+12 0-th Gaussian center      UNI    -500.000000 500.000000    0  -1.797693e+308
+13 0-th Gaussian sigma       LOG      0.366764   6.490718    0  -1.797693e+308
