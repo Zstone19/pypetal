@@ -26,6 +26,21 @@ PLIKE is an optional algorithm that is used in pyPetal. There is a script availa
 
 
 
+MICA2
+------
+
+pyPetal also offers `MICA2 <https://github.com/LiyrAstroph/MICA2>`_ as an optional module. This package is more complex to install than the others - to find out more, read the [MICA2 installation guide](https://mica2.readthedocs.io/en/latest/getting_started.html).
+
+``poetry`` can help to install some easily-installable python dependencies for MICA2:
+::
+    poetry install --with extra
+
+
+The functionality and inputs of the MICA2 module are identical to the original software, so the best way to learn how this module functions is to read the MICA2 documentation.
+
+.. note:: Seeing as this is an optional module, pyPetal will still compile and run if MICA2's dependencies are not installed. Each pyPetal run will assume ``run_mica2=False``.
+
+
 
 
 pyPetal and JAVELIN
