@@ -1,0 +1,2 @@
+# number_of_gaussians/tophats     evidence
+2       2322.222471

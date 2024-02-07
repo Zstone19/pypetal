@@ -288,6 +288,128 @@ Module: pyROA (``run_pyroa``)
       - :python:`None`
 
 
+
+Module: MICA2 (``run_mica2``)
+-------------------------------
+
+MICA2 arguments:
+
+.. list-table::
+    :widths: 16 50 16 16
+    :header-rows: 1
+
+    * - Argument
+      - Description
+      - Type
+      - Default
+    * - ``type_tf``
+      - The type of transfer function to use in MICA2. Can be either "gaussian" or "tophat".
+      - :python:`str`
+      - :python:`"gaussian"`
+    * - ``max_num_saves``
+      - The number of saves to use in CDNest for the sampling.
+      - :python:`int`
+      - 2000
+    * - ``flag_uniform_var_params``
+      - Whether each dataset has the same variability parameters.
+      - :python:`bool`
+      - :python:`False`
+    * - ``flag_uniform_transfuns``
+      - Whether each dataset has the same line parameters.
+      - :python:`bool`
+      - :python:`False`
+    * - ``flag_trend``
+      - Whether or not to include a trend in the transfer function. 0 for constant trend, 1 for linear trend, 2 for conic trend.
+      - :python:`int`
+      - 0
+    * - ``flag_lag_posivity``
+      - Whether or not to force Gaussians to be located at positive lags.
+      - :python:`bool`
+      - :python:`False`
+    * - ``flag_negative_resp``
+      - Whether or not to turn on negative response.
+      - :python:`bool`
+      - :python:`False`
+    * - ``number_component``
+      - The lower and upper limits to use for the number of Gaussians. If only one value is given, it will be assumed for both limits.
+      - list of :python:`int`
+      - [1, 1]
+    * - ``width_limit``
+      - The lower and upper limits for the width of the Gaussians. If only one value is given, it will be assumed for both limits. If :python:`None`, these will be determined by MICA2.
+      - list of :python:`float`
+      - :python:`None`
+    * - ``flag_con_sys_err``
+      - Whether or not to include a constant systematic error for the continuum light curve.
+      - :python:`bool`
+      - :python:`False`
+    * - ``flag_line_sys_err``
+      - Whether or not to include a systematic error for the line light curve(s).
+      - :python:`bool`
+      - :python:`False`
+    * - ``type_lag_prior``
+      - The type of prior to use for the lags. See the MICA2 documentation.
+      - :python:`int`
+      - 0
+    * - ``lag_prior``
+      - The parameters to use for the lag prior. See the MICA2 documentation.
+      - list of :python:`float`
+      - :python:`None`
+    * - ``together``
+      - Whether or not to fit the time lags of all light curves together, with the same transfer function.
+      - :python:`bool`
+      - :python:`False`
+    * - ``no_order``
+      - Whether or not the order of the time lags makes a difference (i.e., whether or not the time lags are allowed to be equal). If order doesn't matter, MICA2 will be able to fit all light curves in one run. If set to :python:`True`, a separate MICA2 run will be performed for each line.
+      - :python:`bool`
+      - :python:`True`
+    
+
+
+
+CDNest arguments:
+
+.. list-table::
+    :widths: 16 50 16 16
+    :header-rows: 1
+
+    * - Argument
+      - Description
+      - Type
+      - Default
+    * - ``num_particles``
+      - See the MICA2 or CDNest documentation.
+      - :python:`int`
+      - 1
+    * - ``thread_steps_factor``
+      -
+      - :python:`int`
+      - 1
+    * - ``new_level_interval_factor``
+      -
+      - :python:`int`
+      - 1
+    * - ``save_interval_factor``
+      -
+      - :python:`int`
+      - 1
+    * - ``lam``
+      -
+      - :python:`float`
+      - 10
+    * - ``beta``
+      -
+      - :python:`float`
+      - 100
+    * - ``ptol``
+      -
+      - :python:`float`
+      - 0.1
+    * - ``max_num_levels``
+      -
+      - :python:`int`
+      - 0
+
+
 Module: JAVELIN (``pypetal_jav.run_pipeline``)
 ----------------------------------------------
 

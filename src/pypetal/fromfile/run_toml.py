@@ -60,7 +60,7 @@ def make_toml(output_dir, fnames,
 
 def get_toml_modules(filename):
 
-    tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'javelin', 'weighting']
+    tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'mica2', 'javelin', 'weighting']
     run_arr = []
 
     toml_dat = toml.load(filename)['params']
@@ -84,7 +84,7 @@ def get_toml_modules(filename):
 
 def get_toml_params(filename, run_arr):
 
-    tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'javelin', 'weighting']
+    tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'mica2', 'javelin', 'weighting']
     param_arr = []
 
 
@@ -197,6 +197,7 @@ def run_from_toml1(filename):
                           run_pyccf=run_arr[2], pyccf_params=param_arr[3],
                           run_pyzdcf=run_arr[3], pyzdcf_params=param_arr[4],
                           run_pyroa=run_arr[4], pyroa_params=param_arr[5],
+                          run_mica2=run_arr[5], mica2_params=param_arr[6],
                           **param_arr[0])
 
     return res
@@ -214,8 +215,9 @@ def run_from_toml2(filename):
         res = pl.run_weighting(output_dir, line_names,
                                run_pyccf=run_arr[2], pyccf_params=param_arr[3],
                                run_pyroa=run_arr[4], pyroa_params=param_arr[5],
-                               run_javelin=run_arr[5], javelin_params=param_arr[6],
-                               weighting_params=param_arr[7],
+                               run_mica2=run_arr[5], mica2_params=param_arr[6],
+                               run_javelin=run_arr[6], javelin_params=param_arr[7],
+                               weighting_params=param_arr[8],
                                **param_arr[0])
 
         return res

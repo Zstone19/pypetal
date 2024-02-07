@@ -1,0 +1,34 @@
+# lines starting with '#' are regarded as comments and are neglected
+# if want to turn on the line, remove the beginning '#'
+
+#==============================================================
+FileDir                       ./
+DataFile                      data/data_input.txt
+TypeModel                     0
+TypeTF                        1
+MaxNumberSaves                4000
+FlagUniformVarParams          0
+FlagUniformTranFuns           0
+FlagLongtermTrend             0
+LagLimitLow                   -500.0
+LagLimitUpp                   500.0
+FlagLagPositivity             0
+FlagNegativeResp              0
+NumCompLow                    1
+NumCompUpp                    1
+FlagConSysErr                 0
+FlagLineSysErr                0
+TypeLagPrior                  0
+#==============================================================
+# options for cdnest sampling
+# use the default values or do not turn them on IF NOT familiar with them
+
+# PTol                          0.1# likelihood tolerance in loge
+# NumberParticles                 1# number of particles
+# NewLevelIntervalFactor        1.0# new level interval
+# SaveIntervalFactor            1.0# particle saving interval
+# ThreadStepsFactor             1.0# thread steps before communications between cores
+# MaxNumberLevels                 0# maximum number of levels; unlimited for 0
+# BacktrackingLength           10.0# backforward tracking length (lambda)
+# StrengthEqualPush           100.0# strength to force equal push (beta)
+#==============================================================

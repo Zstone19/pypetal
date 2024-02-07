@@ -34,9 +34,19 @@ def get_line_names(main_dir):
     elif (main_dir + 'pyroa/' in dirs) & ( len(dirs) > 2 ):
         dirs.remove(main_dir + 'pyroa/' )
         line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
+        
+    elif main_dir + 'mica2/' in dirs :
+        if len(dirs) > 2:
+            dirs.remove(main_dir + 'mica2/' )
+            line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
+        else:
+            sample_files = glob.glob(main_dir + 'mica2/*_lag_samples.dat')
+            line_names = [ os.path.basename(x[:-16]) for x in sample_files ]        
 
     else:
         line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
+
+
 
     return line_names
 
@@ -160,6 +170,29 @@ def get_modules(main_dir):
 
 
     ###########################################################
+    #MICA2
+    run_mica2 = False
+
+    dirs_tot = glob.glob(main_dir + '*/')
+    if main_dir + 'mica2/' in dirs_tot:
+        run_mica2 = True
+
+    else:
+        has_mica2 = np.zeros( len(line_names), dtype=bool )
+        for i,dir_i in enumerate(line_dirs):
+            subdirs = glob.glob(dir_i + '*/')
+
+            if dir_i + 'mica2/' in subdirs:
+                has_mica2[i] = True
+
+        n_mica2 = len( np.argwhere(has_mica2).T[0] )
+        if ( n_mica2 != n_lnc ) & ( n_mica2 > 0 ):
+            print_warning('WARNING: MICA2 was not completed for all lines, so will assume run_mica2=False')
+        else:
+            run_mica2 = np.any( has_mica2 )
+
+
+    ###########################################################
     #Weighting
     has_weighting = np.zeros( len(line_names), dtype=bool )
     for i, dir_i in enumerate(line_dirs):
@@ -177,7 +210,7 @@ def get_modules(main_dir):
 
 
 
-    return run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_weighting
+    return run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_mica2, run_weighting
 
 
 
@@ -214,9 +247,26 @@ def get_pyroa_together(main_dir):
 
 
 
+def get_mica2_together(main_dir):
+
+    dirs_tot = glob.glob( main_dir + '*/')
+
+    dirs_tot.remove( main_dir + 'light_curves/')
+    if main_dir + 'processed_lcs/' in dirs_tot:
+        dirs_tot.remove( main_dir + 'processed_lcs/')
+
+    if main_dir + 'mica2/' in dirs_tot:
+        together = True
+    else:
+        together = False
+
+    return together
+
+
+
 def get_cont_name(main_dir):
 
-    run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, _ = get_modules(main_dir)
+    run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_mica2, _ = get_modules(main_dir)
 
     dirs_tot = glob.glob( main_dir + '*/')
     dirs_tot.remove( main_dir + 'light_curves/')
@@ -241,7 +291,11 @@ def get_cont_name(main_dir):
             dirs_tot.remove( main_dir + 'javelin/')
 
 
-
+    mica2_together = False
+    if run_mica2:
+        mica2_together = get_mica2_together(main_dir)
+        if mica2_together:
+            dirs_tot.remove( main_dir + 'mica2/')
 
 
 
@@ -314,7 +368,19 @@ def get_cont_name(main_dir):
 
             ind = np.argwhere( ~has_javelin ).T[0][0]
             cont_name = os.path.basename( os.path.dirname( dirs_tot[ind] ) )
+            
+            
+    elif run_mica2 & (not mica2_together):
+        
+        has_mica2 = np.zeros( len(dirs_tot), dtype=bool )
+        for i, dir_i in enumerate(dirs_tot):
+            subdirs = glob.glob(dir_i + '*/')
 
+            if dir_i + 'mica2/' in subdirs:
+                has_mica2[i] = True
+
+        ind = np.argwhere( ~has_mica2 ).T[0][0]
+        cont_name = os.path.basename( os.path.dirname( dirs_tot[ind] ) )
 
 
     elif run_drw_rej:
@@ -536,7 +602,7 @@ def load_pyzdcf(dir_loc):
 
 
 #######################################################################
-#                             PYZDCF
+#                             PyROA
 #######################################################################
 
 def load_pyroa(dir_loc):
@@ -562,6 +628,72 @@ def load_pyroa(dir_loc):
             res_tot.append(res)
 
         return res_tot
+
+#######################################################################
+#                             MICA2
+#######################################################################
+
+def load_mica2(dir_loc):
+
+    line_names = get_ordered_line_names(dir_loc)
+    dirs_tot = np.array([ dir_loc + x + r'/' for x in line_names ])
+    together = get_mica2_together(dir_loc)
+
+    line_dirs = dirs_tot[1:]
+
+
+    if together:
+
+        res = {}
+        res['lag_samples'] = []
+        res['lag_weights'] = []
+        res['weighted_lags'] = []
+        res['names'] = []
+        
+        for i in range(len(line_names[1:])):
+            lags, weights, weighted_lags = np.loadtxt( dir_loc + 'mica2/' + line_names[i+1] + '_lag_samples.dat', delimiter=',', unpack=True )
+            res['lag_samples'].append(lags)
+            res['lag_weights'].append(weights)
+            res['weighted_lags'].append(weighted_lags)
+            res['names'].append(line_names[i+1])
+            
+            
+        tau, tf, errlo, errhi = np.loadtxt( dir_loc + 'mica2/transfunc.dat', delimiter=',', unpack=True )
+        res['tau'] = tau
+        res['transfunc'] = tf
+        res['transfunc_errlo'] = errlo
+        res['transfunc_errhi'] = errhi
+
+        return res
+
+    else:
+        res = {}
+        
+        res['lag_samples'] = []
+        res['lag_weights'] = []
+        res['weighted_lags'] = []
+        res['names'] = []
+        
+        res['tau'] = []
+        res['transfunc'] = []
+        res['transfunc_errlo'] = []
+        res['transfunc_errhi'] = []
+        
+        for i in range(len(line_dirs)):
+            lags, weights, weighted_lags = np.loadtxt( line_dirs[i] + 'mica2/' + line_names[i+1] + '_lag_samples.dat', delimiter=',', unpack=True )
+            res['lag_samples'].append(lags)
+            res['lag_weights'].append(weights)
+            res['weighted_lags'].append(weighted_lags)
+            res['names'].append(line_names[i+1])
+            
+            tau, tf, errlo, errhi = np.loadtxt( line_dirs[i] + 'mica2/'+ line_names[i+1] + '_transfunc.dat', delimiter=',', unpack=True )
+            res['tau'].append(tau)
+            res['transfunc'].append(tf)
+            res['transfunc_errlo'].append(errlo)
+            res['transfunc_errhi'].append(errhi)
+            
+        return res
+
 
 #######################################################################
 #                             JAVELIN
@@ -658,7 +790,7 @@ def str2num(string, dtype=float, arr=False):
 
 
 
-def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
+def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2):
 
     line_names = get_ordered_line_names(main_dir)
     dirs_tot = np.array([ main_dir + x + r'/' for x in line_names ])
@@ -669,9 +801,11 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
         'pyccf': {},
         'javelin': {},
         'pyroa': {},
+        'mica2': {},
         'rmax_pyccf': [],
         'rmax_pyroa': [],
         'rmax_javelin': [],
+        'rmax_mica2': [],
         'names': []
     }
 
@@ -711,6 +845,18 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
         output['pyroa']['ntau'] = []
         output['pyroa']['downsampled_lag_dist'] = []
         output['pyroa']['frac_rejected'] = []
+        
+        
+    if run_mica2:
+        output['mica2']['time_lag'] = []
+        output['mica2']['bounds'] = []
+        output['mica2']['acf'] = []
+        output['mica2']['lags'] = []
+        output['mica2']['weight_dist'] = []
+        output['mica2']['smoothed_dist'] = []
+        output['mica2']['ntau'] = []
+        output['mica2']['downsampled_lag_dist'] = []
+        output['mica2']['frac_rejected'] = []
 
 
 
@@ -772,6 +918,31 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
             output['pyroa']['downsampled_lag_dist'].append(weighted_lag_dist)
 
             output['pyroa']['frac_rejected'].append( summary_dict['frac_rejected_pyroa'][0] )
+            
+            
+            
+        if run_mica2:
+            lag_err_lo = summary_dict['lag_err_mica2'][0][0]
+            lag_err_hi = summary_dict['lag_err_mica2'][0][1]
+            med_lag = summary_dict['lag_mica2'][0]
+            output['mica2']['time_lag'].append([lag_err_lo, med_lag, lag_err_hi])
+
+            min_bound = summary_dict['peak_bounds_mica2'][0][0]
+            max_bound = summary_dict['peak_bounds_mica2'][0][1]
+            peak = summary_dict['peak_mica2'][0]
+            output['mica2']['bounds'].append([min_bound, peak, max_bound])
+
+            lags, ntau, weight_dist, acf, smooth_dist, smooth_weight_dist = np.loadtxt( weight_dir + 'mica2_weights.dat', delimiter=',', unpack=True )
+            output['mica2']['lags'].append(lags)
+            output['mica2']['ntau'].append(ntau)
+            output['mica2']['weight_dist'].append(weight_dist)
+            output['mica2']['acf'].append(acf)
+            output['mica2']['smoothed_dist'].append(smooth_weight_dist)
+
+            weighted_lag_dist = np.loadtxt( weight_dir + 'mica2_weighted_lag_dist.dat', delimiter=',', unpack=True )
+            output['mica2']['downsampled_lag_dist'].append(weighted_lag_dist)
+
+            output['mica2']['frac_rejected'].append( summary_dict['frac_rejected_mica2'][0] )
 
 
 
@@ -805,6 +976,9 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin):
 
             if run_javelin:
                 output['rmax_javelin'].append( summary_dict['rmax_javelin'][0] )
+                
+            if run_mica2:
+                output['rmax_mica2'].append( summary_dict['rmax_mica2'][0] )
 
 
         output['names'].append( line_names[i+1] )
@@ -846,15 +1020,16 @@ def load(main_dir, modules=None, verbose=False):
     main_dir = os.path.abspath(main_dir) + r'/'
 
     if modules is None:
-        run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_weighting = get_modules(main_dir)
+        run_drw_rej, run_pyccf, run_pyzdcf, run_pyroa, run_javelin, run_mica2, run_weighting = get_modules(main_dir)
     else:
         run_drw_rej = ('drw_rej' in modules)
         run_pyccf = ('pyccf' in modules)
         run_pyzdcf = ('pyzdcf' in modules)
         run_pyroa = ('pyroa' in modules)
         run_javelin = ('javelin' in modules)
+        run_mica2 = ('mica2' in modules)
         run_weighting = ('weighting' in modules)
-        
+
         
     if verbose:
         print_dict = {
@@ -863,6 +1038,7 @@ def load(main_dir, modules=None, verbose=False):
             'pyZDCF': run_pyzdcf,
             'PyROA': run_pyroa,
             'JAVELIN': run_javelin,
+            'MICA2': run_mica2,
             'Weighting': run_weighting
         }
         print_subheader('Prior pyPetal Run', print_dict)
@@ -875,6 +1051,7 @@ def load(main_dir, modules=None, verbose=False):
     plike_res = {}
     pyroa_res = {}
     javelin_res = {}
+    mica2_res = {}
     weighting_res = {}
 
     if run_drw_rej:
@@ -891,9 +1068,12 @@ def load(main_dir, modules=None, verbose=False):
 
     if run_javelin:
         javelin_res = load_javelin(main_dir)
+        
+    if run_mica2:
+        mica2_res = load_mica2(main_dir)
 
     if run_weighting:
-        weighting_res, summary_dicts = load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin)
+        weighting_res, summary_dicts = load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2)
 
     res_tot = {}
     res_tot['drw_rej_res'] = drw_rej_res
@@ -902,6 +1082,7 @@ def load(main_dir, modules=None, verbose=False):
     res_tot['plike_res'] = plike_res
     res_tot['pyroa_res'] = pyroa_res
     res_tot['javelin_res'] = javelin_res
+    res_tot['mica2_res'] = mica2_res
     res_tot['weighting_res'] = weighting_res
 
     if run_weighting:

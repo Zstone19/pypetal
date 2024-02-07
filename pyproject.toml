@@ -46,6 +46,8 @@ tqdm = "^4.65.0"
 
 [tool.poetry.group.extra.dependencies]
 linmix = {git = "https://github.com/jmeyers314/linmix.git"}
+pkgconfig = "^1.5.5"
+cython = "^3.0.8"
 
 
 [tool.poetry.group.dev.dependencies]

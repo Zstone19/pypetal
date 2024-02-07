@@ -12,6 +12,7 @@ In general, running all of the modules with three lines (named "cont", "line1", 
     │   └── detrend.pdf
     ├── line1/
     │   ├── drw_rej/
+    │   ├── mica2/
     │   ├── pyccf/
     │   ├── pyzdcf/
     │   ├── javelin/
@@ -19,6 +20,7 @@ In general, running all of the modules with three lines (named "cont", "line1", 
     │   └── detrend.pdf
     ├── line2/
     │   ├── drw_rej/
+    │   ├── mica2/
     │   ├── pyccf/
     │   ├── pyzdcf/
     │   ├── javelin/
@@ -28,6 +30,7 @@ In general, running all of the modules with three lines (named "cont", "line1", 
     ├── pyroa/
     ├── pyroa_lcs/
     ├── light_curves/
+    ├── mica2_weights_res.pdf
     ├── pyccf_weights_res.pdf
     ├── pyroa_weights_res.pdf
     └── javelin_weights_res.pdf
@@ -259,6 +262,69 @@ If :python:`together=True`, the columns of the ``samples`` files will be:
       - :math:`A_0, B_0, \tau_0, \sigma_0, A_1, B_1, \tau_1, \Delta_1, \sigma_1, A_2, B_2, \tau_2, \Delta_2, \sigma_2, ..., \Delta`
 
 If :python:`together=False`, the columns will be the same as for :python:`together=True`, except the file for each line will only contain samples for the continuum, and that line.
+
+
+
+Module: MICA2
+-------------
+
+Like the PyROA module, the output of this module depends on the ``together`` parameter.
+
+If :python:`together=True`, the output directory for all lines will be ``output_directory/mica2/``. If :python:`together=False`, each line will have it's MICA2 results in its own subdirectory, labeled ``mica2/``.
+
+Each PyROA directory (whether ``together`` is :python:`True` or :python:`False`) will have both a ``data/`` and ``param/`` directory, which were used by MICA2 to store the CDNest sampling and output information. To learn more about this data, see the MICA2 and CDNest documentation.
+
+In general, the names of the files will depend on the number of gaussians/tophats used in the analysis. There will be a file for every gaussian used, indicated by a number indexed at 1.
+
+Only a few files will be of note in the ``data/`` directory, which are two figures:
+
+.. list-table::
+    :widths: 50 50
+    :header-rows: 1
+
+    * - Filename
+      - Description
+    * - ``cdnest_{ngauss}.pdf``
+      - A figure showing the post-processing analysis of the diffusive nested sampling process.
+    * - ``fig_{ngauss}.pdf``
+      - A figure showing the quality of the MICA2 fits, including the center/centroid histograms, the transfer function, and the fits to the light curves.
+
+
+Additionally, pyPetal will save the following files in the ``mica2/`` directory:
+
+.. list-table::
+    :widths: 30 30 10 30
+    :header-rows: 1
+
+    * - Filename
+      - Description
+      - Format
+      - Columns
+    * - ``cont_recon.dat``
+      - The reconstructed continuum light curve.
+      - CSV
+      - time, value, uncertainty
+    * - ``{line_name}_recon.dat``
+      - The reconstructed line light curve.
+      - CSV
+      - time, value, uncertainty
+    * - ``{line_name}_centers_{ngauss}.dat``
+      - The output samples for the centers of the gaussians for a given line and gaussian/tophat.
+      - CSV
+      - value
+    * - ``{line_name}_centroids_{ngauss}.dat``
+      - The output samples for the centroids of the gaussians for a given line and gaussian/tophat.
+      - CSV
+      - value
+    * - ``{line_name}_transfunc.dat``
+      - The transfer function for a given line and gaussian/tophat.
+      - CSV
+      - tau, transfer_function, lower_uncertainty, upper_uncertainty
+
+If :python:`together=True`, the only difference will be that the transfer function file will be named ``transfunc.dat``.
+
+If :python:`together=False` and :python:`no_order=False`, the ``data/`` and ``param/`` directories will be located in ``output_directory/mica2/`` and the individual sample files will be located in ``output_directory/{line_name}/mica2/``.
+
 
 
 

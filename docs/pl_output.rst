@@ -212,6 +212,12 @@ The ``MyFit`` object will have the following attributes:
       - list of :python:`float`
 
 
+Module: MICA2
+--------------
+
+The MICA2 module's output will be a list of ``pymica.gmodel`` objects output from MICA2 itself, in the order of the line names input into pyPetal.
+
+
 
 Module: JAVELIN
 ---------------
