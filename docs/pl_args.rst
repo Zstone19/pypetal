@@ -335,15 +335,15 @@ MICA2 arguments:
       - list of :python:`int`
       - [1, 1]
     * - ``width_limit``
-    - The lower and upper limits for the width of the Gaussians. If only one value is given, it will be assumed for both limits. If :python:`None`, these will be determined by MICA2.
+      - The lower and upper limits for the width of the Gaussians. If only one value is given, it will be assumed for both limits. If :python:`None`, these will be determined by MICA2.
       - list of :python:`float`
       - :python:`None`
     * - ``flag_con_sys_err``
-      - Whether or not to include a constant systematic error in the transfer function.
+      - Whether or not to include a constant systematic error for the continuum light curve.
       - :python:`bool`
       - :python:`False`
     * - ``flag_line_sys_err``
-      - Whether or not to include a systematic error in the transfer function for each line.
+      - Whether or not to include a systematic error for the line light curve(s).
       - :python:`bool`
       - :python:`False`
     * - ``type_lag_prior``
