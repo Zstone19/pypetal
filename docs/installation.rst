@@ -29,7 +29,7 @@ PLIKE is an optional algorithm that is used in pyPetal. There is a script availa
 MICA2
 ------
 
-pyPetal also offers `MICA2 <https://github.com/LiyrAstroph/MICA2>`_ as an optional module. This package is more complex to install than the others - to find out more, read the [MICA2 installation guide](https://mica2.readthedocs.io/en/latest/getting_started.html).
+pyPetal also offers `MICA2 <https://github.com/LiyrAstroph/MICA2>`_ as an optional module. This package is more complex to install than the others - to find out more, read the `MICA2 installation guide <https://mica2.readthedocs.io/en/latest/getting_started.html>`_.
 
 ``poetry`` can help to install some easily-installable python dependencies for MICA2:
 ::
