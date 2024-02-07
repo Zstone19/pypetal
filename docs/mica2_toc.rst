@@ -8,8 +8,8 @@ customization from the user in terms of parameters chosen and types of analysis 
 on in-depth usage of MICA2 and understanding of its arguments and outputs.
 
 While these tutorials do a sufficient job of introducing the user to the basic functionality of MICA2, the user is encouraged to read the
-MICA2 `documentation<https://mica2.readthedocs.io/en/latest/index.html>`_ and/or `repository<https://github.com/LiyrAstroph/MICA2>`_ for 
-more in-depth information on the software. In addition, the user can read the associated `paper<https://ui.adsabs.harvard.edu/abs/2016ApJ...831..206L/abstract>`_
+MICA2 `documentation <https://mica2.readthedocs.io/en/latest/index.html>`_ and/or `repository <https://github.com/LiyrAstroph/MICA2>`_ for 
+more in-depth information on the software. In addition, the user can read the associated `paper <https://ui.adsabs.harvard.edu/abs/2016ApJ...831..206L/abstract>`_
 for any additional details.
 
 .. warning::
