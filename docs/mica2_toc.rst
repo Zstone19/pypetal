@@ -8,15 +8,15 @@ customization from the user in terms of parameters chosen and types of analysis 
 on in-depth usage of MICA2 and understanding of its arguments and outputs.
 
 While these tutorials do a sufficient job of introducing the user to the basic functionality of MICA2, the user is encouraged to read the
-MICA2 [documentation](https://mica2.readthedocs.io/en/latest/index.html) and/or [repository](https://github.com/LiyrAstroph/MICA2) for 
-more in-depth information on the software. In addition, the user can read the associated [paper](https://ui.adsabs.harvard.edu/abs/2016ApJ...831..206L/abstract) 
+MICA2 `documentation<https://mica2.readthedocs.io/en/latest/index.html>`_ and/or `repository<https://github.com/LiyrAstroph/MICA2>`_ for 
+more in-depth information on the software. In addition, the user can read the associated `paper<https://ui.adsabs.harvard.edu/abs/2016ApJ...831..206L/abstract>`_
 for any additional details.
 
 .. warning::
-    MICA2 is a software that can normally be run on multiple cores by using ``mpiexec``, such as with:
-    ```
+    MICA2 is a software that can normally be run on multiple cores by using ``mpiexec``, such as with::
+
         mpiexec -n 4 python mica2_script.py
-    ```
+
 
     pyPetal extends this functionality, so that the MICA2 module can utilize ``mpiexec``. However, if this is done, all other module will
     only be run on one core (as they are optimized for python multi-threading instead of MPI). If the user wishes to only use the MICA2 module,
