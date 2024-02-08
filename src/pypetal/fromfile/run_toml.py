@@ -19,7 +19,7 @@ def make_toml(output_dir, fnames,
               run_arr, param_arr,
               line_names=None, filename=None):
 
-    tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'javelin', 'weighting']
+    tot_keys = ['drw_rej', 'detrend', 'pyccf', 'pyzdcf', 'pyroa', 'mica2', 'javelin', 'weighting']
     toml_dict = {}
 
 
