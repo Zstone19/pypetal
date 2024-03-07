@@ -316,14 +316,14 @@ def run_pipeline(output_dir, arg2,
             pyroa_res = pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)
 
 
-    cont_fname = comm.bcast(cont_fname, root=0)
-    line_fnames = comm.bcast(line_fnames, root=0)
-    line_names = comm.bcast(line_names, root=0)
-    output_dir = comm.bcast(output_dir, root=0)
-    general_kwargs = comm.bcast(general_kwargs, root=0)
-    mica2_params = comm.bcast(mica2_params, root=0)
-
     if run_mica2:
+        cont_fname = comm.bcast(cont_fname, root=0)
+        line_fnames = comm.bcast(line_fnames, root=0)
+        line_names = comm.bcast(line_names, root=0)
+        output_dir = comm.bcast(output_dir, root=0)
+        general_kwargs = comm.bcast(general_kwargs, root=0)
+        mica2_params = comm.bcast(mica2_params, root=0)
+
         mica2_res = mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, mica2_params, comm, rank)
 
 
