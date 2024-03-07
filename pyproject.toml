@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pypetal"
-version = "1.0.0"
+version = "1.0.1"
 description = "A pipeline for estimating AGN time lags"
 authors = ["Zstone19 <stone28@illinois.edu>"]
 license = "MIT"
