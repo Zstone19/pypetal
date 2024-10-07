@@ -5,8 +5,8 @@ import astropy.units as u
 import numpy as np
 from astropy.io import fits
 from astropy.table import Table
+from colorama import Fore, init
 
-from colorama import init, Fore
 init(autoreset=True)
 
 ##############################################
@@ -25,7 +25,7 @@ def print_hashstr():
 def print_linestr(n):
     linestr = "".join( ['\u25AC']*n )
     print( mcolor + linestr )
-    return    
+    return
 
 
 def print_header(header):
@@ -57,7 +57,7 @@ def print_header(header):
 def print_subheader(subheader, n, d):
     if n < len(subheader) + 5:
         n = len(subheader) + 5
-    
+
     print_linestr(n)
     print(acolor + subheader)
     print_linestr(n)
@@ -69,14 +69,14 @@ def print_subheader(subheader, n, d):
 
 def print_subheader_dict(d):
     n = 15 + 5
-    
+
     keys = list(d.keys())
     vals = list(d.values())
     for i in range(len(keys)):
         print(keys[i] + ':', end='')
         print( ''.join([' ']*(n-len(keys[i])-1)), end=''  )
         print('{}'.format(vals[i]))
-        
+
     return
 
 def print_warning(warning):
@@ -122,7 +122,7 @@ def make_directories(output_dir, fnames, line_names,
         else:
             for i in range(len(fnames)-1):
                 os.makedirs( output_dir + line_names[i+1] + '/mica2', exist_ok=True )
-                
+
             if not no_order_mica2:
                 os.makedirs( output_dir + 'mica2', exist_ok=True )
 
@@ -236,13 +236,13 @@ def write_weighting_summary(fname, res, run_pyccf, run_javelin, run_pyroa, run_m
 
     if run_pyccf:
         weighting_dat.append( res['rmax_pyccf'] )
-        
+
         for i in range(1, len(run_arr)):
             if run_arr[i]:
                 weighting_dat.append( res['rmax_' + names[i]] )
             else:
                 weighting_dat.append( np.nan )
-        
+
     else:
         weighting_dat.append(np.nan)
         weighting_dat.append(np.nan)
@@ -364,14 +364,14 @@ def combine_weight_summary(filenames, output_fname, line_names=None):
         lag_pyroa[i] = table['lag_pyroa'][0]
         lag_err_pyroa[i,:] = table['lag_err_pyroa'][0]
         frac_rejected_pyroa[i] = table['frac_rejected_pyroa'][0]
-        
+
         n0_mica2[i] = table['n0_mica2'][0]
         peak_bounds_mica2[i,:] = table['peak_bounds_mica2'][0]
         peak_mica2[i] = table['peak_mica2'][0]
         lag_mica2[i] = table['lag_mica2'][0]
         lag_err_mica2[i,:] = table['lag_err_mica2'][0]
         frac_rejected_mica2[i] = table['frac_rejected_mica2'][0]
-        
+
 
         rmax_pyccf[i] = table['rmax_pyccf'][0]
         rmax_jav[i] = table['rmax_javelin'][0]
