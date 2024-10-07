@@ -4,7 +4,8 @@ import os
 import numpy as np
 from astropy.table import Table
 
-from pypetal.utils.petalio import make_directories, write_data, print_header, print_error, print_warning
+from pypetal.utils.petalio import (make_directories, print_error, print_header,
+                                   print_warning, write_data)
 
 try:
     import pypetal.utils.detrending as dtr
@@ -19,12 +20,10 @@ try:
 except ModuleNotFoundError:
     print_warning('WARNING: Could not successfully import the MICA2 module. Assuming run_mica2=False.')
     mica2_exist = False
-    
-    
+
+
 if mica2_exist:
     from mpi4py import MPI
-
-
 
 from pypetal.drw_rej.module import drw_rej_tot
 from pypetal.pyccf.module import pyccf_tot
@@ -87,10 +86,10 @@ def run_pipeline(output_dir, arg2,
 
     pyroa_params : dict, optional
         The parameters to pass to the PyROA module. Default is ``{}``.
-        
+
     run_mica2 : bool, optional
         Whether to run the MICA2 module. Default is ``False``.
-        
+
     mica2_params : dict, optional
         The parameters to pass to the MICA2 module. Default is ``{}``.
 
@@ -136,7 +135,7 @@ def run_pipeline(output_dir, arg2,
                 name = 'line{}'.format(i+1)
 
 
-            fnames.append( output_dir + 'input_lcs/' + name + '.dat' )        
+            fnames.append( output_dir + 'input_lcs/' + name + '.dat' )
             if rank == 0:
                 write_data( arg2[i], output_dir + 'input_lcs/' + name + '.dat' )
 
@@ -155,21 +154,21 @@ def run_pipeline(output_dir, arg2,
 
     #Read in general kwargs
     general_kwargs = defaults.set_general(kwargs, fnames)
-    
+
     if rank == 0:
         if general_kwargs['verbose']:
             print_header('RUNNING PYPETAL')
-        
+
     if len(fnames) < 2:
         if rank == 0:
             print_error('ERROR: Requires at least two light curves to run pipeline.')
-    
+
         return {}
 
     if len(line_names) != len(fnames):
         if rank == 0:
             print_error('ERROR: Must have the same number of line names as light curves.')
-    
+
         return {}
 
 
@@ -178,7 +177,7 @@ def run_pipeline(output_dir, arg2,
 
     #Get "together_pyroa"
     _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
-    
+
     #Get "together_mica2"
     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, no_order_mica2 = defaults.set_mica2(mica2_params)
 
@@ -204,7 +203,7 @@ def run_pipeline(output_dir, arg2,
 
 
     if general_kwargs['file_fmt'] != 'csv':
-        
+
         input_dir = output_dir + 'temp/'
         if rank == 0:
             #Make temp directory to store csv files
@@ -352,7 +351,7 @@ def run_pipeline(output_dir, arg2,
 
         if run_pyroa:
             tot_res['pyroa_res'] = pyroa_res
-            
+
         if run_mica2:
             tot_res['mica2_res'] = mica2_res
 
@@ -360,7 +359,7 @@ def run_pipeline(output_dir, arg2,
         if not isinstance(arg2[0], str):
             import shutil
             shutil.rmtree( output_dir + 'input_lcs/' )
-            
+
         if general_kwargs['verbose']:
             print_header('RUN FINISHED')
 
@@ -408,10 +407,10 @@ def run_weighting(output_dir, line_names,
 
     pyroa_params : dict, optional
         The parameters used in the pyPetal pipeline for PyROA. Default is {}.
-        
+
     run_mica2 : bool, optional
         Whether or not MICA2 was run in the pyPetal pipeline. Default is False.
-        
+
     mica2_params : dict, optional
         The parameters used in the pyPetal pipeline for MICA2. Default is {}.
 
@@ -450,7 +449,7 @@ def run_weighting(output_dir, line_names,
     general_kwargs = defaults.set_general(kwargs, fnames)
     if general_kwargs['verbose']:
         print_header('RUNNING PYPETAL WEIGHTING')
-    
+
 
     #Get "interp"
     interp, _, _, _, _, _ = defaults.set_pyccf(pyccf_params)
@@ -502,16 +501,16 @@ def run_weighting(output_dir, line_names,
 
             for x in line_names[1:]:
                 pyroa_sample_fnames.append( output_dir + x + '/pyroa/samples.obj' )
-                
-                
-    
+
+
+
     if run_mica2:
         if together_mica2:
             mica2_sample_fnames = []
-            
+
             for x in line_names[1:]:
                 mica2_sample_fnames.append( output_dir + x + '/mica2/{}_lag_samples.dat'.format(x) )
-            
+
         else:
             mica2_sample_fnames = []
 
