@@ -271,7 +271,7 @@ def set_pyroa(input_args, nlc):
 
 
 def set_mica2(input_args):
-    
+
     default_kwargs = {
         'type_tf': 'gaussian',
         'max_num_saves': 2000,
@@ -297,7 +297,7 @@ def set_mica2(input_args):
         'together': False,
         'no_order': True
     }
-    
+
     params = { **default_kwargs, **input_args }
 
     type_tf = params['type_tf']
@@ -323,14 +323,14 @@ def set_mica2(input_args):
     max_num_levels = params['max_num_levels']
     together = params['together']
     no_order = params['no_order']
-    
+
     return type_tf, max_num_saves, flag_uniform_var_params, flag_uniform_tranfuns, \
         flag_trend, flag_lag_posivity, flag_negative_resp, number_component, \
         width_limit, flag_con_sys_err, flag_line_sys_err, type_lag_prior, lag_prior, \
         num_particles, thread_steps_factor, new_level_interval_factor, save_interval_factor, \
         lam, beta, ptol, max_num_levels, together, no_order
-        
-    
+
+
 
 
 def set_weighting(input_args):

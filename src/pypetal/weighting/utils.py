@@ -439,7 +439,7 @@ def combine_weight_outputs(res_arr, run_pyccf, run_javelin, run_pyroa, run_mica2
     cols_javelin = ['tophat_lag']
     cols_pyroa = ['time_delay']
     cols_mica2 = ['time_lag']
-    
+
 
     cols_common = ['bounds', 'acf', 'lags', 'weight_dist', 'smoothed_dist', 'ntau', 'frac_rejected']
     for col in cols_common:
@@ -525,7 +525,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         run_pyroa = True
     else:
         run_pyroa = False
-        
+
     if mica2_dist_file is not None:
         run_mica2 = True
     else:
@@ -919,8 +919,8 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         else:
             summary_dict['rmax_pyroa'] = np.nan
             output['rmax_pyroa'] = np.nan
-            
-            
+
+
         if run_mica2:
             #PyROA lag
             lag = output['mica2']['time_lag'][1]
@@ -938,7 +938,7 @@ def run_weighting_single( output_dir, cont_fname, line_fname,
         else:
             summary_dict['rmax_mica2'] = np.nan
             output['rmax_mica2'] = np.nan
-            
+
 
 
     else:
