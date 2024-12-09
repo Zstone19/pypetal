@@ -7,7 +7,7 @@ import numpy as np
 
 from pypetal.drw_rej.utils import drw_flag
 from pypetal.utils import defaults
-from pypetal.utils.petalio import write_data, print_subheader
+from pypetal.utils.petalio import print_subheader, write_data
 
 
 #For multiprocessing
