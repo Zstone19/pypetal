@@ -111,4 +111,4 @@ To cite the pyPetal code itself, use the [ASCL reference](https://ascl.net/2401.
     Stone Z., 2024, version xxxx, Astrophysics Source Code Library, record ascl:2401.004
 ```
 
-Cite the paper pyPetal was used in: [Shen et al. (2023)](https://ui.adsabs.harvard.edu/abs/2023arXiv230501014S/abstract) 
+Cite the paper pyPetal was used in: [Shen et al. (2023)](https://ui.adsabs.harvard.edu/abs/2023arXiv230501014S/abstract)
