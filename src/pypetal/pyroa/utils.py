@@ -602,6 +602,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         for i in range(len(fnames)-1):
 
             filters = [line_names[0], line_names[i+1]]
+            cwd = os.getcwd()
 
             args = (lc_dir, objname, filters, prior_arr[i,:,:],)
             kwargs = {'add_var':add_var[i], 'init_tau':[init_tau[i]], 'init_delta':init_delta, 'sig_level':sig_level,
@@ -637,6 +638,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
 
                 signal.alarm(0)
+                shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
 
             except Exception as e:
                 proc.terminate()
@@ -645,6 +647,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                 print_error('Skipping and continuing to next line')
                 
                 fit_arr.append(None)
+                shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
                 continue
 
         return fit_arr
@@ -684,6 +687,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             fit = MyFit(line_dir)
             
             signal.alarm(0)
+            shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
             
         except Exception as e:
             proc.terminate()
@@ -691,6 +695,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             print_error('PyROA timed out'.format(line_names[i+1]))
             
             fit = None
+            shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
 
 
         return fit
