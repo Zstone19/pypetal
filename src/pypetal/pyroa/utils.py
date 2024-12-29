@@ -605,7 +605,8 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             args = (lc_dir, objname, filters, prior_arr[i,:,:],)
             kwargs = {'add_var':add_var[i], 'init_tau':[init_tau[i]], 'init_delta':init_delta, 'sig_level':sig_level,
-                      'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn}
+                      'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn,
+                      'use_backend':True}
 
             try:
                 signal.signal(signal.SIGALRM, handler)
@@ -655,7 +656,8 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
         args = (lc_dir, objname, line_names, prior_arr,)
         kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
-                  'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn}
+                  'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn,
+                  'use_backend':True}
 
         try:
             signal.signal(signal.SIGALRM, handler)
