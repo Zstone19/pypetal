@@ -174,10 +174,10 @@ def run_pipeline(output_dir, arg2,
 
 
     #Get "reject_data"
-    _, _, _, _, _, _, reject_data, _ = defaults.set_drw_rej(drw_rej_params, fnames)
+    _, _, _, _, _, _, reject_data, _, _ = defaults.set_drw_rej(drw_rej_params, fnames)
 
     #Get "together_pyroa"
-    _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
+    _, _, _, _, _, _, _, _, together_pyroa, _, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
     
     #Get "together_mica2"
     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, no_order_mica2 = defaults.set_mica2(mica2_params)
@@ -462,7 +462,7 @@ def run_weighting(output_dir, line_names,
         together_jav = False
 
     #Get "together" for pyroa
-    _, _, _, _, _, _, _, _, together_pyroa, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
+    _, _, _, _, _, _, _, _, together_pyroa, _, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
     #Get "together" for mica2
     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, _ = defaults.set_mica2(mica2_params)

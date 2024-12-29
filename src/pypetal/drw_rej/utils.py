@@ -34,7 +34,7 @@ quantity_support()
 ###################### ASSIST FUNCTIONS ######################
 ##############################################################
 
-def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
+def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, mbh_est=None,
                  solver='minimize', suppress_warnings=True, jitter=True):
 
     """Fit time-series data to a given Gaussian process kernel using celerite.
@@ -139,6 +139,31 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp,
         soln = differential_evolution(neg_ll, bounds=bounds, args=(y.value, gp))
         initial = np.array(soln.x)
 
+    #Use mass as an initial guess
+    elif solver == 'mbh':
+        assert (mbh_est is not None)        
+        tau_est = 107* (mbh_est/1e8)**(.38) #d
+
+        c_est = 1/tau_est
+        loga_est = np.random.uniform(bounds[0][0], bounds[0][1])
+        
+        initial = [a_est, np.log(c_est)]
+        if jitter:
+            logn_est = np.random.uniform(bounds[2][0], bounds[2][1])
+            initial.append(logn_est)
+
+    #Use the priors    
+    elif solver == 'none':
+        loga_est = np.random.uniform(bounds[0][0], bounds[0][1])
+        logc_est = np.random.uniform(bounds[1][0], bounds[1][1])
+        initial = [loga_est, logc_est]
+        
+        if jitter:
+            logn_est = np.random.uniform(bounds[2][0], bounds[2][1])
+            initial.append(logn_est)
+
+   
+    initial = np.array(initial)
 
     #Set parameter vector to fit params
     gp.set_parameter_vector(initial)
@@ -301,8 +326,9 @@ def MCMC_fit(x, y, yerr, nwalkers=32, nburn=300, nsamp=1000,
         bounds = dict(log_sigma=(smin, smax))
         kernel += terms.JitterTerm(log_sigma=sval, bounds=bounds)
 
+    mbh_est = None
     samples, gp, statuses = celerite_fit(x, y, yerr, kernel, nwalkers,
-                                         nburn, nsamp, solver,
+                                         nburn, nsamp, mbh_est, solver,
                                          suppress_warnings, jitter)
 
     return samples, gp, statuses
@@ -690,7 +716,7 @@ def psd_data(x, y, yerr, samples, gp, nsamp=20):
 def drw_flag(times, data, error,
              target=None, fname=None,
              nwalkers=32, nburn=300, nsamp=1000,
-             nsig=1, jitter=True, clip=True,
+             nsig=1, jitter=True, clip=True, solver='none',
              plot=True):
 
 
@@ -791,7 +817,7 @@ def drw_flag(times, data, error,
     #Fit to the DRW model
     samples, gp, statuses = MCMC_fit(times, data, error,
                                          nwalkers=nwalkers, nburn=nburn, nsamp=nsamp,
-                                         jitter=jitter, clip=clip)
+                                         jitter=jitter, solver=solver, clip=clip)
 
 
     fig, ax = plot_outcome(times, data, error, samples, gp, data_unit,

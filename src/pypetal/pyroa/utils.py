@@ -9,6 +9,9 @@ from os import devnull
 import numpy as np
 import PyROA
 from astropy.table import Table
+from pypetal.utils.petalio import print_error
+
+import signal
 
 ##############################################################
 ####################### SILENCE OUTPUT #######################
@@ -451,7 +454,8 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
               init_tau=None, init_delta=10, sig_level=100,
               together=True, subtract_mean=True, div_mean=False,
               add_var=False, delay_dist=False, psi_types='Gaussian',
-              objname=None, prior_func=None, verbose=True):
+              objname=None, prior_func=None, timeout=60*60*3,
+              verbose=True):
 
 
     """Run PyROA for a number of input light curves.
@@ -530,6 +534,9 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
     """
 
+    def handler(signum, frame):
+        raise Exception("Timed out")
+
 
     if objname is None:
         objname = 'pyroa'
@@ -600,6 +607,60 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             kwargs = {'add_var':add_var[i], 'init_tau':[init_tau[i]], 'init_delta':init_delta, 'sig_level':sig_level,
                       'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn}
 
+            try:
+                signal.signal(signal.SIGALRM, handler)
+                signal.alarm(timeout)
+                
+                if verbose:
+                    proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+
+                    proc.start()
+                    while proc.is_alive():
+                        proc.is_alive()
+                    proc.terminate()
+
+                else:
+                    with suppress_stdout_stderr():
+                        proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
+
+                        proc.start()
+                        while proc.is_alive():
+                            proc.is_alive()
+                        proc.terminate()
+
+
+                move_output_files(cwd, line_dir[i])
+                fit = MyFit(line_dir[i])
+
+                fit_arr.append(fit)
+
+
+                signal.alarm(0)
+
+            except Exception as e:
+                proc.terminate()
+                
+                print_error('PyROA timed out for line: {}'.format(line_names[i+1]))
+                print_error('Skipping and continuing to next line')
+                
+                fit_arr.append(None)
+                continue
+
+        return fit_arr
+
+    else:
+
+        assert isinstance(line_dir, str), 'Must provide one line_dir if together=True'
+
+
+        args = (lc_dir, objname, line_names, prior_arr,)
+        kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
+                  'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn}
+
+        try:
+            signal.signal(signal.SIGALRM, handler)
+            signal.alarm(timeout)
+
             if verbose:
                 proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
 
@@ -617,41 +678,17 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                         proc.is_alive()
                     proc.terminate()
 
-
-            move_output_files(cwd, line_dir[i])
-            fit = MyFit(line_dir[i])
-
-            fit_arr.append(fit)
-
-        return fit_arr
-
-    else:
-
-        assert isinstance(line_dir, str), 'Must provide one line_dir if together=True'
-
-
-        args = (lc_dir, objname, line_names, prior_arr,)
-        kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
-                  'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn}
-
-        if verbose:
-            proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
-
-            proc.start()
-            while proc.is_alive():
-                proc.is_alive()
+            move_output_files(cwd, line_dir)
+            fit = MyFit(line_dir)
+            
+            signal.alarm(0)
+            
+        except Exception as e:
             proc.terminate()
+            
+            print_error('PyROA timed out'.format(line_names[i+1]))
+            
+            fit = None
 
-        else:
-            with suppress_stdout_stderr():
-                proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
-
-                proc.start()
-                while proc.is_alive():
-                    proc.is_alive()
-                proc.terminate()
-
-        move_output_files(cwd, line_dir)
-        fit = MyFit(line_dir)
 
         return fit

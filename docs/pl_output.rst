@@ -211,6 +211,8 @@ The ``MyFit`` object will have the following attributes:
       - The error in the driving light curve model fit.
       - list of :python:`float`
 
+.. note:: If the PyROA module times out, the output will be :python:`None`.
+
 
 Module: MICA2
 --------------

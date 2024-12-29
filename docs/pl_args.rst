@@ -120,6 +120,10 @@ Module: DRW Rejection (``run_drw_rej``)
       - If :python:`True`, the resulting DRW parameters :math:`(\sigma_{\rm DRW}, $\tau_{\rm DRW})`, will used as input to the JAVELIN module of pyPetal. The DRW parameters in each fit will be fixed to the results obtained in this module.
       - :python:`bool`
       - :python:`False`
+    * - ``solver``
+      - How the module will obtain the initial conditions used in the DRW fitting process. ``minimize`` uses ``scipy.optimize.minimize``, ``diff_evo`` uses ``scipy.optimize.differential_evolution``, and ``none`` randomly selects using the uniform priors.
+      - :python:`str`
+      - :python:`"none"`
 
 
 
@@ -286,6 +290,10 @@ Module: pyROA (``run_pyroa``)
       - A function used to get the priors for PyROA. Must have the same arguments as ``pypetal.pyroa.utils.get_priors`` except for the ``delimiter`` argument. If :python:`None`, will use the default priors.
       - :python:`function`, :python:`None`
       - :python:`None`
+    * - ``timeout``
+      - The maximum time to run the PyROA analysis in seconds.
+      - :python:`int`
+      - :python:`10800` (3 hours)
 
 
 

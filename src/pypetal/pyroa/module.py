@@ -24,7 +24,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
 
     nchain, nburn, init_tau, subtract_mean, div_mean, \
             add_var, delay_dist, psi_types, together, \
-                objname, prior_func = defaults.set_pyroa( kwargs, len(line_names) )
+                objname, prior_func, timeout = defaults.set_pyroa( kwargs, len(line_names) )
 
     if verbose:
 
@@ -38,7 +38,8 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
             'delay_dist': delay_dist,
             'psi_types': psi_types,
             'together': together,
-            'objname': objname
+            'objname': objname,
+            'timeout': timeout
         }
         print_subheader('Running PyROA', 35, print_dict)
 
@@ -58,11 +59,15 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
                            together=together, subtract_mean=subtract_mean,
                            div_mean=div_mean, add_var=add_var,
                            delay_dist=delay_dist, psi_types=psi_types,
-                           objname=objname, prior_func=prior_func, verbose=verbose)
+                           objname=objname, prior_func=prior_func, timeout=timeout,
+                           verbose=verbose)
 
     lc_fnames = [ lc_dir + objname + '_' + x + '.dat' for x in line_names ]
 
     if together:
+        if res is None:
+            return res
+        
         pyroa_trace_plot( res.samples, line_names, add_var=add_var,
                                 delay_dist=delay_dist, nburn=nburn,
                                 fname = output_dir + 'pyroa/trace_plot.pdf',
@@ -97,6 +102,10 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
     else:
 
         for i, res_i in enumerate(res):
+            if res_i is None:
+                continue
+            
+            
             names_i = [ line_names[0], line_names[i+1] ]
             fnames_i = [ lc_fnames[0], lc_fnames[i+1] ]
 

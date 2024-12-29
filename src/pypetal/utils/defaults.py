@@ -120,7 +120,8 @@ def set_drw_rej(input_args, fnames):
         'nchain': 1000,
         'clip': np.full( len(fnames), True),
         'reject_data': np.hstack([ [True], np.full( len(fnames)-1, False) ]),
-        'use_for_javelin': False
+        'use_for_javelin': False,
+        'solver': 'none'
     }
 
     params = { **default_kwargs, **input_args }
@@ -133,6 +134,7 @@ def set_drw_rej(input_args, fnames):
     clip = params['clip']
     reject_data = params['reject_data']
     use_for_javelin = params['use_for_javelin']
+    solver = params['solver']
 
     if isinstance(clip, bool):
         clip = np.full( len(fnames), clip)
@@ -145,7 +147,7 @@ def set_drw_rej(input_args, fnames):
 
 
     return jitter, nsig, nwalker, nburn, nchain, clip, \
-        reject_data, use_for_javelin
+        reject_data, use_for_javelin, solver
 
 
 def set_detrend(input_args):
@@ -233,7 +235,8 @@ def set_pyroa(input_args, nlc):
         'psi_types': 'Gaussian',
         'together': True,
         'objname': None,
-        'prior_func': None
+        'prior_func': None,
+        'timeout': 60*60*3
     }
 
     params = { **default_kwargs, **input_args }
@@ -249,6 +252,7 @@ def set_pyroa(input_args, nlc):
     together = params['together']
     objname = params['objname']
     prior_func = params['prior_func']
+    timeout = params['timeout']
 
     if init_tau is None:
         init_tau = [10.] * (nlc-1)
@@ -267,7 +271,7 @@ def set_pyroa(input_args, nlc):
 
 
     return nchain, nburn, init_tau, subtract_mean, div_mean, \
-            add_var, delay_dist, psi_types, together, objname, prior_func
+            add_var, delay_dist, psi_types, together, objname, prior_func, timeout
 
 
 def set_mica2(input_args):

@@ -55,7 +55,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
     #Read kwargs
 
     jitter, nsig, nwalker, nburn, nchain, clip, \
-        reject_data, use_for_javelin = defaults.set_drw_rej(kwargs,
+        reject_data, use_for_javelin, solver = defaults.set_drw_rej(kwargs,
                                                             np.hstack([ [cont_fname], line_fnames ])
                                                             )
 
@@ -83,7 +83,8 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
             'nchain': nchain,
             'clip': clip_str,
             'reject_data': reject_data,
-            'use_for_javelin': use_for_javelin
+            'use_for_javelin': use_for_javelin,
+            'solver': solver
         }
 
         print_subheader('Performing DRW Rejection', 35, print_dict)
@@ -100,7 +101,7 @@ def drw_rej_tot(cont_fname, line_fnames, line_names, output_dir,
 
 
     drw_rej_func = partial( drw_flag, nwalkers=nwalker, nburn=nburn, nsamp=nchain,
-                            nsig=nsig, jitter=jitter, plot=plot)
+                            nsig=nsig, jitter=jitter, solver=solver, plot=plot)
 
 
 
