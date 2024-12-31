@@ -985,6 +985,8 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2):
 
     #Stack summary dicts
     res_dicts_tot = vstack(res_dicts_tot)
+    
+    res_dicts_tot['name'] = output['names']
 
     return output, res_dicts_tot
 
