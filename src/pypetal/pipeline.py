@@ -531,3 +531,220 @@ def run_weighting(output_dir, line_names,
 
 
     return res
+
+
+
+
+def rerun_pipeline(output_dir, line_names,
+                   run_pyccf=False, pyccf_params={},
+                   run_pyzdcf=False, pyzdcf_params={},
+                   run_pyroa=False, pyroa_params={},
+                   run_mica2=False, mica2_params={},
+                   **kwargs):
+
+    """ Run the pyPetal pipeline again on a pre-existing pypetal run, using different parameters. Individual modules can be specified, but are not run by default.
+
+    Parameters
+    ----------
+
+    output_dir : str
+        The directory to save the output files to.
+        
+    line_names : list of str
+        The names of the lines to be used in the output files.
+
+    run_pyccf : bool, optional
+        Whether to run the pyCCF module. Default is ``False``.
+
+    pyccf_params : dict, optional
+        The parameters to pass to the pyCCF module. Default is ``{}``.
+
+    run_pyzdcf : bool, optional
+        Whether to run the pyZDCF module. Default is ``False``.
+
+    pyzdcf_params : dict, optional
+        The parameters to pass to the pyZDCF module. Default is ``{}``.
+
+    run_pyroa : bool, optional
+        Whether to run the PyROA module. Default is ``False``.
+
+    pyroa_params : dict, optional
+        The parameters to pass to the PyROA module. Default is ``{}``.
+        
+    run_mica2 : bool, optional
+        Whether to run the MICA2 module. Default is ``False``.
+        
+    mica2_params : dict, optional
+        The parameters to pass to the MICA2 module. Default is ``{}``.
+
+
+
+    Returns
+    -------
+
+    output : dict
+        A dictionary containing the output of the pipeline modules.
+
+    """
+
+    if mica2_exist:
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+    else:
+        comm = None
+        rank = 0
+
+
+    if not detrend_exist:
+        run_detrend = False
+    if not mica2_exist:
+        run_mica2 = False
+
+    output_dir = os.path.abspath(output_dir) + r'/'
+
+
+    fnames = []
+    for n in line_names:
+        fnames.append( output_dir + 'processed_lcs/{}_data.dat'.format(n) )
+    
+    fnames = np.array(fnames)
+    kwargs['file_fmt'] = 'csv'
+
+
+
+
+
+
+    cont_fname = fnames[0]
+    line_fnames = fnames[1:]
+
+    if type(line_fnames) is str:
+        line_fnames = [line_fnames]
+
+
+    #Read in general kwargs
+    general_kwargs = defaults.set_general(kwargs, fnames)
+    
+    if rank == 0:
+        if general_kwargs['verbose']:
+            print_header('RERUNNING PYPETAL')
+        
+    if len(fnames) < 2:
+        if rank == 0:
+            print_error('ERROR: Requires at least two light curves to run pipeline.')
+    
+        return {}
+
+    if len(line_names) != len(fnames):
+        if rank == 0:
+            print_error('ERROR: Must have the same number of line names as light curves.')
+    
+        return {}
+
+
+    #Get "together_pyroa"
+    _, _, _, _, _, _, _, _, together_pyroa, _, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
+    
+    #Get "together_mica2"
+    _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, no_order_mica2 = defaults.set_mica2(mica2_params)
+
+
+    #Get directory common to all files
+    input_dir = os.path.dirname( os.path.realpath(cont_fname) )
+    for i in range(len(line_fnames)):
+        assert input_dir == os.path.dirname( os.path.realpath(line_fnames[i]) )
+
+
+    if rank == 0:
+
+        pyccf_res = {}
+        pyzdcf_res = {}
+        pyroa_res = {}
+        mica2_res = {}
+
+        if run_pyccf:
+            #Remove data from subdirs
+            for n in line_names[1:]:
+                subdir_fnames = glob.glob(output_dir + '{}/pyccf/*'.format(n))
+                print(output_dir + '{}/pyccf/*'.format(n))
+                for f in subdir_fnames:
+                    os.remove(f)
+            
+            pyccf_res = pyccf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyccf_params)
+
+        if run_pyzdcf:
+            #Remove data from subdirs
+            for n in line_names[1:]:
+                subdir_fnames = glob.glob(output_dir + '{}/pyzdcf/*'.format(n))
+                for f in subdir_fnames:
+                    os.remove(f)
+            
+            pyzdcf_res, plike_res = pyzdcf_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyzdcf_params)
+
+        if run_pyroa:
+            #Remove data from subdirs
+            if together_pyroa:
+                subdir_fnames = glob.glob(output_dir + 'pyroa/*')
+                for f in subdir_fnames:
+                    os.remove(f)
+                
+            else:
+                for n in line_names[1:]:
+                    subdir_fnames = glob.glob(output_dir + '{}/pyroa/*'.format(n))
+                    for f in subdir_fnames:
+                        os.remove(f)
+            
+            pyroa_res = pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)
+
+
+    if run_mica2:
+        cont_fname = comm.bcast(cont_fname, root=0)
+        line_fnames = comm.bcast(line_fnames, root=0)
+        line_names = comm.bcast(line_names, root=0)
+        output_dir = comm.bcast(output_dir, root=0)
+        general_kwargs = comm.bcast(general_kwargs, root=0)
+        mica2_params = comm.bcast(mica2_params, root=0)
+        
+        # Remove data from subdirs
+        if together_mica2:
+            subdir_fnames = glob.glob(input_dir + 'mica2/*')
+            for f in subdir_fnames:
+                os.remove(f)
+                
+        else:
+            for n in line_names[1:]:
+                subdir_fnames = glob.glob(input_dir + '{}/mica2/*'.format(n))
+                for f in subdir_fnames:
+                    os.remove(f)
+
+        mica2_res = mica2_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, mica2_params, comm, rank)
+
+
+    if rank == 0:
+
+        if general_kwargs['file_fmt'] != 'csv':
+            import shutil
+            shutil.rmtree(input_dir)
+
+
+        #Compile all results into a single dict
+        tot_res = {}
+
+        if run_pyccf:
+            tot_res['pyccf_res'] = pyccf_res
+
+        if run_pyzdcf:
+            tot_res['pyzdcf_res'] = pyzdcf_res
+            tot_res['plike_res'] = plike_res
+
+        if run_pyroa:
+            tot_res['pyroa_res'] = pyroa_res
+            
+        if run_mica2:
+            tot_res['mica2_res'] = mica2_res
+            
+        if general_kwargs['verbose']:
+            print_header('RUN FINISHED')
+
+
+        return tot_res

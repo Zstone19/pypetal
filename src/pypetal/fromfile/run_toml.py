@@ -179,6 +179,37 @@ def get_toml_inputs(filename):
 
 
 
+
+
+def get_toml_inputs_rerun(filename):
+
+    toml_dat = toml.load(filename)
+
+    assert 'inputs' in toml_dat.keys(), 'No inputs found in toml file'
+    assert 'output_dir' in toml_dat['inputs'].keys(), 'No output directory found in toml file'
+    assert 'line_names' in toml_dat['inputs'].keys(), 'No line names found in toml file'
+
+    #################################
+    #Output directory
+
+    output_dir = os.path.abspath(toml_dat['inputs']['output_dir']) + r'/'
+
+    #################################
+    #Line names
+
+    if str2none(toml_dat['inputs']['line_names']) is None:
+        line_names = []
+        for i in range(len(filenames)):
+            line_names.append('Line {}'.format(i+1))
+
+    else:
+        assert isinstance( toml_dat['inputs']['line_names'], list ), 'Line names must be a list'
+        line_names = toml_dat['inputs']['line_names']
+
+    return output_dir, line_names
+
+
+
 #########################################################################################
 ################################ TO RUN SINGLE OBJECTS ##################################
 #########################################################################################
@@ -199,6 +230,23 @@ def run_from_toml1(filename):
                           run_pyroa=run_arr[4], pyroa_params=param_arr[5],
                           run_mica2=run_arr[5], mica2_params=param_arr[6],
                           **param_arr[0])
+
+    return res
+
+
+def rerun_from_toml1(filename):
+    import pypetal.pipeline as pl
+
+    output_dir, line_names = get_toml_inputs_rerun(filename)
+    run_arr = get_toml_modules(filename)
+    param_arr = get_toml_params(filename, run_arr)
+
+    res = pl.rerun_pipeline(output_dir, line_names,
+                            run_pyccf=run_arr[2], pyccf_params=param_arr[3],
+                            run_pyzdcf=run_arr[3], pyzdcf_params=param_arr[4],
+                            run_pyroa=run_arr[4], pyroa_params=param_arr[5],
+                            run_mica2=run_arr[5], mica2_params=param_arr[6],
+                            **param_arr[0])
 
     return res
 
