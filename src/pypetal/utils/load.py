@@ -5,12 +5,12 @@ import numpy as np
 from astropy.table import Table, vstack
 
 from pypetal.pyroa.utils import MyFit
-from pypetal.utils.petalio import print_subheader, print_warning, print_error
+from pypetal.utils.petalio import print_error, print_subheader, print_warning
 
 
 def get_line_names(main_dir):
     dirs = glob.glob(main_dir + '*/')
-    
+
     if main_dir + 'temp/' in dirs:
         dirs.remove(main_dir + 'temp/')
 
@@ -34,14 +34,14 @@ def get_line_names(main_dir):
     elif (main_dir + 'pyroa/' in dirs) & ( len(dirs) > 2 ):
         dirs.remove(main_dir + 'pyroa/' )
         line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
-        
+
     elif main_dir + 'mica2/' in dirs :
         if len(dirs) > 2:
             dirs.remove(main_dir + 'mica2/' )
             line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
         else:
             sample_files = glob.glob(main_dir + 'mica2/*_lag_samples.dat')
-            line_names = [ os.path.basename(x[:-16]) for x in sample_files ]        
+            line_names = [ os.path.basename(x[:-16]) for x in sample_files ]
 
     else:
         line_names = [ os.path.basename(os.path.dirname(x)) for x in dirs ]
@@ -272,7 +272,7 @@ def get_cont_name(main_dir):
     dirs_tot.remove( main_dir + 'light_curves/')
     if main_dir + 'processed_lcs/' in dirs_tot:
         dirs_tot.remove( main_dir + 'processed_lcs/')
-        
+
     if main_dir + 'temp/' in dirs_tot:
         dirs_tot.remove( main_dir + 'temp/')
 
@@ -368,10 +368,10 @@ def get_cont_name(main_dir):
 
             ind = np.argwhere( ~has_javelin ).T[0][0]
             cont_name = os.path.basename( os.path.dirname( dirs_tot[ind] ) )
-            
-            
+
+
     elif run_mica2 & (not mica2_together):
-        
+
         has_mica2 = np.zeros( len(dirs_tot), dtype=bool )
         for i, dir_i in enumerate(dirs_tot):
             subdirs = glob.glob(dir_i + '*/')
@@ -649,15 +649,15 @@ def load_mica2(dir_loc):
         res['lag_weights'] = []
         res['weighted_lags'] = []
         res['names'] = []
-        
+
         for i in range(len(line_names[1:])):
             lags, weights, weighted_lags = np.loadtxt( dir_loc + 'mica2/' + line_names[i+1] + '_lag_samples.dat', delimiter=',', unpack=True )
             res['lag_samples'].append(lags)
             res['lag_weights'].append(weights)
             res['weighted_lags'].append(weighted_lags)
             res['names'].append(line_names[i+1])
-            
-            
+
+
         tau, tf, errlo, errhi = np.loadtxt( dir_loc + 'mica2/transfunc.dat', delimiter=',', unpack=True )
         res['tau'] = tau
         res['transfunc'] = tf
@@ -668,30 +668,30 @@ def load_mica2(dir_loc):
 
     else:
         res = {}
-        
+
         res['lag_samples'] = []
         res['lag_weights'] = []
         res['weighted_lags'] = []
         res['names'] = []
-        
+
         res['tau'] = []
         res['transfunc'] = []
         res['transfunc_errlo'] = []
         res['transfunc_errhi'] = []
-        
+
         for i in range(len(line_dirs)):
             lags, weights, weighted_lags = np.loadtxt( line_dirs[i] + 'mica2/' + line_names[i+1] + '_lag_samples.dat', delimiter=',', unpack=True )
             res['lag_samples'].append(lags)
             res['lag_weights'].append(weights)
             res['weighted_lags'].append(weighted_lags)
             res['names'].append(line_names[i+1])
-            
+
             tau, tf, errlo, errhi = np.loadtxt( line_dirs[i] + 'mica2/'+ line_names[i+1] + '_transfunc.dat', delimiter=',', unpack=True )
             res['tau'].append(tau)
             res['transfunc'].append(tf)
             res['transfunc_errlo'].append(errlo)
             res['transfunc_errhi'].append(errhi)
-            
+
         return res
 
 
@@ -845,8 +845,8 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2):
         output['pyroa']['ntau'] = []
         output['pyroa']['downsampled_lag_dist'] = []
         output['pyroa']['frac_rejected'] = []
-        
-        
+
+
     if run_mica2:
         output['mica2']['time_lag'] = []
         output['mica2']['bounds'] = []
@@ -918,9 +918,9 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2):
             output['pyroa']['downsampled_lag_dist'].append(weighted_lag_dist)
 
             output['pyroa']['frac_rejected'].append( summary_dict['frac_rejected_pyroa'][0] )
-            
-            
-            
+
+
+
         if run_mica2:
             lag_err_lo = summary_dict['lag_err_mica2'][0][0]
             lag_err_hi = summary_dict['lag_err_mica2'][0][1]
@@ -976,7 +976,7 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2):
 
             if run_javelin:
                 output['rmax_javelin'].append( summary_dict['rmax_javelin'][0] )
-                
+
             if run_mica2:
                 output['rmax_mica2'].append( summary_dict['rmax_mica2'][0] )
 
@@ -985,7 +985,7 @@ def load_weighting(main_dir, run_pyccf, run_pyroa, run_javelin, run_mica2):
 
     #Stack summary dicts
     res_dicts_tot = vstack(res_dicts_tot)
-    
+
     res_dicts_tot['name'] = output['names']
 
     return output, res_dicts_tot
@@ -1032,7 +1032,7 @@ def load(main_dir, modules=None, verbose=False):
         run_mica2 = ('mica2' in modules)
         run_weighting = ('weighting' in modules)
 
-        
+
     if verbose:
         print_dict = {
             'DRW Rejection': run_drw_rej,
@@ -1070,7 +1070,7 @@ def load(main_dir, modules=None, verbose=False):
 
     if run_javelin:
         javelin_res = load_javelin(main_dir)
-        
+
     if run_mica2:
         mica2_res = load_mica2(main_dir)
 
