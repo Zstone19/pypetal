@@ -3,15 +3,15 @@ import multiprocessing as mp
 import os
 import pickle
 import shutil
+import signal
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from os import devnull
 
 import numpy as np
 import PyROA
 from astropy.table import Table
-from pypetal.utils.petalio import print_error
 
-import signal
+from pypetal.utils.petalio import print_error
 
 ##############################################################
 ####################### SILENCE OUTPUT #######################
@@ -245,14 +245,14 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
             maxy.append( np.max(y+yerr) )
             med_vals.append( np.median(y) )
             mad_vals.append( np.mean(np.abs(y-np.mean(y)))  )
-            
+
 
 
         # A - MAD
         # B - median
         if div_mean:
             a_prior = [0., 2.]
-            b_prior = [0., 2.]            
+            b_prior = [0., 2.]
             err_prior = [0., 10.]
         else:
             a_prior = [0., np.max(std_vals)]
@@ -265,7 +265,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
         a_prior[1] = np.max(a_prior[1]/np.array(mad_vals))
         b_prior[0] = np.min(b_prior[0]/np.array(med_vals))
         b_prior[1] = np.max(b_prior[1]/np.array(med_vals))
-            
+
         # Default priors from PyROA
         # a_prior = [.5, 2.]
         # b_prior = [.5, 2.]
@@ -286,8 +286,8 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
 
         if subtract_mean:
             y_cont -= np.mean(y_cont)
-            
-        
+
+
         mad_cont = np.mean(np.abs(y_cont-np.mean(y_cont)))
         med_cont = np.median(y_cont)
 
@@ -307,7 +307,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 #A - MAD
                 prior_arr[i,0,0] = 0.
                 prior_arr[i,0,1] = 2.
-                
+
                 #B - median
                 prior_arr[i,1,0] = 0.
                 prior_arr[i,1,1] = 2.
@@ -324,7 +324,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 #A - MAD
                 prior_arr[i,0,0] = 0.
                 prior_arr[i,0,1] = 10.*np.max( [np.std(y), np.std(y_cont)] )
-                
+
                 #B - median
                 prior_arr[i,1,0] = np.min( [np.min(y-yerr), np.min(y_cont-yerr_cont)] )
                 prior_arr[i,1,1] = np.max( [np.max(y+yerr), np.max(y_cont+yerr_cont)] )
@@ -333,11 +333,11 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 prior_arr[i,4,0] = 0.
                 prior_arr[i,4,1] = 10.*np.max([ np.std(y), np.std(y_cont) ])
 
-    
+
             mad_line = np.mean(np.abs(y-np.mean(y)))
             med_line = np.median(y)
-            
-            
+
+
             #Relative to LC mean/RMS
             #A
             prior_arr[i,0,0] = np.min([ prior_arr[i,0,0]/mad_line, prior_arr[i,0,0]/mad_cont ])
@@ -612,7 +612,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             try:
                 signal.signal(signal.SIGALRM, handler)
                 signal.alarm(timeout)
-                
+
                 if verbose:
                     proc = mp.get_context('fork').Process(target=PyROA.Fit, args=args, kwargs=kwargs)
 
@@ -642,10 +642,10 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             except Exception as e:
                 proc.terminate()
-                
+
                 print_error('PyROA timed out for line: {}'.format(line_names[i+1]))
                 print_error('Skipping and continuing to next line')
-                
+
                 fit_arr.append(None)
                 shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
                 continue
@@ -685,15 +685,15 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
 
             move_output_files(cwd, line_dir)
             fit = MyFit(line_dir)
-            
+
             signal.alarm(0)
             shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
-            
+
         except Exception as e:
             proc.terminate()
-            
+
             print_error('PyROA timed out'.format(line_names[i+1]))
-            
+
             fit = None
             shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
 

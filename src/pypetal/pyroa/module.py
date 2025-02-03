@@ -67,7 +67,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
     if together:
         if res is None:
             return res
-        
+
         pyroa_trace_plot( res.samples, line_names, add_var=add_var,
                                 delay_dist=delay_dist, nburn=nburn,
                                 fname = output_dir + 'pyroa/trace_plot.pdf',
@@ -104,8 +104,8 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
         for i, res_i in enumerate(res):
             if res_i is None:
                 continue
-            
-            
+
+
             names_i = [ line_names[0], line_names[i+1] ]
             fnames_i = [ lc_fnames[0], lc_fnames[i+1] ]
 
