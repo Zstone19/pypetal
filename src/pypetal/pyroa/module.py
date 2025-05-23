@@ -24,7 +24,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
 
     nchain, nburn, init_tau, subtract_mean, div_mean, \
             add_var, delay_dist, psi_types, together, \
-                objname, prior_func, timeout = defaults.set_pyroa( kwargs, len(line_names) )
+                objname, prior_func, timeout, resume = defaults.set_pyroa( kwargs, len(line_names) )
 
     if verbose:
 
@@ -39,7 +39,8 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
             'psi_types': psi_types,
             'together': together,
             'objname': objname,
-            'timeout': timeout
+            'timeout': timeout,
+            'resume': resume
         }
         print_subheader('Running PyROA', 35, print_dict)
 
@@ -55,12 +56,12 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
 
 
     res = run_pyroa( tot_fnames, lc_dir, line_dir, line_names,
-                           nburn, nchain, lag_bounds, init_tau,
-                           together=together, subtract_mean=subtract_mean,
-                           div_mean=div_mean, add_var=add_var,
-                           delay_dist=delay_dist, psi_types=psi_types,
-                           objname=objname, prior_func=prior_func, timeout=timeout,
-                           verbose=verbose)
+                     nburn, nchain, lag_bounds, init_tau,
+                     together=together, subtract_mean=subtract_mean,
+                     div_mean=div_mean, add_var=add_var,
+                     delay_dist=delay_dist, psi_types=psi_types,
+                     objname=objname, prior_func=prior_func, resume=resume, timeout=timeout,
+                     verbose=verbose)
 
     lc_fnames = [ lc_dir + objname + '_' + x + '.dat' for x in line_names ]
 

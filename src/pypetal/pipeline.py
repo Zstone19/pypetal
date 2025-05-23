@@ -177,7 +177,7 @@ def run_pipeline(output_dir, arg2,
     _, _, _, _, _, _, reject_data, _, _ = defaults.set_drw_rej(drw_rej_params, fnames)
 
     #Get "together_pyroa"
-    _, _, _, _, _, _, _, _, together_pyroa, _, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
+    _, _, _, _, _, _, _, _, together_pyroa, _, _, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
     
     #Get "together_mica2"
     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, no_order_mica2 = defaults.set_mica2(mica2_params)
@@ -462,7 +462,7 @@ def run_weighting(output_dir, line_names,
         together_jav = False
 
     #Get "together" for pyroa
-    _, _, _, _, _, _, _, _, together_pyroa, _, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
+    _, _, _, _, _, _, _, _, together_pyroa, _, _, _, _ = defaults.set_pyroa( pyroa_params, len(line_names) )
 
     #Get "together" for mica2
     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, _ = defaults.set_mica2(mica2_params)
@@ -643,7 +643,7 @@ def rerun_pipeline(output_dir, line_names,
 
 
     #Get "together_pyroa"
-    _, _, _, _, _, _, _, _, together_pyroa, _, _, _ = defaults.set_pyroa(pyroa_params, len(fnames))
+    _, _, _, _, _, _, _, _, together_pyroa, _, _, _, resume_pyroa = defaults.set_pyroa(pyroa_params, len(fnames))
     
     #Get "together_mica2"
     _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, together_mica2, no_order_mica2 = defaults.set_mica2(mica2_params)
@@ -686,12 +686,21 @@ def rerun_pipeline(output_dir, line_names,
             if together_pyroa:
                 subdir_fnames = glob.glob(output_dir + 'pyroa/*')
                 for f in subdir_fnames:
+                    
+                    if resume_pyroa:
+                        if f == output_dir + 'pyroa/Fit.h5':
+                            continue
+                    
                     os.remove(f)
                 
             else:
-                for n in line_names[1:]:
+                for i, n in enumerate(line_names[1:]):
                     subdir_fnames = glob.glob(output_dir + '{}/pyroa/*'.format(n))
                     for f in subdir_fnames:
+                        if resume_pyroa[i]:
+                            if f == output_dir + '{}/pyroa/Fit.h5'.format(n):
+                                continue
+                        
                         os.remove(f)
             
             pyroa_res = pyroa_tot(cont_fname, line_fnames, line_names, output_dir, general_kwargs, pyroa_params)

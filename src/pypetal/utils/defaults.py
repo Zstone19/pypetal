@@ -236,7 +236,8 @@ def set_pyroa(input_args, nlc):
         'together': True,
         'objname': None,
         'prior_func': None,
-        'timeout': 60*60*3
+        'timeout': 60*60*3,
+        'resume': False
     }
 
     params = { **default_kwargs, **input_args }
@@ -253,6 +254,7 @@ def set_pyroa(input_args, nlc):
     objname = params['objname']
     prior_func = params['prior_func']
     timeout = params['timeout']
+    resume = params['resume']
 
     if init_tau is None:
         init_tau = [10.] * (nlc-1)
@@ -268,10 +270,13 @@ def set_pyroa(input_args, nlc):
             delay_dist = [delay_dist] * (nlc-1)
         if isinstance(add_var, bool):
             add_var = [add_var] * (nlc-1)
+        if isinstance(resume, bool):
+            resume = [resume] * (nlc-1)
 
 
     return nchain, nburn, init_tau, subtract_mean, div_mean, \
-            add_var, delay_dist, psi_types, together, objname, prior_func, timeout
+            add_var, delay_dist, psi_types, together, objname, \
+            prior_func, timeout, resume
 
 
 def set_mica2(input_args):

@@ -454,7 +454,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
               init_tau=None, init_delta=10, sig_level=100,
               together=True, subtract_mean=True, div_mean=False,
               add_var=False, delay_dist=False, psi_types='Gaussian',
-              objname=None, prior_func=None, timeout=60*60*3,
+              objname=None, prior_func=None, timeout=60*60*3, resume=False,
               verbose=True):
 
 
@@ -547,6 +547,20 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
     if isinstance(psi_types, str):
         psi_types = [psi_types] * ( len(fnames)-1 )
 
+    #If resume=True, check if Fit.h5 exists
+    if not together:
+        if isinstance(resume, bool):
+            resume = [resume] * ( len(fnames)-1 )
+        
+        for i in range(len(fnames)-1):
+            if not os.path.exists(line_dir[i] + '/Fit.h5'):
+                resume[i] = False
+
+    else:
+        if not os.path.exists(line_dir + '/Fit.h5'):
+            resume = False
+
+
     #If no lag bounds given, use the baseline of the light curves
     if lag_bounds is None:
         lag_bounds = []
@@ -607,7 +621,9 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             args = (lc_dir, objname, filters, prior_arr[i,:,:],)
             kwargs = {'add_var':add_var[i], 'init_tau':[init_tau[i]], 'init_delta':init_delta, 'sig_level':sig_level,
                       'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn,
-                      'use_backend':True}
+                      'use_backend':True, 'resume_progress':resume[i]}
+            
+            os.chdir(line_dir[i])
 
             try:
                 signal.signal(signal.SIGALRM, handler)
@@ -631,14 +647,14 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                         proc.terminate()
 
 
-                move_output_files(cwd, line_dir[i])
+                # move_output_files(cwd, line_dir[i])
                 fit = MyFit(line_dir[i])
 
                 fit_arr.append(fit)
 
 
                 signal.alarm(0)
-                shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
+                # shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
 
             except Exception as e:
                 proc.terminate()
@@ -647,8 +663,10 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                 print_error('Skipping and continuing to next line')
                 
                 fit_arr.append(None)
-                shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
+                # shutil.move(cwd + '/Fit.h5', line_dir[i] + '/Fit.h5')
                 continue
+            
+            os.chdir(cwd)
 
         return fit_arr
 
@@ -660,7 +678,9 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         args = (lc_dir, objname, line_names, prior_arr,)
         kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
                   'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn,
-                  'use_backend':True}
+                  'use_backend':True, 'resume_progress':resume[0]}
+        
+        os.chdir(line_dir)
 
         try:
             signal.signal(signal.SIGALRM, handler)
@@ -683,11 +703,11 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
                         proc.is_alive()
                     proc.terminate()
 
-            move_output_files(cwd, line_dir)
+            # move_output_files(cwd, line_dir)
             fit = MyFit(line_dir)
             
             signal.alarm(0)
-            shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
+            # shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
             
         except Exception as e:
             proc.terminate()
@@ -695,7 +715,8 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             print_error('PyROA timed out'.format(line_names[i+1]))
             
             fit = None
-            shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
+            # shutil.move(cwd + '/Fit.h5', line_dir + '/Fit.h5')
 
+        os.chdir(cwd)
 
         return fit
