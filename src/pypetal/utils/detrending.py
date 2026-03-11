@@ -109,7 +109,7 @@ def detrend(x, y, yerr, K=2, parallelize=False,
     for i in range(len(lm.chain)):
         b_chains.append( lm.chain[i][0] )
         m_chains.append( lm.chain[i][1] )
-        sigsqr_chains.append( lm.chain[i][1] )
+        sigsqr_chains.append( lm.chain[i][2] )
 
 
     b_med = np.median(b_chains)
@@ -118,7 +118,7 @@ def detrend(x, y, yerr, K=2, parallelize=False,
 
     m_med = np.median(m_chains)
     m_err_hi = np.percentile(m_chains, 84) - m_med
-    m_err_lo = b_med - np.percentile(m_chains, 16)
+    m_err_lo = m_med - np.percentile(m_chains, 16)
 
     sigsqr_med = np.median(sigsqr_chains)
     sigsqr_err_hi = np.percentile(sigsqr_chains, 84) - sigsqr_med
