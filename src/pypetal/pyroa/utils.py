@@ -678,7 +678,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         args = (lc_dir, objname, line_names, prior_arr,)
         kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
                   'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn,
-                  'use_backend':True, 'resume_progress':resume[0]}
+                  'use_backend':True, 'resume_progress':resume}
         
         os.chdir(line_dir)
 
