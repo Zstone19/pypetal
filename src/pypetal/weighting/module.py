@@ -45,7 +45,7 @@ def run_weighting_tot(output_dir,
     pyroa_sample_fnames : list of str, optional
         The filenames of the PyROA sample for each line (i.e. "samples.obj"). If None, PyROA will be assumed not to have run.
         Default is None.
-        
+
     mica2_dist_fnames : list of str, optional
         The filenames of the MICA2 lag distributions for each line. If None, MICA2 will be assumed not to have run.
         Default is None.
@@ -246,9 +246,9 @@ def run_weighting_tot(output_dir,
                         pyroa_obj_inds.append(1)
     else:
         pyroa_obj_inds = [None] * ( len(line_names)-1)
-        
-        
-        
+
+
+
     if mica2_dist_fnames is None:
         mica2_dist_fnames = [None] * ( len(line_names)-1)
         run_mica2 = False
@@ -323,7 +323,7 @@ def run_weighting_tot(output_dir,
         plot_weight_output(output_dir, line_fnames[0], line_fnames, line_names,
                             res_tot['pyroa'], general_kwargs, 'pyroa', zoom,
                             general_kwargs['plot'])
-        
+
     if run_mica2:
         plot_weight_output(output_dir, line_fnames[0], line_fnames, line_names,
                             res_tot['mica2'], general_kwargs, 'mica2', zoom,
