@@ -3,9 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-=================================================
-pyPETaL: A Pipeline for Estimating AGN Time Lags
-=================================================
+.. =================================================
+.. pyPETaL: A Pipeline for Estimating AGN Time Lags
+.. =================================================
+
+.. image:: _static/logo.png
+
 **pyPetal** is a pipeline made in python to obtain time lags from multi-band AGN time-series data. Normally, AGN geometric and kinematic analyses (e.g. reverberation mapping) utilize a variety of different tools to obtain time lags between two (or more) light curves. This package combines four popular algorithms for estimating time lags (pyCCF, pyZDCF, PyROA, and JAVELIN), and uses the popular Damped Random Walk algorithm to model input light curves for outlier rejection.
 
 Currently, pyPetal has combined the functionality of pyCCF, pyZDCF, PyROA, MICA2m and JAVELIN to produce cross-correlation functions, discrete correlation functions, and mean time lags. This is only made to run on Linux-based operating systems, though this may be improved in the future.
