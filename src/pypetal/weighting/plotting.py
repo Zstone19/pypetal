@@ -228,7 +228,7 @@ def plot_weight_output(output_dir, cont_fname, line_fnames, line_names,
             lag_value = res['time_delay'][i][1]
 
             xlabel = r'\tau'
-            
+
         elif module == 'mica2':
             lags = res['lags'][i].copy()
             lag_dist = res['lag_dist'][i].copy()

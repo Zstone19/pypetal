@@ -10,7 +10,7 @@ from astropy.table import Table
 import pypetal.pyzdcf.utils as utils
 from pypetal.pyzdcf.plotting import plot_pyzdcf_results
 from pypetal.utils import defaults
-from pypetal.utils.petalio import print_subheader, print_error
+from pypetal.utils.petalio import print_error, print_subheader
 
 
 #For multiprocessing

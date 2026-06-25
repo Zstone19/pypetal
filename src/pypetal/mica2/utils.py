@@ -1,22 +1,19 @@
-from mpi4py import MPI
-import numpy as np
-import pymica
-
 import os
 
+import numpy as np
+import pymica
+from mpi4py import MPI
 
 
-
-
-def run_mica2(outdirs, line_names, cont_lc, line_lcs, 
+def run_mica2(outdirs, line_names, cont_lc, line_lcs,
               #MICA2
-              type_tf='gaussian', max_num_saves=2000, 
+              type_tf='gaussian', max_num_saves=2000,
               flag_uniform_var_params=False, flag_uniform_tranfuns=False,
               flag_trend=0, flag_lag_posivity=False,
               flag_negative_resp=False,
               lag_limit=[0,100], number_component=[1,1], width_limit=None,
               flag_con_sys_err=False, flag_line_sys_err=False,
-              type_lag_prior=0, lag_prior=None, 
+              type_lag_prior=0, lag_prior=None,
               #CDNEST
               num_particles=1, thread_steps_factor=1,
               new_level_interval_factor=1, save_interval_factor=1,
@@ -33,17 +30,17 @@ def run_mica2(outdirs, line_names, cont_lc, line_lcs,
 
 
     if rank == 0:
-        
+
         data_input = {}
-        
+
         if together:
             data_input["set1"] = [cont_lc]
             for i in range(len(line_lcs)):
                 data_input["set1"].append(line_lcs[i])
-            
+
         else:
             assert len(outdirs) == len(line_names)-1
-            
+
             for i in range(len(line_lcs)):
                 data_input["set{}".format(i+1)] = [cont_lc, line_lcs[i]]
 
@@ -67,20 +64,20 @@ def run_mica2(outdirs, line_names, cont_lc, line_lcs,
                 new_level_interval_factor=new_level_interval_factor, save_interval_factor=save_interval_factor,
                 lam=lam, beta=beta, ptol=ptol, max_num_levels=max_num_levels)
     model.run()
-    
+
 
     #Make plots
     model.plot_results(doshow=show)
     model.post_process()
-    
+
     #Save data
     cwd = os.getcwd() + '/'
-    
+
     if type_tf == 'gaussian':
         typetf = 0
     else:
         typetf = 1
-    
+
     if rank == 0:
         get_mica2_data(outdirs, line_names, cwd, '/data/data_input.txt',
                     lag_limit[1], lag_limit[0], typetf,
@@ -106,8 +103,8 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
     if flagtrend > 0:
        trend = np.loadtxt(fdir+"/data/trend.txt_%d"%ngau)
-       
-       
+
+
     fp = open(fdir+fname)
     # read numbe of datasets
     line = fp.readline()
@@ -116,12 +113,12 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
         num_params_var = 3
     else:
         num_params_var = 3*nd
-       
-       
+
+
     # number of parameters for long-term trend
     nq = flagtrend + 1
-    
-    
+
+
     # read number of data points in each dataset
     nl = []
     for i in range(nd):
@@ -130,8 +127,8 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
         ns = np.array([int(i) for i in ls])
         nl.append(ns)
     fp.close()
-    
-    
+
+
     # read number of points of reconstructions
     fp = open(fdir+"/data/pall.txt_%d"%ngau, "r")
     line = fp.readline()
@@ -142,8 +139,8 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
         ns = np.array([int(i) for i in ls])
         nl_rec.append(ns)
     fp.close()
-    
-    
+
+
     # assign index of cont data
     indx_con_data = []
     indx_con_rec = []
@@ -154,9 +151,9 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
         ns_rec = nl_rec[i-1]
         indx_con_data.append(np.sum(ns) + indx_con_data[i-1])
         indx_con_rec.append(np.sum(ns_rec) + indx_con_rec[i-1])
-    
-    
-    # assign index of the parmaeter for the first line of each dataset 
+
+
+    # assign index of the parmaeter for the first line of each dataset
     indx_line = []
     indx_line.append(num_params_var)
     for i in range(1, nd):
@@ -164,13 +161,13 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
             indx_line.append(num_params_var)
         else:
             indx_line.append(indx_line[i-1] + (len(nl[i-1])-1)*(1+ngau*3))
-       
-       
+
+
     # print time lags, median, and 68.3% confidence limits
     if flagnegresp == False:
         sample_lag = np.zeros(sample.shape[0])
         weight_lag = np.zeros(sample.shape[0])
-        
+
         #loop over datasets
         for m in range(nd):
 
@@ -197,11 +194,11 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
                 # err2 = err2 - lag
 
 
-    # dtau = tau_upp - tau_low 
+    # dtau = tau_upp - tau_low
     ntau = 10000
     tran = np.zeros((sample.shape[0], ntau))
     # shift = 0.0
-    
+
 
     idx_q = 0 # index for long-term trend parameters
 
@@ -209,20 +206,20 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
     for m in range(nd):
         ns = nl[m]
         ns_rec = nl_rec[m]
-        
-        
+
+
         # Get reconstructed continuum
-        sall_con0 = sall[indx_con_rec[m]:(indx_con_rec[m]+ns_rec[0]), :] 
+        sall_con0 = sall[indx_con_rec[m]:(indx_con_rec[m]+ns_rec[0]), :]
         np.savetxt(outdirs[m]+ 'cont_recon.dat', sall_con0, delimiter=',',
                    header='time,flux,err')
-        
+
         # Get trend
         if flagtrend > 0:
             x = np.linspace(sall_con0[0, 0], sall_con0[-1, 0], 100)
             y = np.zeros(100)
             for j in range(nq):
                 y += trend[idx_q + j, 0] * x**(j)
-        
+
             np.savetxt( outdirs[m] + 'trend.dat', [x, y], delimiter=',',
                         header='time,trend')
 
@@ -230,30 +227,30 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
         # set time lag range for Gaussian centers and centriods
         tau1 = 1.0e10
         tau2 = -1.0e10
-        for j in range(1, len(ns)):      
+        for j in range(1, len(ns)):
             for k in range(ngau):
                 tau1 = np.min((tau1, np.min(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1])))
                 tau2 = np.max((tau2, np.max(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1])))
 
 
 
-        # set time lag range for transfer function 
+        # set time lag range for transfer function
         tau1_tf = 1.0e10
         tau2_tf = -1.0e10
-        for j in range(1, len(ns)):   
+        for j in range(1, len(ns)):
             for k in range(ngau):
                 tau1_tf = np.min((tau1_tf, np.min(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
                                                     -np.exp(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+2]))))
                 tau2_tf = np.max((tau2_tf, np.max(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
                                                     +np.exp(sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+2]))))
-        
+
         tau1_tf = np.min((tau_low, tau1_tf))
         tau2_tf = np.max((tau_upp, tau2_tf))
 
 
 
         for j in range(1, len(ns)):
-            
+
             #Get reconstructed line
             sall_hb = sall[(indx_con_rec[m] + np.sum(ns_rec[:j])):(indx_con_rec[m] + np.sum(ns_rec[:j+1])), :]
             np.savetxt( outdirs[m] + "{}_recon.dat".format(line_names[j]), sall_hb, delimiter=',',
@@ -267,7 +264,7 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
             #Get centroids
             if flagnegresp == False:
-                
+
                 cent = np.zeros(sample.shape[0])
                 norm = np.zeros(sample.shape[0])
                 for k in range(ngau):
@@ -279,14 +276,14 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
                     else:
                         norm += 1.0
                         cent += sample[:, indx_line[m] + (j-1)*(ngau*3+1) + 1+k*3+1]
-            
+
                     np.savetxt(outdirs[m] + "{}_centroids_{}.dat".format(line_names[j], k+1), cent, delimiter=',' )
 
 
         #Get transfer function
         tau = np.linspace(tau1_tf, tau2_tf, ntau)
         tran[:, :] = 0.0
-        
+
         if typetf == 0: # gaussian
             for i in range(sample.shape[0]):
                 # loop over gaussians
@@ -302,7 +299,7 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
                     tran[i, :] += amp/sig * np.exp(-0.5*(tau - cen)**2/sig**2)
 
         else: #tophats
-            
+
             for i in range(sample.shape[0]):
             # loop over tophats
                 for k in range(ngau):
@@ -324,7 +321,7 @@ def get_mica2_data(outdirs, line_names, fdir, fname, tau_upp, tau_low, typetf,
 
         errlo = tran_best - tran1
         errhi = tran2 - tran_best
-        
+
         if len(line_names) > 2:
             tf_fname = outdirs[m] + 'transfunc.dat'
         else:
