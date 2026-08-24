@@ -18,6 +18,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
     time_unit = general_kwargs['time_unit']
     lc_unit = general_kwargs['lc_unit']
     lag_bounds = general_kwargs['lag_bounds']
+    threads = general_kwargs['threads']
 
     #--------------------------------------------------
     #Read kwargs
@@ -40,7 +41,8 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
             'together': together,
             'objname': objname,
             'timeout': timeout,
-            'resume': resume
+            'resume': resume,
+            'threads': threads
         }
         print_subheader('Running PyROA', 35, print_dict)
 
@@ -61,6 +63,7 @@ def pyroa_tot(cont_fname, line_fnames, line_names, output_dir,
                      div_mean=div_mean, add_var=add_var,
                      delay_dist=delay_dist, psi_types=psi_types,
                      objname=objname, prior_func=prior_func, resume=resume, timeout=timeout,
+                     threads=threads,
                      verbose=verbose)
 
     lc_fnames = [ lc_dir + objname + '_' + x + '.dat' for x in line_names ]

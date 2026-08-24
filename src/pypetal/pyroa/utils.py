@@ -175,7 +175,8 @@ def save_lines(line_fnames, line_names, output_dir, objname=None, delimiter=None
 
 
 
-def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=False, delimiter=','):
+def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, 
+               together=False, add_var=False, delimiter=','):
 
 
     """Get the priors used for PyROA.
@@ -201,6 +202,8 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
     together : bool, optional
         Whether or not to fit all light curves to the continuum in one fit. Default is False.
 
+    add_var: bool, optional
+        Whether or not to add additional uncertainty in the data, same as the PyROA argument
 
 
 
@@ -244,7 +247,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
             miny.append( np.min(y-yerr) )
             maxy.append( np.max(y+yerr) )
             med_vals.append( np.median(y) )
-            mad_vals.append( np.mean(np.abs(y-np.mean(y)))  )
+            mad_vals.append( np.median(np.abs(y-np.median(y)))  )
             
 
 
@@ -272,12 +275,21 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
         tau_prior = laglim
         delta_prior = [5., 50.]
 
+        out = [a_prior, b_prior, tau_prior, delta_prior]
+        if add_var:
+            out.append(err_prior)
 
-        return [a_prior, b_prior, tau_prior, delta_prior, err_prior]
+        return out
 
 
     else:
-        prior_arr = np.zeros(( len(fnames)-1, 5, 2 ))
+        nparam = 4
+        delta_ind = 3
+        if add_var:
+            nparam += 1
+            addvar_ind = -1
+        
+        prior_arr = np.zeros(( len(fnames)-1, nparam, 2 ))
 
         _, y_cont, yerr_cont = np.loadtxt( fnames[0], unpack=True, usecols=[0,1,2], delimiter=delimiter )
         if div_mean:
@@ -288,7 +300,7 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
             y_cont -= np.mean(y_cont)
             
         
-        mad_cont = np.mean(np.abs(y_cont-np.mean(y_cont)))
+        mad_cont = np.median(np.abs(y_cont-np.median(y_cont)))
         med_cont = np.median(y_cont)
 
 
@@ -313,8 +325,9 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 prior_arr[i,1,1] = 2.
 
                 #err
-                prior_arr[i,4,0] = 0.
-                prior_arr[i,4,1] = 10.
+                if add_var:
+                    prior_arr[i,addvar_ind,0] = 0.
+                    prior_arr[i,addvar_ind,1] = 10.
 
             else:
 
@@ -330,11 +343,12 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
                 prior_arr[i,1,1] = np.max( [np.max(y+yerr), np.max(y_cont+yerr_cont)] )
 
                 #err - extra error
-                prior_arr[i,4,0] = 0.
-                prior_arr[i,4,1] = 10.*np.max([ np.std(y), np.std(y_cont) ])
+                if add_var:
+                    prior_arr[i,addvar_ind,0] = 0.
+                    prior_arr[i,addvar_ind,1] = 10.*np.max([ np.std(y), np.std(y_cont) ])
 
     
-            mad_line = np.mean(np.abs(y-np.mean(y)))
+            mad_line = np.median(np.abs(y-np.median(y)))
             med_line = np.median(y)
             
             
@@ -352,8 +366,8 @@ def get_priors(fnames, laglim_in, subtract_mean=False, div_mean=False, together=
             prior_arr[i,2,1] = laglim_in[i][1]
 
             #delta - window function width
-            prior_arr[i,3,0] = 5.
-            prior_arr[i,3,1] = 50.
+            prior_arr[i,delta_ind,0] = 5.
+            prior_arr[i,delta_ind,1] = 50.
 
         return prior_arr
 
@@ -455,6 +469,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
               together=True, subtract_mean=True, div_mean=False,
               add_var=False, delay_dist=False, psi_types='Gaussian',
               objname=None, prior_func=None, timeout=60*60*3, resume=False,
+              threads=1,
               verbose=True):
 
 
@@ -592,9 +607,9 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
     os.makedirs(lc_dir, exist_ok=True)
 
     if prior_func is None:
-        prior_arr = get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, delimiter=',')
+        prior_arr = get_priors(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, add_var=add_var, delimiter=',')
     else:
-        prior_arr = prior_func(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together)
+        prior_arr = prior_func(fnames, lag_bounds, subtract_mean=subtract_mean, div_mean=div_mean, together=together, add_var=add_var)
 
     _ = save_lines(fnames, line_names, lc_dir, objname=objname, subtract_mean=subtract_mean, div_mean=div_mean, delimiter=',')
 
@@ -621,7 +636,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
             args = (lc_dir, objname, filters, prior_arr[i,:,:],)
             kwargs = {'add_var':add_var[i], 'init_tau':[init_tau[i]], 'init_delta':init_delta, 'sig_level':sig_level,
                       'delay_dist':delay_dist[i], 'psi_types':[psi_types[i]], 'Nsamples':nchain, 'Nburnin':nburn,
-                      'use_backend':True, 'resume_progress':resume[i]}
+                      'use_backend':True, 'resume_progress':resume[i], 'nthread': threads}
             
             os.chdir(line_dir[i])
 
@@ -678,7 +693,7 @@ def run_pyroa(fnames, lc_dir, line_dir, line_names,
         args = (lc_dir, objname, line_names, prior_arr,)
         kwargs = {'add_var':add_var, 'init_tau':init_tau, 'init_delta':init_delta, 'sig_level':sig_level,
                   'delay_dist':delay_dist, 'psi_types':psi_types, 'Nsamples':nchain, 'Nburnin':nburn,
-                  'use_backend':True, 'resume_progress':resume}
+                  'use_backend':True, 'resume_progress':resume[0], 'nthread': threads}
         
         os.chdir(line_dir)
 
