@@ -1,7 +1,7 @@
 import pickle
 
 import numpy as np
-from scipy.signal import peak_widths
+from scipy.signal import peak_widths, peak_prominences, find_peaks
 
 from pypetal.pyccf.utils import peakcent
 from pypetal.pyroa.utils import get_samples_chunks
@@ -411,7 +411,6 @@ def get_bounds(dist, weights, lags, width=15, rel_height=.99):
 
     #Find peak bounds
     res = peak_widths( smooth_weight_dist, [peak_ind], rel_height=rel_height )
-
     peak = lags[peak_ind]
     bound_left = lags[ np.floor(res[2]).astype(int) ] + dbin*( res[2]%1 )
     bound_right = lags[ np.floor(res[3]).astype(int) ] + dbin*( res[3]%1 )
