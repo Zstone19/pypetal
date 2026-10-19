@@ -141,28 +141,28 @@ def celerite_fit(x, y, yerr, kernel, nwalkers, nburn, nsamp, mbh_est=None,
 
     #Use mass as an initial guess
     elif solver == 'mbh':
-        assert (mbh_est is not None)        
+        assert (mbh_est is not None)
         tau_est = 107* (mbh_est/1e8)**(.38) #d
 
         c_est = 1/tau_est
         loga_est = np.random.uniform(bounds[0][0], bounds[0][1])
-        
+
         initial = [a_est, np.log(c_est)]
         if jitter:
             logn_est = np.random.uniform(bounds[2][0], bounds[2][1])
             initial.append(logn_est)
 
-    #Use the priors    
+    #Use the priors
     elif solver == 'none':
         loga_est = np.random.uniform(bounds[0][0], bounds[0][1])
         logc_est = np.random.uniform(bounds[1][0], bounds[1][1])
         initial = [loga_est, logc_est]
-        
+
         if jitter:
             logn_est = np.random.uniform(bounds[2][0], bounds[2][1])
             initial.append(logn_est)
 
-   
+
     initial = np.array(initial)
 
     #Set parameter vector to fit params

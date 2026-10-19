@@ -370,7 +370,7 @@ MICA2 arguments:
       - Whether or not the order of the time lags makes a difference (i.e., whether or not the time lags are allowed to be equal). If order doesn't matter, MICA2 will be able to fit all light curves in one run. If set to :python:`True`, a separate MICA2 run will be performed for each line.
       - :python:`bool`
       - :python:`True`
-    
+
 
 
 
