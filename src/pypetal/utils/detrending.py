@@ -4,7 +4,7 @@ import numpy as np
 from linmix import LinMix
 
 from pypetal.utils.defaults import set_detrend
-from pypetal.utils.petalio import write_data, print_subheader
+from pypetal.utils.petalio import print_subheader, write_data
 
 mpl.rcParams['xtick.minor.visible'] = True
 mpl.rcParams['xtick.top'] = True
