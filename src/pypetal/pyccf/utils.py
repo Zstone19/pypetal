@@ -3,6 +3,7 @@ from functools import partial
 
 import numpy as np
 import scipy.stats as sst
+
 from pypetal.utils.petalio import print_warning
 
 

@@ -3,6 +3,7 @@ import subprocess
 
 import numpy as np
 from pyzdcf import pyzdcf
+
 from pypetal.utils.petalio import print_error
 
 
